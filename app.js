@@ -8,8 +8,8 @@ var db = require('./database');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var projectData = require('./routes/projectData')
-
+var getData = require('./routes/getData')
+var insertData = require('./routes/insertData');
 var app = express();
 
 // view engine setup
@@ -27,7 +27,8 @@ app.use(express.static(path.join(__dirname, 'node_modules')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/projectData', projectData);
+app.use('/getData', getData);
+app.use('/insertData', insertData);
 
 // catch 404 and forward to error handler
 

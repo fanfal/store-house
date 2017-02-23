@@ -21,14 +21,13 @@ var create_tables = new Migration({
             t.string('position');
             t.string('type');
             t.float('width');
+            t.float('height');
             t.boolean('is_stored');
             t.string('product_id');
-            t.float('height');
-            t.primary_key('id')
+            t.date('time_stamp');
+            t.primary_key('id');
             t.index('project_name');
         })
-
-
     },
     down: function () {
         this.drop_table("test");

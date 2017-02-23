@@ -38,4 +38,6 @@ router.get('/projectInfo', function (req, res, next) {
 
 })
 
+router.get('/project')
+
 module.exports = router;
