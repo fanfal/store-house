@@ -1,5 +1,25 @@
 extends layout
+doctype html
+html
+    head
+        title= title
+        meta(charset="utf-8")
+        block script
+         script(src="/jquery/dist/jquery.js", type = "text/javascript")
+         script(src="/javascripts/login.js",type="text/javascript")
+    body
+     block content
+        div(class = "maincontent")
+        div(class = "title")
+        h1= title
+        div(class = "inputs")
+        input(name= "username-input", type= "text", id = "username")
+        br
+        br
+        input(name= "password-input", type= "text", id = "password")
+        br
+        br
+        div(class = "loginbtn")
+        button(type="button", id = "login") 登录
 
-block content
-  h1= title
-  p Welcome to #{title}
+
