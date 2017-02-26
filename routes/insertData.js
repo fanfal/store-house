@@ -3,8 +3,8 @@ var router = express.Router();
 var dbOperation = require("../public/dom/dbOperation.js")
 
 
-router.get('/project', function (req, res, next) {
-    dbOperation.insertProject(req.query.name);
+router.post('/project', function (req, res, next) {
+    dbOperation.insertProject(req.body.project_name);
 });
 
 module.exports = router;

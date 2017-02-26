@@ -10,21 +10,22 @@
 
 *数据插API格式*  项目信息插入api Jason模式
                 {
-                   project_info: [
+                   "project_info": [
                     {
-                     project_name: "test",
-                     type:"窗户"
+                     "project_name": "test",
+                     "type":"窗户"
                     },
                     {
-                     project_name: "test",
-                     type: "门"
+                     "project_name": "test",
+                     "type": "门"
                     }
                  ]
                }
 
                项目创建格式
                 {
-                  project_name: "test"
+                  "project_name": "test"
                 }
 
-其中project_name不能为空,服务器会检测,如果为空,则插入错误,返回错误代码. 当project_name 有字段时就创建pro
+其中project_name不能为空,服务器会检测,如果为空,则插入错误,返回错误代码. 当project_name 有字段时就创建pro.
+这里发送创建信息的request 都是post, 数据为Json格式, 放在请求的body中.
