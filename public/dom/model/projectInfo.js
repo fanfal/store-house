@@ -2,7 +2,7 @@ var db = require("./../db")
 var Sequelize = require('sequelize');
 
 exports.projectInfoModel = db.sequelize.define('project_info', {
-    projectName: {
+    project_name: {
         type: Sequelize.STRING,
         field: 'project_name'
     },
@@ -38,11 +38,11 @@ exports.projectInfoModel = db.sequelize.define('project_info', {
         type: Sequelize.FLOAT,
         field: 'height'
     },
-    isStored: {
+    is_stored: {
         type: Sequelize.BOOLEAN,
         field: 'is_stored'
     },
-    productId: {
+    product_id: {
         type: Sequelize.STRING,
         field: 'product_id'
     }

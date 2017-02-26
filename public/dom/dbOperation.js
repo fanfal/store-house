@@ -1,11 +1,13 @@
 var project = require("./model/project")
 var projectInfo = require("./model/projectInfo")
 
+var projectModel = project.projectModel;
+var projectInfoModel = projectInfo.projectInfoModel;
+
 exports.insertProject = function (projectName) {
-    var projectModel = project.projectModel;
     projectModel.sync().then(function () {
         return projectModel.create({
-            projectName: projectName,
+            project_name: projectName,
         });
     }).then(function (jane) {
         console.log(jane.get({
@@ -14,29 +16,52 @@ exports.insertProject = function (projectName) {
     });
 }
 
+exports.insertProjectInfo = function (data) {
+    data.forEach(function (element) {
+        if (element.project_name != null) {
+            projectInfoModel.sync().then(function () {
+                return projectInfoModel.create({
+                    project_name: element.project_name,
+                    building: element.building,
+                    unit: element.unit,
+                    floor: element.floor,
+                    number: element.number,
+                    position: element.position,
+                    type: element.type,
+                    width: element.width,
+                    height: element.height,
+                    is_stored: element.is_stored,
+                    product_id: element.product_id
+                });
+            }).then(function (jane) {
+                console.log(jane.get({
+                    plain: true
+                }));
+
+            })
+        }
+    });
+}
+
 exports.getProject = function (projectName, callback) {
-    var projectModel = project.projectModel;
     projectModel.findOne({where: {project_name: projectName}}).then(function (data) {
         callback(data);
     })
 }
 
 exports.getProjects = function (callback) {
-    var projectModel = project.projectModel;
     projectModel.findAll().then(function (data) {
         callback(data);
     })
 }
 
 exports.getProjectsInfo = function (callback) {
-    var projectInfoModel = projectInfo.projectInfoModel;
     projectInfoModel.findAll().then(function (data) {
         callback(data);
     })
 }
 
 exports.getProjectInfoByName = function (projectName, callback) {
-    var projectInfoModel = projectInfo.projectInfoModel;
     projectInfoModel.findOne({where: {project_name: projectName}}).then(function (data) {
         callback(data);
     })

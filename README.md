@@ -13,7 +13,16 @@
                    "project_info": [
                     {
                      "project_name": "test",
-                     "type":"窗户"
+                     "building": 1,
+                     "unit": 1,
+                     "floor": 1,
+                     "number": 1,
+                     "position": "test",
+                     "type":"窗户",
+                     "width": 1.1,
+                     "height": 1.1,
+                     "is_stored": true,
+                     "product_id" : "101010111010101" (扫码)
                     },
                     {
                      "project_name": "test",
