@@ -8,7 +8,9 @@
        getProject: http://localhost:8080/projectData/project?name=
        getProjectInfo: http://localhost:8080/projectData/projectInfo?name=
 
-*数据插API格式*  项目信息插入api Jason模式
+*数据插API格式*  项目信息插入api url: http://localhost:8080/insertData/projectInfo, url 模式为post,
+               header里面要定义为application/type(可查询http请求的header知识),Body包含的插入数据模式为Jason:
+
                 {
                    "project_info": [
                     {
@@ -31,7 +33,8 @@
                  ]
                }
 
-               项目创建格式
+               项目创建格式api url: http://localhost:8080/insertData/project,剩下同上.
+
                 {
                   "project_name": "test"
                 }
