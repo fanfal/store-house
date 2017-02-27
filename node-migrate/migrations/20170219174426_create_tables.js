@@ -3,10 +3,11 @@ var PROJECT_TABLE_NAME = "test";
 
 var create_tables = new Migration({
     up: function () {
-        this.execute("CREATE TABLE test (" +
+        this.execute("CREATE TABLE project (" +
             "id INT NOT NULL AUTO_INCREMENT, " +
             "project_name VARCHAR(30) NOT NULL, " +
-            "time_stamp DATE NOT NULL, " +
+            "created_at DATE NOT NULL, " +
+            "updated_at DATE NOT NULL, " +
             "PRIMARY KEY (id), " +
             "UNIQUE (project_name)" +
             ");");
@@ -21,17 +22,17 @@ var create_tables = new Migration({
             t.string('position');
             t.string('type');
             t.float('width');
+            t.float('height');
             t.boolean('is_stored');
             t.string('product_id');
-            t.float('height');
-            t.primary_key('id')
+            t.date('created_at');
+            t.date('updated_at');
+            t.primary_key('id');
             t.index('project_name');
         })
-
-
     },
     down: function () {
-        this.drop_table("test");
+        this.drop_table("project");
         this.drop_table("project_info");
     }
 

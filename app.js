@@ -4,12 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var db = require('./database');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var projectData = require('./routes/projectData')
-
+var getData = require('./routes/getData')
+var insertData = require('./routes/insertData');
 var app = express();
 
 // view engine setup
@@ -27,16 +26,10 @@ app.use(express.static(path.join(__dirname, 'node_modules')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/projectData', projectData);
+app.use('/getData', getData);
+app.use('/insertData', insertData);
 
 // catch 404 and forward to error handler
-
-db.connect(db.MODE_PRODUCTION, function (err) {
-    if (err) {
-        console.log('Unable to connect to MySQL.')
-        process.exit(1)
-    }
-})
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
