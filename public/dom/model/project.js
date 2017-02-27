@@ -4,7 +4,8 @@ var Sequelize = require('sequelize');
 exports.projectModel = db.sequelize.define('project', {
     project_name: {
         type: Sequelize.STRING,
-        field: 'project_name'
+        field: 'project_name',
+        unique: true
     }
 }, {
     underscored: true,

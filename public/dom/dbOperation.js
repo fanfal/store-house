@@ -4,23 +4,25 @@ var projectInfo = require("./model/projectInfo")
 var projectModel = project.projectModel;
 var projectInfoModel = projectInfo.projectInfoModel;
 
-exports.insertProject = function (projectName) {
-    projectModel.sync().then(function () {
-        return projectModel.create({
-            project_name: projectName,
+exports.insertProject = function (projectName, res) {
+    projectModel.build({
+            project_name: projectName
+        })
+        .save()
+        .then(function () {
+            res.status(200);
+            res.send();
+        })
+        .catch(function (error) {
+            res.status(403);
+            res.send();
         });
-    }).then(function (jane) {
-        console.log(jane.get({
-            plain: true
-        }));
-    });
 }
 
-exports.insertProjectInfo = function (data) {
+exports.insertProjectInfo = function (data, callback) {
     data.forEach(function (element) {
         if (element.project_name != null) {
-            projectInfoModel.sync().then(function () {
-                return projectInfoModel.create({
+            projectInfoModel.build({
                     project_name: element.project_name,
                     building: element.building,
                     unit: element.unit,
@@ -32,13 +34,11 @@ exports.insertProjectInfo = function (data) {
                     height: element.height,
                     is_stored: element.is_stored,
                     product_id: element.product_id
+                })
+                .save()
+                .catch(function (error) {
+                    throw error;
                 });
-            }).then(function (jane) {
-                console.log(jane.get({
-                    plain: true
-                }));
-
-            })
         }
     });
 }
