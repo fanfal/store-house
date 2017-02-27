@@ -1,0 +1,92 @@
+*{font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
+  background-color:#ffffff;
+  -webkit-font-smoothing: antialiased;
+  padding: 0px;
+  margin: 10px;
+}
+
+#create-project-form{
+    margin: 0px; padding: 0px;
+}
+
+#project-info{
+    border-bottom: 1px #dddddd solid;
+}
+
+#building-info{
+    border-bottom: 1px #dddddd solid;
+}
+
+#glass-info{
+    border-bottom: 1px #dddddd solid;
+}
+
+#content{
+    border: 1px #dddddd solid;
+    border-radius: 3px;
+}
+
+#title {
+    border-bottom: 1px #dddddd solid;
+    margin: 0px;
+}
+
+h2{
+    font-weight:lighter;
+    color: #999;
+    font-size: 36px;
+}
+
+h4{
+    font-weight:lighter;
+    color: #999;
+    font-size: 12px;
+}
+
+p{
+    font-weight: lighter;
+    color: #666666
+}
+
+.text-edit{
+    border: 1px solid #888;
+    height: 25px;
+    border-radius: 6px;
+    outline: none;
+    box-shadow: none;
+    outline-style: none; 
+}
+
+.text-edit:hover{
+    border-color: #66CDAA;
+    transition: all 0.5s
+}
+
+.text-edit:focus{
+    border-color: #6495ED;
+}
+
+#submit-btn{
+    border: 1px #dddddd solid;
+    border-radius: 4px;
+    width: 100px;
+    height: 30px;
+    background-color: #dddddd;
+}
+
+#submit-btn:hover{
+    background-color: #cccccc;
+    transition: background-color 0.5s
+}
+ 
+#building-info #text-edit{
+    width:60px;
+}
+ 
+
+table{
+    margin: 0px;
+}
+table input{
+    width: 60px
+}
