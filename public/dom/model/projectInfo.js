@@ -44,7 +44,8 @@ exports.projectInfoModel = db.sequelize.define('project_info', {
     },
     product_id: {
         type: Sequelize.STRING,
-        field: 'product_id'
+        field: 'product_id',
+        unique: true
     }
 }, {
     underscored: true,
