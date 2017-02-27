@@ -50,19 +50,19 @@ exports.getProject = function (projectName, callback) {
 }
 
 exports.getProjects = function (callback) {
-    projectModel.findAll().then(function (data) {
+    projectModel.findAll({order: 'created_at DESC'}).then(function (data) {
         callback(data);
     })
 }
 
 exports.getProjectsInfo = function (callback) {
-    projectInfoModel.findAll().then(function (data) {
+    projectInfoModel.findAll({order: 'created_at DESC'}).then(function (data) {
         callback(data);
     })
 }
 
 exports.getProjectInfoByName = function (projectName, callback) {
-    projectInfoModel.findOne({where: {project_name: projectName}}).then(function (data) {
+    projectInfoModel.findOne({where: {project_name: projectName}, order: 'created_at DESC'}).then(function (data) {
         callback(data);
     })
 }
