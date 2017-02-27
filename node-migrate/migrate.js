@@ -807,15 +807,8 @@ function create() {
  * Fetches migration filenames and current migration.
  */
 function fetch_migration_info(callback) {
-  exec("ls " + config.migration_path, function(error, stdout, stderr) {
-    if (error) throw stderr;
-    var files = stdout.split(/\s/);
-    files.pop();
-    
-    if (files.length == 0) {
-      exit("Schema up-to-date.");
-      return;
-    }
+	sys.puts(config.migration_path);
+ 
 
     client.query("select * from schema_migrations;", function(err, result) {
       if (err) return exit(err);
@@ -994,9 +987,11 @@ var Connect = {
     client = new require('mysql').createConnection(config.mysql);
     
     client.query("show tables;", function(err, result, fields) {
-      if (err) 
-        return exit(err);
-      
+      if (err){
+	sys.puts("err.");
+	return exit(err);
+	}
+
       // Look for the migrations table
       while (result.length) {
         if (result.pop()['Tables_in_' + config.mysql.database] == "schema_migrations")
@@ -1038,7 +1033,12 @@ var Connect = {
 
 // Determine if the user has run the script from the command-line and if so
 // attempt to connect to the database and execute the given command.
-if (process.argv[1].split('/').pop() == "migrate.js") {
+
+var array = new Array();
+array = process.argv[1].split('\\');
+sys.puts(123);
+
+if (array.pop() == "migrate.js") {
   if (!Encoders[config.dbms])
     sys.puts("Invalid dbms set in configuraiton file.");
   encoder = Encoders[config.dbms];

@@ -5,6 +5,9 @@ var dbOperation = require("../public/dom/dbOperation.js")
 
 router.post('/project', function (req, res, next) {
     dbOperation.insertProject(req.body.project_name);
+    //返回, 必须是这个格式
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify("{'success':true,'id':'1'}"));
 });
 
 router.post('/projectInfo', function (req, res, next) {
