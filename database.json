@@ -1,0 +1,10 @@
+{
+  "defaultEnv": "local",
+  "local": {
+    "driver": "mysql",
+    "user": "root",
+    "password": "",
+    "host": "localhost",
+    "database": "storehouse"
+  }
+}
