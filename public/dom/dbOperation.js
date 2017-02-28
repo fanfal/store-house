@@ -10,16 +10,15 @@ exports.insertProject = function (projectName, res) {
         })
         .save()
         .then(function () {
-            res.status(200);
-            res.send();
+            res.status(200).send();
         })
         .catch(function (error) {
-            res.status(403);
-            res.send();
+            console.log('Error occured inser project: ', error);
+            res.status(403).send({message: "project name has exist."});
         });
 }
 
-exports.insertProjectInfo = function (data, callback) {
+exports.insertProjectInfo = function (data, res) {
     data.forEach(function (element) {
         if (element.project_name != null) {
             projectInfoModel.build({
@@ -36,8 +35,12 @@ exports.insertProjectInfo = function (data, callback) {
                     product_id: element.product_id
                 })
                 .save()
+                .then(function () {
+                    res.status(200).send();
+                })
                 .catch(function (error) {
-                    throw error;
+                    console.log('Error occured insert project info: ', error);
+                    res.status(403).send({message: "project id has exist."});
                 });
         }
     });
@@ -46,23 +49,31 @@ exports.insertProjectInfo = function (data, callback) {
 exports.getProject = function (projectName, callback) {
     projectModel.findOne({where: {project_name: projectName}}).then(function (data) {
         callback(data);
-    })
+    }).catch(function (error) {
+        console.log('Error occured get project: ', error);
+    });
 }
 
 exports.getProjects = function (callback) {
     projectModel.findAll({order: 'created_at DESC'}).then(function (data) {
         callback(data);
-    })
+    }).catch(function (error) {
+        console.log('Error occured get projects: ', error);
+    });
 }
 
 exports.getProjectsInfo = function (callback) {
     projectInfoModel.findAll({order: 'created_at DESC'}).then(function (data) {
         callback(data);
-    })
+    }).catch(function (error) {
+        console.log('Error occured get projects info: ', error);
+    });
 }
 
 exports.getProjectInfoByName = function (projectName, callback) {
     projectInfoModel.findOne({where: {project_name: projectName}, order: 'created_at DESC'}).then(function (data) {
         callback(data);
-    })
+    }).catch(function (error) {
+        console.log('Error occured get project info by name: ', error);
+    });
 }

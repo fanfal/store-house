@@ -4,11 +4,11 @@ var dbOperation = require("../public/dom/dbOperation.js")
 
 
 router.post('/project', function (req, res, next) {
-    dbOperation.insertProject(req.body.project_name);
+    dbOperation.insertProject(req.body.project_name, res);
 });
 
 router.post('/projectInfo', function (req, res, next) {
-    dbOperation.insertProjectInfo(req.body.project_info);
+    dbOperation.insertProjectInfo(req.body.project_info, res);
 });
 
 module.exports = router;
