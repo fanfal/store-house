@@ -71,7 +71,7 @@ exports.getProjectsInfo = function (callback) {
 }
 
 exports.getProjectInfoByName = function (projectName, callback) {
-    projectInfoModel.findOne({where: {project_name: projectName}, order: 'created_at DESC'}).then(function (data) {
+    projectInfoModel.findAll({where: {project_name: projectName}, order: 'created_at DESC'}).then(function (data) {
         callback(data);
     }).catch(function (error) {
         console.log('Error occured get project info by name: ', error);
