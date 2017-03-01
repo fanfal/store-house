@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Glass Store-House System</title>
+    <link rel="stylesheet", href="/stylesheets/index.css">
+    <script type="text/javascript", src="/javascripts/jquery.js"></script>
+    <script type="text/javascript", src="/javascripts/indextab.js"></script>
+</head>
+<body>
+ <div class = "Tab", id = "tab_div">
+ <!--首页Tab页签-->
+     <ul class="tabclickable">
+        <li class = "tabItem", id = "first">首页</li>
+        <li class = "tabItem">项目管理</li>
+        <li class = "tabItem">窗型库</li>
+        <li class = "tabItem">出库</li>
+        <li class = "tabItem">统计查询</li>
+     </ul>
+      <div class="tabline">
+        <!--移动的线条-->
+    </div>
+ </div>
+ <div class = "dynamicframes", id = "frams">
+ <!--Tab页下的可局部刷新区域-->
+ <iframe id = "dynamic_iframe" src="/htmls/contents/homepage.html"  frameborder = 0
+         scrolling = no></iframe>
+ </div>
+</body>
+</html>

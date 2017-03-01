@@ -41,3 +41,6 @@
 
 其中project_name不能为空,服务器会检测,如果为空,则插入错误,返回错误代码. 当project_name 有字段时就创建pro.
 这里发送创建信息的request 都是post, 数据为Json格式, 放在请求的body中.
+
+
+insertData返回格式 "{"success": true/false, "code":"XXXX"}"  code里具体是啥，可以定义

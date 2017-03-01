@@ -1,0 +1,30 @@
+* {font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
+  background-color:#ffffff;
+  -webkit-font-smoothing: antialiased;
+  margin: 0; padding: 0;
+  width: 100%
+  }
+
+.main-content{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+h2 {
+    font-weight:100;
+    color: #333;
+    font-size: 48px;
+    overflow: hidden;
+}
+
+.title {
+    text-align: center;
+    height : 20%;
+    text-rendering: optimizeLegibility;   
+}
+
+#image-board-img{
+    width: 550px;
+    height: 292px;
+}
