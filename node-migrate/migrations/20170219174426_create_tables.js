@@ -6,8 +6,8 @@ var create_tables = new Migration({
         this.execute("CREATE TABLE project (" +
             "id INT NOT NULL AUTO_INCREMENT, " +
             "project_name VARCHAR(30) NOT NULL, " +
-            "created_at DATE NOT NULL, " +
-            "updated_at DATE NOT NULL, " +
+            "created_at DATETIME , " +
+            "updated_at DATETIME , " +
             "PRIMARY KEY (id), " +
             "UNIQUE (project_name)" +
             ");");
@@ -25,8 +25,8 @@ var create_tables = new Migration({
             t.float('height');
             t.boolean('is_stored');
             t.string('product_id');
-            t.date('created_at');
-            t.date('updated_at');
+            t.datetime('created_at');
+            t.datetime('updated_at');
             t.primary_key('id');
             t.index('project_name');
         })
