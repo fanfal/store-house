@@ -18,6 +18,7 @@ exports.up = function (db) {
    return db.runSql("CREATE TABLE project (" +
         "id INT NOT NULL AUTO_INCREMENT, " +
         "project_name VARCHAR(30) NOT NULL, " +
+        "operation_status INT DEFAULT 0, " +
         "created_at DATETIME , " +
         "updated_at DATETIME , " +
         "PRIMARY KEY (id), " +
