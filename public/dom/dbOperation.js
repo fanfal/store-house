@@ -55,7 +55,15 @@ exports.getProject = function (projectName, callback) {
 }
 
 exports.getProjects = function (callback) {
-    projectModel.findAll({order: 'created_at DESC'}).then(function (data) {
+    projectModel.findAll({order: 'operation_status, created_at DESC'}).then(function (data) {
+        callback(data);
+    }).catch(function (error) {
+        console.log('Error occured get projects: ', error);
+    });
+}
+
+exports.getProjectsWithStatus = function (operationStatus, callback) {
+    projectModel.findAll({where: {operation_status: operationStatus}, order: 'created_at DESC'}).then(function (data) {
         callback(data);
     }).catch(function (error) {
         console.log('Error occured get projects: ', error);

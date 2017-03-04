@@ -6,6 +6,10 @@ exports.projectModel = db.sequelize.define('project', {
         type: Sequelize.STRING,
         field: 'project_name',
         unique: true
+    },
+    operation_status:{
+        type: Sequelize.INTEGER,
+        field:'operation_status'
     }
 }, {
     underscored: true,
