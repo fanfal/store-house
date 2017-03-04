@@ -10,11 +10,11 @@ exports.insertProject = function (projectName, res) {
         })
         .save()
         .then(function () {
-            res.status(200).send();
+            res.status(200).send({"success": true});
         })
         .catch(function (error) {
             console.log('Error occured inser project: ', error);
-            res.status(403).send({message: "project name has exist."});
+            res.status(403).send({"message": "project name has exist."});
         });
 }
 

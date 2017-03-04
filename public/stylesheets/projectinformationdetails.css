@@ -1,0 +1,127 @@
+*{font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 0px;
+}
+
+#project-info-table{
+    margin-left : 5%;
+    width : 80%;
+    border : 1px solid #cccccc;
+    border-radius : 3px;
+    padding-bottom : 10px;
+}
+
+
+#table-head{
+    font-size : 30px;
+    text-align : center;
+    color : #999;
+    font-weight : lighter;
+    border-bottom : 1px solid #cccccc;
+    height : 20%;
+}
+
+#insertBtn{
+    width : 50px;
+    height : 25px;
+    text-align : center;
+    background-color : #7CCD7C;
+    font-weight : lighter;
+    font-size : 20px;
+    border-radius : 3px;
+    transition : all .5s;
+}
+
+#insertBtn:hover{
+    width : 52px;
+    height : 26px;
+    font-size: 25px;
+    transition : all .5s;
+}
+
+.check-box{
+    width: 80px;
+    position: relative;
+    font-size : 14px;
+}
+
+.check-box label {
+    cursor: pointer;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    background: #eee;
+    border:1px solid #ddd;
+}
+
+.check-box label:after {
+    opacity: 0.2;
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 4px;
+    background: transparent;
+    top: 5px;
+    left: 5px;
+    border: 2px solid #333;
+    border-top: none;
+    border-right: none;
+
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.check-box label:hover::after {
+    opacity: 0.5;
+}
+
+/**
+ * Create the checkbox state for the tick
+ */
+.check-box input[type=checkbox]:checked + label:after {
+    opacity: 1;
+}
+
+#add-btn{
+    background-color : #7CCD7C;
+    width : 40px;
+    height: 24px;
+    border-radius : 2px;
+    position: relative;
+    transition : background-color .5s;
+}
+
+#add-btn:hover{
+    background-color : #8CDD8C;
+    transition : background-color .5s;
+}
+
+#add-btn:active{
+    background-color : #6CBD6C;
+    transition : background-color .5s;
+}
+
+#add-btn #horizontal{
+    border-top : 2px solid #666;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 11px;
+    width : 18px;
+    height : 3px;
+}
+
+
+
+#add-btn #vertical{
+    position: absolute;
+    border-left : 2px solid  #666;
+    margin-top: 2px;
+    margin-left: 19px;
+    height : 18px;
+    width : 3px;
+}

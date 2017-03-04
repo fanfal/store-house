@@ -20,9 +20,32 @@ $(document).ready(function () {
         var index = Number($(this).attr("value"));
         if (curIndex != index){
                 curIndex = index;
-                $("#dynamic-frame").attr("src", "./subframes/" + pages[index - 1]) 
+                $("#dynamic-frame").attr("src", "./subframes/" + pages[index - 1]);
+                $("usage").attr("title", "1");      //表明正在查看
             }
     });
     
     $("#nav-create-li").click();
 });
+
+function switchToProjactItemPage (name) {
+    $("#proj-name").attr("title", name);
+    //切换页面
+    $("#dynamic-frame").attr("src", "./subframes/projectitemstatus.html");
+}
+
+function getProjectInfoName(){
+    return $("#proj-name").attr("title");
+}
+
+function setUsage(usage){
+    $("#usage").attr("title", usage);
+}
+
+function getUsage(){
+    $("#usage").attr("title");
+}
+
+function gotoProjectCards() {
+    $("#nav-check-li").click();
+}
