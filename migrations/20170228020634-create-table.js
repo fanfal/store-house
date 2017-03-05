@@ -15,32 +15,33 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-    db.runSql("CREATE TABLE project (" +
+   return db.runSql("CREATE TABLE project (" +
         "id INT NOT NULL AUTO_INCREMENT, " +
         "project_name VARCHAR(30) NOT NULL, " +
+        "operation_status INT DEFAULT 0, " +
         "created_at DATETIME , " +
         "updated_at DATETIME , " +
         "PRIMARY KEY (id), " +
         "UNIQUE (project_name)" +
-        ");").then(result => db.createTable('project_info', {
-        id: {type: 'int', primaryKey: true, autoIncrement: true},
-        project_name: 'string',
-        building: 'string',
-        unit: 'int',
-        floor: 'int',
-        number: 'int',
-        position: 'string',
-        type: 'string',
-        width: 'float',
-        height: 'float',
-        is_stored: 'boolean',
-        product_id: 'string',
-        create_at: 'datetime',
-        updated_at: 'datetime'
-    })
+        ");").then(result => db.runSql("CREATE TABLE project_info (" +
+        "id INT NOT NULL AUTO_INCREMENT, " +
+        "project_name VARCHAR(30), " +
+        "building VARCHAR(255), " +
+        "unit INT, " +
+        "floor INT, " +
+        "number INT," +
+        "position INT, " +
+        "type VARCHAR(255), " +
+        "width FLOAT, " +
+        "height FLOAT, " +
+        "is_stored BOOLEAN, " +
+        "product_id VARCHAR(255), " +
+        "created_at DATETIME, " +
+        "updated_at DATETIME, " +
+        "PRIMARY KEY (id), " +
+        "UNIQUE (product_id)" +
+        ");")
     );
-
-
 };
 
 exports.down = function (db) {
