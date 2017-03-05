@@ -8,7 +8,7 @@ router.post('/project', function (req, res, next) {
 });
 
 router.post('/projectInfo', function (req, res, next) {
-    dbOperation.insertProjectInfo(req.body.project_info, res);
+     dbOperation.insertProjectInfo(req.body, res);
 });
 
 module.exports = router;

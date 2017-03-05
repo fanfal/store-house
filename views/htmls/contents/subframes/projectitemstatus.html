@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet", href="/stylesheets/projectinformationdetails.css">
+    <link rel="stylesheet", href="/stylesheets/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="/GridManager/css/GridManager.css">
     <script type="text/javascript", src="/javascripts/jquery.js"></script>
+    <script type="text/javascript", src="/javascripts/jquery-ui.js"></script>
     <script type="text/javascript", src = "/javascripts/projectinformationdetails.js"></script>
     <script type="text/javascript", src = "/GridManager/js/GridManager.js"></script>
 </head>
@@ -54,6 +56,58 @@
             <br>
             <br>
             <table grid-manager="data-grid"></table>
+            <div id = "functionalBtnsContainer" stye="width : 100%;">
+                <input class = "md-trigger"
+                       data-modal = "modal-insert-popup-page" type = "button", id = "insertBtn" value = "添加" onclick="onInsertBtnClicked()">
+            </div>
+        </div>
+        <div id = "modal-dialog">
+            <div id = "pop-up-dialog-modal" style="display:none">
+                <div id = "modal-dialog-content">
+                    <div id = "modal-dialog-title">
+                        <h3> 创建一条工程信息 </h3>
+                        <h4> 请填写所有必要的属性</h4>
+                    </div>
+                    <div id = "modal-dialog-edits">
+                        <table>
+                            <tr>
+                                <td><p class = "label">栋:</td>
+                                <td> <input class = "line-edit long-text" type = "text" id = "building"> </td>
+                                <td><p class = "label">单元:</td>
+                                <td> <input class = "line-edit short-text" type = "text" id = "unit"> </td>
+                                <td><p class = "label">楼:</td>
+                                <td> <input class = "line-edit short-text" type = "text" id = "floor"> </td>
+                            </tr>
+                            <tr>
+                                <td><p class = "label">号:</td>
+                                <td> <input class = "line-edit short-text" type = "text" id = "number"> </td>
+                                <td><p class = "label">洞:</td>
+                                <td> <input class = "line-edit short-text" type = "text" id = "position"> </td>
+                                <td><p class = "label">类型:</td>
+                                <td> <input class = "line-edit long-text" type = "text" id = "type"> </td>
+                            </tr>
+                            <tr>
+                                <td><p class = "label">宽度:</td>
+                                <td> <input class = "line-edit long-text" type = "text" id = "width"> </td>
+                                <td><p class = "label">高度:</td>
+                                <td> <input class = "line-edit long-text" type = "text" id = "height"> </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id = "modal-dialog-btns">
+                        <table>
+                            <tr>
+                                <td><input type= "button", id = "submit", value="确认" class = "functionbtn" onclick="onSubmit()"></td>
+                                <td><input type= "button", id = "cancel", value="取消" class = "functionbtn" onclick="onCancel()"></td>
+                                <td valign="center"><p id = "hint"><p></td>
+                            </tr>
+                            <tr>
+                                <br>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
