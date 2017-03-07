@@ -39,14 +39,18 @@ router.get('/projects', function (req, res, next) {
 //前端页面分页渲染机制，必须支持该post方法
 router.post('/projectInfo', function(req, res, next) {
     try {
-        console.log(JSON.stringify(req.body))
-        dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
-                                    req.body.cPage,
-                                    req.body.cSize
-                                    , function (data) {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({'data' : data, 'totals' : data.length}));
-        })
+        if(!req.body == {}){
+               dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
+                                           req.body.cPage,
+                                           req.body.cSize
+                                           , function (data) {
+                   res.setHeader('Content-Type', 'application/json');
+                   res.send(JSON.stringify({'data' : data, 'totals' : data.length}));
+        })}
+        else {
+             res.setHeader('Content-Type', 'application/json');
+              res.send(JSON.stringify({'data' : {}, 'totals' : 0}));
+        }
     } catch (err) {
         //TODO send error back
     }
