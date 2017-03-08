@@ -13,10 +13,10 @@ $(document).ready(function () {
         tabLine = $(".tabLine"),
         dynamicIFrame = $("#dynamic_iframe");
     
-    var pageArray = new Array("homepage.html",
-                              "projectmanagement.html",
-                              "homepage.html",
-                              "outgoing.html",
+    var pageArray = new Array("homePage.html",
+                              "projectManagement.html",
+                              "homePage.html",
+                              "outGoing.html",
                               "statistics.html");
 
     tabItems.click(function () {

@@ -82,7 +82,35 @@ p{
 #building-info #text-edit{
     width:60px;
 }
- 
+
+#hint{
+    filter:alpha(opacity=99);
+    -moz-opacity:0.99;
+    -khtml-opacity: 0.99;
+    opacity: 0.99;
+    font-size : 14px;
+}
+
+.suchint-show {
+    color : #43CD80;
+    transition: all 1s
+}
+
+.suchint-hide {
+    color : #ffffff;
+    transition: all .5s
+}
+
+.errhint-show {
+    color : #CD0000;
+    transition: all .5s
+}
+
+.errhint-hide {
+    color : #ffffff;
+    transition: all .5s
+}
+
 
 table{
     margin: 0px;

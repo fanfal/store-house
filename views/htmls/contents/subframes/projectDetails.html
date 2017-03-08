@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet", href="/stylesheets/projectDetails.css">
+    <link rel="stylesheet", href="/stylesheets/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="/GridManager/css/GridManager.css">
+    <script type="text/javascript", src="/javascripts/jquery.js"></script>
+    <script type="text/javascript", src = "/javascripts/projectDetails.js"></script>
+    <script type="text/javascript", src = "/GridManager/js/GridManager.js"></script>
+</head>
+<body>
+    <div id = "Container" style = "display : none">
+        <div id = "projectSelector">    <!--项目选择-->
+            <table>
+                <tr>
+                    <td>
+                        <select id = "projectTypeSelect" disable = "true"> <!--项目类型-->
+                            <option value = "selOperationg">正在操作</option>
+                            <option value = "selOperatable">可以操作</option>
+                            <option value = "selExhausted">完成出库</option>
+                            <option value = "selAll">全部</option>>
+                        </select>
+                    </td>
+                    <td>
+                        <select id = "projectListSelect"></select> <!--项目列表-->
+                    </td>
+                </tr>
+                <tr>
+                    <!--项目详细信息-->
+                    <div id = "projectInfoTable">
+                        <div id = "tableHead"></div>
+                        <table grid-manager="data-grid"></table>
+                        <div id = "functionalBtnsContainer" stye="width : 100%;">
+                            <input type = "button", id = "insertBtn" value = "添加" onclick="onInsertBtnClicked()">
+                        </div>
+                    </div>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

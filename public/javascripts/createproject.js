@@ -34,8 +34,27 @@ function onClick(){
        data : {"project_name": $("#project-name").val()},
        dataType : 'json',
        success : function (data) {
-            alert("创建成功");
+            $("#hint").html("创建成功.");
+            $("#hint").attr("class", "suchint-show");
             $("#project-name").val("");
+            var interval = setInterval(function () {
+                $("#hint").attr("class", "suchint-hide");
+                clearTimeout(interval);
+            }, 3000);
+
+       },
+       error : function (data){
+            var errMsg = JSON.stringify(data.responseJSON.message);
+            if (errMsg == '"project name has exist."'){
+                $("#hint").attr("class", "errhint-show");
+                $("#hint").html("已有同名工程存在.");
+            }
+            var interval = setInterval(function () {
+                   $("#hint").attr("class", "errhint-hide");
+                   clearTimeout(interval);
+                   }, 3000);
+            $("#project-name").val("");
+
        }
     })
 }
