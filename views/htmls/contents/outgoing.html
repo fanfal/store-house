@@ -12,11 +12,13 @@
                 <strong style="color: red">注意!&nbsp;&nbsp;</strong><span id="alert_text"></span>
             </div>
         </div>
+        </br>
         <div>
             <label>请选择项目</label>
             <select id="select_project"class="input-sm" style="width:100px;"  ng-model="select_name" ng-options="x for x in names"/>
-            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text"/>
+            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 1px; margin-left: 250px"/>
         </div>
+        </br>
         <div style="overflow: auto; max-height:500px;">
             <table class="table table-striped table-responsive table-hover table-bordered" ng-init="items = []"
                    ng-model="items">
@@ -53,7 +55,7 @@
         </div>
     </div>
 
-    <div style="text-align:center;">
+    <div style="text-align:center">
         <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始扫码</button>
         <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止扫码</button>
         <button id="print_list" type="button" class="btn btn-success btn-lg">打印表单</button>
