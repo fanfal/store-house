@@ -3,6 +3,15 @@
 <head>
 </head>
 <body>
-    <p>outgoing</p>
+    <div ng-app="myApp" ng-controller="myCtrl">
+
+        <select ng-init="selectedName = names[0]" ng-model="selectedName" ng-options="x for x in names">
+        </select>
+
+    </div>
+    <script type="text/javascript", src="/angular/angular.min.js"></script>
+    <script type="text/javascript", src="/javascripts/jquery.js"></script>
+    <script type="text/javascript", src="/javascripts/outgoing.js"></script>
+
 </body>
 </html>

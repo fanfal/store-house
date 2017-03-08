@@ -61,6 +61,14 @@ exports.getProjects = function (callback) {
     });
 }
 
+exports.getProjectsName = function (callback) {
+    projectModel.findAll({attributes: ['project_name'], order: 'created_at DESC'}).then(function (data) {
+        callback(data);
+    }).catch(function (error) {
+        console.log('Error occured get projects: ', error);
+    });
+}
+
 exports.getProjectsWithStatus = function (operationStatus, callback) {
     projectModel.findAll({where: {operation_status: operationStatus}, order: 'created_at DESC'}).then(function (data) {
         callback(data);
