@@ -25,6 +25,7 @@
                 <thead>
                 <tr >
                     <th id="product_id" class="text-center">物品码&nbsp;</th>
+                    <th id="project_name" class="text-center">项目名&nbsp;</th>
                     <th id="building" class="text-center">栋&nbsp;</th>
                     <th id="unit" class="text-center">单元&nbsp;</th>
                     <th id="floor" class="text-center">楼&nbsp;</th>
@@ -40,6 +41,7 @@
                 <tbody>
                 <tr ng-repeat="item in items">
                     <td class="text-center">{{item.product_id}}</td>
+                    <td class="text-center">{{item.project_name}}</td>
                     <td class="text-center">{{item.building}}</td>
                     <td class="text-center">{{item.unit}}</td>
                     <td class="text-center">{{item.floor}}</td>

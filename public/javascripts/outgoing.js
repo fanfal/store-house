@@ -1,7 +1,7 @@
 var app = angular.module('myApp', []);
 var projectInfo = [];
-const PROJECT_EMPTY_ALERT_MESSAGE = "项目不能为空!";
-const PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE = "产品不在所选项目中,或者已经出库!";
+const PROJECT_EMPTY_ALERT_MESSAGE = "您好,请选择出库项目!";
+const PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE = "你所扫描的产品不在所选项目中, 或者已经出库!";
 
 
 function showProjectEmptyAlert() {
