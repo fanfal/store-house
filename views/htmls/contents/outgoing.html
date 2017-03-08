@@ -15,7 +15,7 @@
         <div>
             <label>请选择项目</label>
             <select id="select_project"class="input-sm" style="width:100px;"  ng-model="select_name" ng-options="x for x in names"/>
-            <input id="scan_input" onblur="this.focus()" autofocus ng-keypress="ScanKeyDown($event)" ng-model="scan_text"/>
+            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text"/>
         </div>
         <div style="overflow: auto; max-height:500px;">
             <table class="table table-striped table-responsive table-hover table-bordered" ng-init="items = []"
@@ -51,6 +51,12 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div style="align-items: center">
+        <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始扫码</button>
+        <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止扫码</button>
+        <button id="print_list" type="button" class="btn btn-success btn-lg">打印表单</button>
     </div>
     <script type="text/javascript" , src="/angular/angular.min.js"></script>
     <script type="text/javascript" , src="/javascripts/jquery.js"></script>

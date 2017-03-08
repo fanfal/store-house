@@ -26,6 +26,22 @@ $("#close").click(function () {
     $("#alert").hide();
 })
 
+$("#btn_start_scan").click(function () {
+    $(this).addClass("disabled");
+    $("#btn_stop_scan").removeClass("disabled");
+    $("#scan_input").focus();
+    $("#scan_input").blur(function () {
+        $(this).focus();
+    });
+
+});
+
+$("#btn_stop_scan").click(function () {
+    $(this).addClass("disabled");
+    $("#btn_start_scan").removeClass("disabled");
+    $("#scan_input").unbind("blur");
+    $("#scan_input").blur();
+})
 
 app.controller('myCtrl', function ($scope, $http) {
 
@@ -49,6 +65,7 @@ app.controller('myCtrl', function ($scope, $http) {
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
         if (e.key == "Enter") {
+            $scope.scan_text = "";
             if (projectName == "") {
                 showProjectEmptyAlert();
                 return;
