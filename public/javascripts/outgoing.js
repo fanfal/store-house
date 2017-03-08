@@ -65,29 +65,32 @@ app.controller('myCtrl', function ($scope, $http) {
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
         if (e.key == "Enter") {
-            $scope.scan_text = "";
             if (projectName == "") {
                 showProjectEmptyAlert();
+                $scope.scan_text = "";
                 return;
             } else {
                 hideAlert()
             }
-
             var projectId = $scope.scan_text;
             $http.get("http://localhost:8080/outGoing?name=" + projectName + "&productId=" + projectId)
-                .then(successCallback, errorCallback);
-
-            function successCallback(response) {
-                var data = response.data.project_info_list;
-                if (data.length == 0) {
-                    showProductNotExistOrOutOfStoreAlert();
-                } else {
-                    projectInfo = data.concat(projectInfo);
-                    $scope.items = projectInfo;
-                }
-
-            }
+                .then(scanSuccessCallback, scanErrorCallBack);
         }
+    }
+
+    function scanSuccessCallback(response) {
+        var data = response.data.project_info_list;
+        if (data.length == 0) {
+            showProductNotExistOrOutOfStoreAlert();
+        } else {
+            projectInfo = data.concat(projectInfo);
+            $scope.items = projectInfo;
+        }
+        $scope.scan_text = "";
+    }
+
+    function scanErrorCallBack(error){
+
     }
 
 });
