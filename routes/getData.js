@@ -3,41 +3,21 @@ var router = express.Router();
 var dbOperation = require("../public/dom/dbOperation.js")
 
 router.get('/project', function (req, res, next) {
-    try {
-        dbOperation.getProject(req.query.name, function (data) {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(data));
-        });
-    } catch (err) {
-        //TODO send error back
-    }
+    dbOperation.getProject(req.query.name, res);
 })
 
 
 router.get('/projects', function (req, res, next) {
-    try {
         if (req.query.status == null) {
-            dbOperation.getProjects(function (data) {
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify({project_list: data}));
-            });
+            dbOperation.getProjects(res);
         } else {
-            dbOperation.getProjectsWithStatus(req.query.status, function (data) {
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify({project_list: data}));
-            });
+            dbOperation.getProjectsWithStatus(req.query.status, res);
         }
-
-
-    } catch (err) {
-        //TODO send error back
-    }
-
 })
 
 
 //前端页面分页渲染机制，必须支持该post方法
-router.post('/projectInfo', function(req, res, next) {
+router.post('/projectInfo', function (req, res, next) {
     try {
         if (!req.body == {}) {
             dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
@@ -58,37 +38,16 @@ router.post('/projectInfo', function(req, res, next) {
 })
 
 router.get('/projectsName', function (req, res, next) {
-    try {
-        dbOperation.getProjectsName(function (data) {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({project_list: data}));
-        });
-    } catch (err) {
-        //TODO send error back
-    }
+        dbOperation.getProjectsName(res);
 })
 
 
 router.get('/projectInfo', function (req, res, next) {
-    try {
-        dbOperation.getProjectInfoByName(req.query.name, function (data) {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({'project_info_list' : data, 'totals' : data.length}));
-        })
-    } catch (err) {
-        //TODO send error back
-    }
+        dbOperation.getProjectInfoByName(req.query.name, res);
 })
 
 router.get('/projectsInfo', function (req, res, next) {
-    try {
-        dbOperation.getProjectsInfo(function (data) {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({project_info_list: data}));
-        })
-    } catch (err) {
-        //TODO send error back
-    }
+        dbOperation.getProjectsInfo(res);
 })
 
 module.exports = router;
