@@ -1,29 +1,29 @@
-var app = angular.module('myApp', []);
-var projectInfo = [];
 const PROJECT_EMPTY_ALERT_MESSAGE = "您好,请选择出库项目!";
 const PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE = "你所扫描的产品不在所选项目中, 或者已经出库!";
+const ALERT_TIME = 2000;
 
+var app = angular.module('myApp', []);
+var projectInfo = [];
 
 function showProjectEmptyAlert() {
     $("#alert_text").text(PROJECT_EMPTY_ALERT_MESSAGE);
     $("#alert").show();
+    hideAlert()
+
 }
 function showProductNotExistOrOutOfStoreAlert() {
     $("#alert_text").text(PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE);
     $("#alert").show();
+    hideAlert()
 }
 
-function showProductOutOfStoreAlert() {
-    $("#alert_text").text(PROJECT_IS_ALREADY_OUT_GOING);
-    $("#alert").show();
-}
 
 function hideAlert() {
-    $("#alert").hide();
+    $("#alert").fadeOut(ALERT_TIME);
 }
 
 $("#close").click(function () {
-    $("#alert").hide();
+    $("#alert").fadeOut();
 })
 
 $("#btn_start_scan").click(function () {
@@ -69,8 +69,6 @@ app.controller('myCtrl', function ($scope, $http) {
                 showProjectEmptyAlert();
                 $scope.scan_text = "";
                 return;
-            } else {
-                hideAlert()
             }
             var projectId = $scope.scan_text;
             $http.get("http://localhost:8080/outGoing?name=" + projectName + "&productId=" + projectId)
@@ -89,7 +87,7 @@ app.controller('myCtrl', function ($scope, $http) {
         $scope.scan_text = "";
     }
 
-    function scanErrorCallBack(error){
+    function scanErrorCallBack(error) {
 
     }
 
