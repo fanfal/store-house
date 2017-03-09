@@ -1,9 +1,32 @@
 /*global $ */
+var alertToolTip = $("#topAlert");
+
+function showToolTip(msg, bSuc){
+    alertToolTip.css("display","block");
+    if(bSuc){
+        alertToolTip.addClass("alert-success");
+    }
+    else{
+        alertToolTip.addClass("alert-danger");
+    }
+    alertToolTip.addClass("alert-show");
+    alertToolTip.html(msg);
+    var timer = setInterval(function () {
+        clearInterval(timer);
+        alertToolTip.removeClass("alert-show");
+        alertToolTip.removeClass("alert-success");
+        alertToolTip.removeClass("alert-danger");
+        alertToolTip.addClass("alert-show");
+        alertToolTip.css("display","none");
+      }, 3000);
+}
+
+
 function validity(){
    var projectNameEdit = $("#project-name");
    if(projectNameEdit.val() == '')
    {
-        alert("项目名称不能为空");
+        showToolTip("工程名称不能为空", false);
         return false;
    }
    return true;
@@ -27,34 +50,20 @@ $.fn.serializeObject = function() {
 
 
 function onClick(){
-    validity();
+    if(!validity()) return;
     $.ajax({
        type : "POST",
        url : "http://localhost:8080/insertData/project",
        data : {"project_name": $("#project-name").val()},
        dataType : 'json',
        success : function (data) {
-            $("#hint").html("创建成功.");
-            $("#hint").attr("class", "suchint-show");
-            $("#project-name").val("");
-            var interval = setInterval(function () {
-                $("#hint").attr("class", "suchint-hide");
-                clearTimeout(interval);
-            }, 3000);
-
+            showToolTip("创建成功", true);
        },
        error : function (data){
             var errMsg = JSON.stringify(data.responseJSON.message);
             if (errMsg == '"project name has exist."'){
-                $("#hint").attr("class", "errhint-show");
-                $("#hint").html("已有同名工程存在.");
+               showToolTip("已有同名工程存在");
             }
-            var interval = setInterval(function () {
-                   $("#hint").attr("class", "errhint-hide");
-                   clearTimeout(interval);
-                   }, 3000);
-            $("#project-name").val("");
-
        }
     })
 }

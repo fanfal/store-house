@@ -33,8 +33,6 @@ function projectDetailsModal () {
         this.selectors.projectListSelect.empty();
         for(item in projNamePickList) {
             var option = "<option value = '" + projNamePickList[item] + "' >" + projNamePickList[item]  + "</option>";
-            alert(option);
-            alert(this.selectors.projectListSelect.id)
             this.selectors.projectListSelect.append(option);
         }
     }
@@ -207,6 +205,7 @@ function projectDetailsModal () {
 
 
 $(document).ready(function () {
+    $("select").select2({dropdownCssClass:'select-inverse-dropdown'});
     parent.setUsage(1);
     var projDetailsModal = new projectDetailsModal();
     //初始化模型

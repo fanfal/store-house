@@ -1,25 +1,19 @@
-*{ margin: 0; padding: 0}
 
 html {
-    background: #e6e9e9;
     -webkit-font-smoothing: antialiased;
-    height: 600px;
 }
 
 body {
-    text-align: center;
     background: #fff;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.06);
     color: #545454;
     font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
     font-size: 16px;
-    line-height: 1.5;
     margin: 0 auto;
-    padding: 5% 5% 10%;
-    height: 100%;
-    width: 1000px
+    height: 1000px;
+    width: 100%;
+    text-align: center;
 }
- 
 .tabclickable{ 
     list-style: none;
     background: #f3f3f3;
@@ -30,27 +24,24 @@ body {
     line-height: 40px; 
     width: 20%; 
     float: left;                 
-    text-align: center}
+    text-align: center
+}
 
 .tabclickable li.active{
     color: #099; 
     transition: 0.1s; 
     font-weight: bold}
-
 .tabline{
     height: 2px;
     overflow: hidden; 
     border-bottom:2px solid #099; 
     background: #f3f3f3;
-    width: 20%}
-
-
-
+    width: 20%
+ }
 .dynamicframes{
     width: 100%;
-    height: 80%
+    height: 100%
 }
-
 #dynamic_iframe{
     overflow: none;
     height: 100%;

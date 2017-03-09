@@ -8,6 +8,7 @@
   "dependencies": {
     "ajax": "0.0.4",
     "body-parser": "~1.16.0",
+    "bootflat": "^2.0.4",
     "bootstrap": "^3.3.7",
     "cookie-parser": "~1.4.3",
     "date-utils": "^1.2.21",
@@ -15,6 +16,7 @@
     "db-migrate-mysql": "^1.1.10",
     "debug": "~2.6.0",
     "express": "~4.14.1",
+    "flat-ui": "^2.1.1",
     "jade": "~1.11.0",
     "jquery": "^3.1.1",
     "morgan": "~1.7.0",

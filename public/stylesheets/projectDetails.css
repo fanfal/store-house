@@ -1,5 +1,5 @@
-*{font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  padding: 0px;
+.myselect{
+    background-color:#48C9B0;
+    color:#ffffff;
+    border:1px solid #eeeeee;
 }
-

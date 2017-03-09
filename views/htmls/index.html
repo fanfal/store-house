@@ -6,25 +6,39 @@
     <link rel="stylesheet", href="/stylesheets/index.css">
     <script type="text/javascript", src="/javascripts/jquery.js"></script>
     <script type="text/javascript", src="/javascripts/indexTab.js"></script>
+    <link rel="stylesheet", href="/stylesheets/flat-ui.min.css">
+    <link rel="stylesheet", href="/bootstrap/dist/css/bootstrap.min.css">
+    <script type="text/javascript", src="/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript", src="/javascripts/flat-ui.min.js"></script>
 </head>
 <body>
- <div class = "Tab", id = "tab_div">
- <!--首页Tab页签-->
-     <ul class="tabclickable">
-        <li class = "tabItem", id = "first">首页</li>
-        <li class = "tabItem">项目管理</li>
-        <li class = "tabItem">窗型库</li>
-        <li class = "tabItem">出库</li>
-        <li class = "tabItem">统计查询</li>
-     </ul>
-      <div class="tabline">
-        <!--移动的线条-->
+<div class = "container" style="background: #e6e9e9;width:100%;height:100%">
+    <div class = "row" style="height:50px"></div>
+    <div class = "row" style="height:100%">
+        <div class = "container" style="height:100%">
+            <div class = "row" style="line-height: 1.5;height:100%">
+                <div class = "Tab", id = "tab_div">
+                    <!--首页Tab页签-->
+                    <ul class="tabclickable" style="padding-left:0px;margin:0">
+                        <li class = "tabItem", id = "first">首页</li>
+                        <li class = "tabItem">项目管理</li>
+                        <li class = "tabItem">窗型库</li>
+                        <li class = "tabItem">出库</li>
+                        <li class = "tabItem">统计查询</li>
+                    </ul>
+                    <div class="tabline">
+                        <!--移动的线条-->
+                    </div>
+                </div>
+                <div class = "dynamicframes", id = "frams">
+                    <!--Tab页下的可局部刷新区域-->
+                    <iframe id = "dynamic_iframe" src="/htmls/contents/homepage.html"  frameborder = 0
+                            scrolling = no></iframe>
+                </div>
+            </div>
+        </div>
     </div>
- </div>
- <div class = "dynamicframes", id = "frams">
- <!--Tab页下的可局部刷新区域-->
- <iframe id = "dynamic_iframe" src="/htmls/contents/homepage.html"  frameborder = 0
-         scrolling = no></iframe>
- </div>
+</div>
+
 </body>
 </html>

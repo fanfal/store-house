@@ -7,7 +7,7 @@ function lineAnimation(distance) {
 }
 $(document).ready(function () {
     "use strict";
-    var windowWidth = $("body").width(),
+    var windowWidth = $(".Tab").width(),
         clickable = $("#tabclickable"),
         tabItems = $(".tabItem"),
         tabLine = $(".tabLine"),
@@ -20,6 +20,7 @@ $(document).ready(function () {
                               "statistics.html");
 
     tabItems.click(function () {
+        windowWidth = $(".Tab").width()
         $(this).attr("class", "active");
         //mark cur item as actived
         var selectedIndex = -1;
