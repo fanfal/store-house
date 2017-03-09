@@ -299,24 +299,42 @@ function onConfirm(){
             res.project_name = projDetailsModalInstance.operatingProject;
             res.is_stored = true;
             for(var i = 0 ; i < inputList.length; ++i){
-                alert(inputList[i].name)
                 res[inputList[i].name] = inputList[i].control.val();
             }
-            var array = new Array();
-            array.push(res);
-            return {project_info:res};
+            return res;
         }
 
+        function feedBack(bSuc, msg){
+               if(bSuc){
+                    $(".alert").addClass("alert-success");
+               }
+               else{
+                    $(".alert").addClass("alert-danger");
+               }
+               $(".alert").html(msg);
+               $(".alert").css("display", "block");
+               $(".alert").fadeIn();
+               var timer = setInterval(function () {
+                    $(".alert").removeClass("alert-success");
+                    $(".alert").removeClass("alert-danger");
+                    $(".alert").css("display", "none");
+                    clearInterval(timer);
+               }, 3000)
+
+        }
         $.ajax({
             url: "http://localhost:8080/insertData/projectInfo",
             type : "POST",
             data: getData(),
             dataType : 'json',
             success : function (data){
-                alert(123);
+              $(".projInfoInput").each(function(index){
+                          $(this).val("");
+                     })
+              feedBack(true, "添加成功");
             },
             error : function (data){
-                alert(456);
+               feedBack(false, "添加失败");
             }
         })
    }
