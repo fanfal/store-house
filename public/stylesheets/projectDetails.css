@@ -3,3 +3,9 @@
     color:#ffffff;
     border:1px solid #eeeeee;
 }
+
+th{
+    font-weight: lighter;
+    text-align: center;
+    font-size : 15px;
+}
