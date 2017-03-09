@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <link rel="stylesheet" , href="/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" , href="/stylesheets/outgoing.css">
+    <link rel="stylesheet" , href="/stylesheets/outgoing.css" media="print">
 </head>
 <body>
     <div ng-app="myApp" ng-controller="myCtrl">
@@ -77,8 +77,10 @@
                     </div>
 
                     <div class="modal-body section-to-print" style="overflow: auto">
-                        <div style="align-items: center">
+                        <div>
                             <h4 class="modal-title" >出库清单</h4>
+                            </br>
+                            </br>
                         </div>
                         <table class="table table-striped table-hover" ng-model="items">
                             <tbody>

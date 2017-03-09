@@ -8,7 +8,9 @@
     }
     .section-to-print {
         position: absolute;
-        left: 0;
+        left: 10%;
         top: 0;
+        width: 60%;
+        text-align: center;
     }
 }
