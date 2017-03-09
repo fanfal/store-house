@@ -1,5 +1,6 @@
 const PROJECT_EMPTY_ALERT_MESSAGE = "您好,请选择出库项目!";
 const PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE = "你所扫描的产品不在所选项目中, 或者已经出库!";
+const NO_ITEMS_MESSAGE = "您还没有扫描数据";
 const ALERT_TIME = 2000;
 
 var app = angular.module('myApp', []);
@@ -8,15 +9,21 @@ var projectInfo = [];
 function showProjectEmptyAlert() {
     $("#alert_text").text(PROJECT_EMPTY_ALERT_MESSAGE);
     $("#alert").show();
-    hideAlert()
+    hideAlert();
 
 }
 function showProductNotExistOrOutOfStoreAlert() {
     $("#alert_text").text(PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE);
     $("#alert").show();
-    hideAlert()
+    hideAlert();
 }
 
+
+function showNoItemAlert() {
+    $("#model_alert_text").text(NO_ITEMS_MESSAGE);
+    $("#model_alert").show();
+    $("#model_alert").fadeOut(ALERT_TIME);
+}
 
 function hideAlert() {
     $("#alert").fadeOut(ALERT_TIME);
@@ -91,6 +98,14 @@ app.controller('myCtrl', function ($scope, $http) {
 
     }
 
+    $("#btn_print_list").click(function () {
+        if (projectInfo.length === 0) {
+            showNoItemAlert();
+        } else {
+            window.print();
+        }
+
+    });
 });
 
 
