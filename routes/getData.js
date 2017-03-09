@@ -37,10 +37,11 @@ router.get('/projects', function (req, res, next) {
 
 router.post('/projectInfo', function(req, res, next) {
     try {
+    console.log(JSON.stringify(req.body));
         if(!req.body == {}){
             dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
-                     req.body.cPage,
-                     req.body.cSize
+                     req.body.offset,
+                     req.body.limit
                      ,function (data) {
                    res.setHeader('Content-Type', 'application/json');
                    res.send(JSON.stringify({'data' : data, 'totals' : data.length}));

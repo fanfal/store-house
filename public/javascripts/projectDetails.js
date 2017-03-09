@@ -1,5 +1,31 @@
 /*global $*/
 
+
+var inputList = new Array;
+
+function initInputList(){
+   var id = {name:"product_id", control:$("#productID")};
+   var building = {name:"building", control: $("#building")};
+   var unit = {name:"unit", control:$("#unit")};
+   var floor = {name:"floor", control: $("#floor")};
+   var number = {name:"number", control:$("#number")};
+   var position = {name:"position", control: $("#position")};
+   var type = {name:"type", control:$("#type")};
+   var width = {name:"width", control: $("#width")};
+   var height = {name:"height", control: $("#height")};
+   inputList.push(id);
+   inputList.push(building);
+   inputList.push(unit);
+   inputList.push(floor);
+   inputList.push(number);
+   inputList.push(position);
+   inputList.push(type);
+   inputList.push(width);
+   inputList.push(height);
+   inputList.push(height);
+
+}
+
 var pageOperationType = {
     potcheckAndInsert : 1,  //查看和添加
     potOutGoing : 2,        //出库
@@ -157,19 +183,19 @@ function projectDetailsModal () {
                          title: '序号'
                      }, {
                          field: 'building',
-                         title: '栋号'
+                         title: '栋'
                      }, {
                          field: 'unit',
-                         title: '单元号'
+                         title: '单元'
                      }, {
                          field: 'floor',
-                         title: '楼号'
+                         title: '楼'
                      }, {
                          field: 'number',
                          title: '号'
                      }, {
                          field: 'position',
-                         title: '洞号'
+                         title: '洞'
                      },  {
                          field: 'type',
                          title: '类型'
@@ -230,11 +256,76 @@ function projectDetailsModal () {
     }
 }
 
-
+var projDetailsModalInstance = null;
 $(document).ready(function () {
     $("select").select2({dropdownCssClass:'select-inverse-dropdown'});
     parent.setUsage(1);
-    var projDetailsModal = new projectDetailsModal();   //数据模型
+    projDetailsModalInstance = new projectDetailsModal();   //数据模型
     //初始化模型
-    projDetailsModal.Init();
+    projDetailsModalInstance.Init();
+    initInputList();
+    $("[data-toggle='tooltip']").tooltip();
+    $("[data-toggle='tooltip']").trigger('manual');
 })
+
+
+function onInsert(){
+    $("#projInfoModalDialog").modal('show');
+}
+
+function onConfirm(){
+   function checkValidity(){
+        var errInputIndex = -1;
+        $(".projInfoInput").each(function(index){
+               if($(this).val() == ""){
+                    errInputIndex = index;
+                    return false;
+               }
+        })
+
+        if(errInputIndex != -1){
+            inputList[errInputIndex].control.attr("data-toggle","tooltip");
+            inputList[errInputIndex].control.tooltip('show');
+            return false;
+        }
+        else{
+            return true;
+        }
+   }
+
+   function postToServer(){
+        function getData(){
+            var res = {};
+            res.project_name = projDetailsModalInstance.operatingProject;
+            res.is_stored = true;
+            for(var i = 0 ; i < inputList.length; ++i){
+                alert(inputList[i].name)
+                res[inputList[i].name] = inputList[i].control.val();
+            }
+            var array = new Array();
+            array.push(res);
+            return {project_info:res};
+        }
+
+        $.ajax({
+            url: "http://localhost:8080/insertData/projectInfo",
+            type : "POST",
+            data: getData(),
+            dataType : 'json',
+            success : function (data){
+                alert(123);
+            },
+            error : function (data){
+                alert(456);
+            }
+        })
+   }
+   if(checkValidity()){
+        //插入
+        postToServer();
+   }
+}
+
+function onCancel(){
+    $("#projInfoModalDialog").modal('hide');
+}
