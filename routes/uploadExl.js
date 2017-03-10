@@ -3,6 +3,8 @@ var router = express.Router();
 var multer = require('multer');
 var xlstojson = require("xls-to-json-lc");
 var xlsxtojson = require("xlsx-to-json-lc");
+var dbOperation = require("../public/dom/dbOperation.js")
+
 
 var storage = multer.diskStorage({ //multers disk storage settings
     destination: function (req, file, cb) {
@@ -25,14 +27,15 @@ var upload = multer({ //multer settings
 
 router.post('/', function (req, res) {
     var exceltojson;
+    res.setHeader('Content-Type', 'application/json');
     upload(req, res, function (err) {
         if (err) {
-            res.json({error_code: 1, err_desc: err});
+            res.status(400).send({errorMessage: err});
             return;
         }
         /** Multer gives us file info in req.file object */
         if (!req.file) {
-            res.json({error_code: 1, err_desc: "No file passed"});
+            res.status(400).send({errorMessage: "No file passed"});
             return;
         }
         /** Check the extension of the incoming file and
@@ -50,12 +53,12 @@ router.post('/', function (req, res) {
                 lowerCaseHeaders: true
             }, function (err, result) {
                 if (err) {
-                    return res.json({error_code: 1, err_desc: err, data: null});
+                    res.status(400).send({errorMessage: "Data is null"});
                 }
-                res.json({error_code: 0, err_desc: null, data: result});
+                dbOperation.insertProjectInfoByExcel(result, res);
             });
         } catch (e) {
-            res.json({error_code: 1, err_desc: "Corupted excel file"});
+            res.status(400).send({errorMessage: "Corrupted excel file."});
         }
     })
 });
