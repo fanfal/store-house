@@ -33,7 +33,8 @@ var pageOperationType = {
 }
 
 //自己实现一个tableview
-function bootStrapTable (bootStrapTableElement) {
+function bootStrapTable (bootStrapTableElement, model) {
+    this.model = model;
     this.tableInstance = bootStrapTableElement;
     this.pullData = function(option){
         this.tableInstance.bootstrapTable('destroy');
@@ -45,7 +46,7 @@ function projectDetailsModal () {
     /////////////////////////////////////////成员变量/////////////////////////////////////////
     this.mainContainer = $("#Container");
     this.pageOperationType = parseInt(parent.getUsage());  //页功能类型
-    this.table = new bootStrapTable($("#bootstrapTable"));
+    this.table = new bootStrapTable($("#bootstrapTable"), this);
     this.insertBtn = $("#insertBtn");   //添加按钮
     this.operatingProject = "";        //现在正在操作的工程表
     this.projectNameCluster = {         //分类好的工程名称
@@ -107,7 +108,7 @@ function projectDetailsModal () {
              queryParams: model.getQueryParams,
              sidePagination: "server",
              pageNumber:1,
-             pageSize: 20,
+             pageSize: 10,
              pageList: [10, 20, 30],
              uniqueId: "id",
              cardView: false,
@@ -248,7 +249,6 @@ function projectDetailsModal () {
          //2. 绑定下拉列表变化事件
         this.selectors.projectTypeSelect.change(this.projectTypeSelectChanged);
         this.selectors.projectListSelect.change(this.projectListSelectChanged);
-
         //3. 初始化表格
         this.table.pullData(this.getOption(this));
          //4. 获取工程列表
@@ -285,6 +285,11 @@ function onConfirm(){
 
         if(errInputIndex != -1){
             inputList[errInputIndex].control.attr("data-toggle","tooltip");
+            var timer = setInterval(function () {
+                 inputList[errInputIndex].control.tooltip('hide');
+                 inputList[errInputIndex].control.attr("data-toggle","none");
+                 clearInterval(timer);
+            }, 3000);
             inputList[errInputIndex].control.tooltip('show');
             return false;
         }

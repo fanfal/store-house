@@ -37,18 +37,19 @@ router.get('/projects', function (req, res, next) {
 
 router.post('/projectInfo', function(req, res, next) {
     try {
-    console.log(JSON.stringify(req.body));
-        if(!req.body == {}){
-            dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
-                     req.body.offset,
-                     req.body.limit
-                     ,function (data) {
-                   res.setHeader('Content-Type', 'application/json');
-                   res.send(JSON.stringify({'data' : data, 'totals' : data.length}));
+        if(req.body.name != ""){
+             console.log(req.body.offset);
+             console.log(req.body.limit);
+             dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
+                   req.body.offset,
+                   req.body.limit
+                   ,function (data, total) {
+             res.setHeader('Content-Type', 'application/json');
+             res.send(JSON.stringify({'rows' : data, 'total' : total}));
         })}
         else {
              res.setHeader('Content-Type', 'application/json');
-             res.send(JSON.stringify({'data' : {}, 'totals' : 0}));
+             res.send(JSON.stringify({'rows' : [], 'total' : 0}));
         }
     } catch (err) {
         //TODO send error back

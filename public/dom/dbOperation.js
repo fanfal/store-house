@@ -86,12 +86,19 @@ exports.getProjectInfoByName = function (projectName, callback) {
 }
 
 exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback){
-    projectInfoModel.findAll({where: {project_name: projectName},
-                order: 'created_at DESC',
-                'limit' : sizePerPage,
-                'offset' : curPage * sizePerPage}).then(function (data) {
-            callback(data);
-        }).catch(function (error) {
-            console.log('Error occured get project info by name: ', error);
-        });
+    //get total
+    var queryCount = "select count(*) from project_info where project_name = " + projectName;
+    projectInfoModel.findAll({where : {project_name : projectName}}).then(function (data) {
+        var count = data.length;
+        projectInfoModel.findAll({where: {project_name: projectName},
+                    order: 'created_at DESC',
+                    'limit' : sizePerPage,
+                    'offset' : curPage}).then(function (data, total) {
+                callback(data, count);
+            }).catch(function (error) {
+                console.log('Error occured get project info by name: ', error);
+            });
+    }).catch(function (error) {
+                      console.log('Error occured get project info by name: ', error);
+    });
 }
