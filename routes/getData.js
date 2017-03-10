@@ -56,11 +56,23 @@ router.post('/projectInfo', function(req, res, next) {
     }
 })
 
+router.get('/projectsName', function (req, res, next) {
+    try {
+        dbOperation.getProjectsName(function (data) {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify({project_list: data}));
+        });
+    } catch (err) {
+        //TODO send error back
+    }
+})
+
+
 router.get('/projectInfo', function (req, res, next) {
     try {
         dbOperation.getProjectInfoByName(req.query.name, function (data) {
             res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({'data' : data, 'totals' : data.length}));
+            res.send(JSON.stringify({'project_info_list' : data, 'totals' : data.length}));
         })
     } catch (err) {
         //TODO send error back
@@ -69,7 +81,7 @@ router.get('/projectInfo', function (req, res, next) {
 
 router.get('/projectsInfo', function (req, res, next) {
     try {
-        dbOperation.getProjectsInfo(req.query.name, function (data) {
+        dbOperation.getProjectsInfo(function (data) {
             res.setHeader('Content-Type', 'application/json');
             res.send(JSON.stringify({project_info_list: data}));
         })

@@ -7,7 +7,11 @@
   },
   "dependencies": {
     "ajax": "0.0.4",
+<<<<<<< HEAD
     "angular": "^1.6.3",
+=======
+    "angular": "^1.6.2",
+>>>>>>> 0b6974c4e6990040cb6cc8e0cd54d62739f124f9
     "body-parser": "~1.16.0",
     "bootflat": "^2.0.4",
     "bootstrap": "^3.3.7",
