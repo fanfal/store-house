@@ -49,10 +49,6 @@ exports.insertProjectInfo = function (data, res) {
     }
 }
 
-<<<<<<< HEAD
-exports.getProject = function (projectName, res) {
-    res.setHeader('Content-Type', 'application/json');
-=======
 exports.insertProjectInfoByExcel = function (datas, res) {
     var errorData = [];
     datas.forEach(function (data) {
@@ -85,10 +81,8 @@ exports.insertProjectInfoByExcel = function (datas, res) {
     }
 
 }
-
-
-exports.getProject = function (projectName, callback) {
->>>>>>> Add store excel data to database opertiaon and make insert project info to check product id.
+exports.getProject = function (projectName, res) {
+    res.setHeader('Content-Type', 'application/json');
     projectModel.findOne({where: {project_name: projectName}})
         .then(function (data) {
             res.send(JSON.stringify(data));
