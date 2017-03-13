@@ -1,6 +1,6 @@
 const PROJECT_EMPTY_ALERT_MESSAGE = "您好,请选择出库项目!";
 const PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE = "你所扫描的产品不在所选项目中, 或者已经出库!";
-const NO_ITEMS_MESSAGE = "您还没有扫描数据";
+const NO_ITEMS_MESSAGE = "您还没有扫描数据!";
 const ALERT_TIME = 2000;
 
 var app = angular.module('myApp', []);
@@ -9,19 +9,25 @@ var projectInfo = [];
 function showProjectEmptyAlert() {
     $("#alert_text").text(PROJECT_EMPTY_ALERT_MESSAGE);
     $("#alert").show();
+    playBeepAudio()
     hideAlert();
 
 }
 function showProductNotExistOrOutOfStoreAlert() {
     $("#alert_text").text(PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE);
     $("#alert").show();
+    playBeepAudio()
     hideAlert();
 }
 
+function playBeepAudio() {
+    document.getElementById("beep").play();
+}
 
 function showNoItemAlert() {
     $("#model_alert_text").text(NO_ITEMS_MESSAGE);
     $("#model_alert").show();
+    playBeepAudio()
     $("#model_alert").fadeOut(ALERT_TIME);
 }
 
@@ -31,7 +37,7 @@ function hideAlert() {
 
 $("#close").click(function () {
     $("#alert").fadeOut();
-})
+});
 
 $("#btn_start_scan").click(function () {
     $(this).addClass("disabled");
@@ -43,14 +49,41 @@ $("#btn_start_scan").click(function () {
 
 });
 
+$("#btn_generate_list").click(function () {
+    if ($("#btn_start_scan").hasClass("disabled")) {
+        $("#btn_start_scan").removeClass("disabled");
+        $("#btn_stop_scan").addClass("disabled");
+    }
+    $("#scan_input").off("blur");
+    $("#scan_input").blur();
+    $('#myModal').modal('show');
+})
+
 $("#btn_stop_scan").click(function () {
-    $(this).addClass("disabled");
     $("#btn_start_scan").removeClass("disabled");
-    $("#scan_input").unbind("blur");
+    $(this).addClass("disabled");
+    $("#scan_input").off("blur");
     $("#scan_input").blur();
 })
 
+
+$("#btn_print_list").click(function () {
+    if (projectInfo.length === 0) {
+        showNoItemAlert();
+    } else {
+        window.print();
+    }
+
+});
+
 app.controller('myCtrl', function ($scope, $http) {
+    $scope.init = function () {
+        $scope.productCount = {};
+        $scope.productCount.frameNum = 0;
+        $scope.productCount.fanNum = 0;
+        $scope.productCount.glassNum = 0;
+        $scope.productCount.otherNum = 0;
+    }
 
     $scope.select_name = "";
     $http.get("http://localhost:8080/getData/projectsName")
@@ -88,6 +121,7 @@ app.controller('myCtrl', function ($scope, $http) {
         if (data.length == 0) {
             showProductNotExistOrOutOfStoreAlert();
         } else {
+            countProductType(data);
             projectInfo = data.concat(projectInfo);
             $scope.items = projectInfo;
         }
@@ -98,14 +132,22 @@ app.controller('myCtrl', function ($scope, $http) {
 
     }
 
-    $("#btn_print_list").click(function () {
-        if (projectInfo.length === 0) {
-            showNoItemAlert();
-        } else {
-            window.print();
+    function countProductType(data) {
+        switch (data[0].type) {
+            case type.FRAME:
+                $scope.productCount.frameNum++;
+                break;
+            case type.FAN:
+                $scope.productCount.fanNum++;
+                break;
+            case type.GLASS:
+                $scope.productCount.glassNum++;
+                break;
+            case type.OTHER:
+                $scope.productCount.otherNum++;
+                break;
         }
-
-    });
+    }
 });
 
 
