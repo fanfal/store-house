@@ -82,7 +82,7 @@
                             </br>
                             </br>
                         </div>
-                        <table class="table table-striped table-hover" ng-model="items">
+                        <table class="table table-striped table-hover" ng-init="items = []" ng-model="items">
                             <tbody>
                             <tr ng-repeat="item in items">
                                 <td class="text-center">{{item.building}}&nbsp;栋</td>
@@ -96,7 +96,13 @@
                             </tr>
                             </tbody>
                         </table>
-                        <strong>配件数量:&nbsp;{{items.length}}</strong>
+                        <div ng-init="init()" ng-model="productCount">
+                            <strong>配件数量:&nbsp;{{items.length}}</strong>
+                            <strong>框数量:&nbsp;{{productCount.frameNum}}</strong>
+                            <strong>扇数量:&nbsp;{{productCount.fanNum}}</strong>
+                            <strong>玻璃数量:&nbsp;{{productCount.glassNum}}</strong>
+                            <strong>其它配件数量:&nbsp;{{productCount.otherNum}}</strong>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -111,10 +117,11 @@
     <div style="text-align:center">
         <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始扫码</button>
         <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止扫码</button>
-        <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">打印表单</button>
+        <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" data-toggle="modal">打印表单</button>
     </div>
 
     <script type="text/javascript" , src="/angular/angular.min.js"></script>
+    <script type="text/javascript" , src="/model/productType.js"></script>
     <script type="text/javascript" , src="/javascripts/jquery.js"></script>
     <script type="text/javascript" , src="/javascripts/outgoing.js"></script>
     <script type="text/javascript" , src="/bootstrap/dist/js/bootstrap.min.js"></script>
