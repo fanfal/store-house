@@ -188,6 +188,22 @@ exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, s
         });
 }
 
+exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback){
+    //get total
+    projectInfoModel.findAll({where : {project_name : projectName}}).then(function (data) {
+        var count = data.length;
+        projectInfoModel.findAll({where: {project_name: projectName},
+                    order: 'created_at DESC',
+                    'limit' : sizePerPage,
+                    'offset' : curPage}).then(function (data, total) {
+                callback(data, count);
+            }).catch(function (error) {
+                console.log('Error occured get project info by name: ', error);
+            });
+    }).catch(function (error) {
+                      console.log('Error occured get project info by name: ', error);
+    });
+}
 
 exports.productOutGoing = function (projectName, productId, res) {
     res.setHeader('Content-Type', 'application/json');
@@ -221,3 +237,4 @@ function insertProject(projectName, res) {
             res.status(200).send({"success": true});
         })
 }
+

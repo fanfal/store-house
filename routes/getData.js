@@ -15,22 +15,20 @@ router.get('/projects', function (req, res, next) {
         }
 })
 
-
 //前端页面分页渲染机制，必须支持该post方法
 router.post('/project-info', function (req, res, next) {
     try {
-        if (!req.body == {}) {
-            dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
-                req.body.cPage,
-                req.body.cSize
-                , function (data) {
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send(JSON.stringify({'data': data, 'totals': data.length}));
-                })
-        }
+        if(req.body.name != ""){
+             dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
+                   req.body.offset,
+                   req.body.limit
+                   ,function (data, total) {
+             res.setHeader('Content-Type', 'application/json');
+             res.send(JSON.stringify({'rows' : data, 'total' : total}));
+        })}
         else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({'data': {}, 'totals': 0}));
+             res.setHeader('Content-Type', 'application/json');
+             res.send(JSON.stringify({'rows' : [], 'total' : 0}));
         }
     } catch (err) {
         //TODO send error back
