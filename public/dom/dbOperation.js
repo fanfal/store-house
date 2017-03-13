@@ -171,7 +171,6 @@ exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, s
 
 exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback){
     //get total
-    var queryCount = "select count(*) from project_info where project_name = " + projectName;
     projectInfoModel.findAll({where : {project_name : projectName}}).then(function (data) {
         var count = data.length;
         projectInfoModel.findAll({where: {project_name: projectName},
