@@ -1,16 +1,29 @@
 @media print {
+
     body * {
         visibility: hidden;
-        text-align:center;
     }
+
     .section-to-print, .section-to-print * {
         visibility: visible;
     }
+
     .section-to-print {
         position: absolute;
-        left: 10%;
         top: 0;
-        width: 60%;
+        width: 7.5in;
+    }
+
+    .print-body {
         text-align: center;
+
+    }
+
+    .print-title {
+        text-align: center;
+    }
+
+    .print-footer {
+        text-align: end;
     }
 }
