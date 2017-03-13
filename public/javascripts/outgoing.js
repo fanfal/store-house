@@ -78,7 +78,7 @@ app.controller('myCtrl', function ($scope, $http) {
                 return;
             }
             var projectId = $scope.scan_text;
-            $http.get("http://localhost:8080/outGoing?name=" + projectName + "&productId=" + projectId)
+            $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
                 .then(scanSuccessCallback, scanErrorCallBack);
         }
     }

@@ -129,7 +129,7 @@ function projectDetailsModal () {
             ,pageSize : 20              //每页多少条
             ,height : ['100px']
             ,width : ['100%']
-            ,ajax_url : "http://localhost:8080/getData/projectInfo"
+            ,ajax_url : "http://localhost:8080/get-data/project-info"
             ,ajax_type : 'POST'
             ,query : {}
             ,columnData : this.generateColumnData()
@@ -156,7 +156,7 @@ function projectDetailsModal () {
 
     //生成ajax请求的url
     this.generateAjaxUrl = function() {
-        var url = "http://localhost:8080/getData/projects" //这里需求有点不明确，暂定为所有的工程都可以拿来
+        var url = "http://localhost:8080/get-data/projects" //这里需求有点不明确，暂定为所有的工程都可以拿来
         return url;
     }
 
