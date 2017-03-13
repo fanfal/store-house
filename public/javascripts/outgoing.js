@@ -86,7 +86,7 @@ app.controller('myCtrl', function ($scope, $http) {
     }
 
     $scope.select_name = "";
-    $http.get("http://localhost:8080/getData/projectsName")
+    $http.get("http://localhost:8080/get-data/projects-name")
         .then(successCallback, errorCallback);
 
     function successCallback(response) {
@@ -111,7 +111,7 @@ app.controller('myCtrl', function ($scope, $http) {
                 return;
             }
             var projectId = $scope.scan_text;
-            $http.get("http://localhost:8080/outGoing?name=" + projectName + "&productId=" + projectId)
+            $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
                 .then(scanSuccessCallback, scanErrorCallBack);
         }
     }

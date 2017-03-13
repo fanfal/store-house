@@ -53,15 +53,15 @@ function onClick(){
     if(!validity()) return;
     $.ajax({
        type : "POST",
-       url : "http://localhost:8080/insertData/project",
+       url : "http://localhost:8080/insert-data/project",
        data : {"project_name": $("#project-name").val()},
        dataType : 'json',
        success : function (data) {
             showToolTip("创建成功", true);
        },
        error : function (data){
-            var errMsg = JSON.stringify(data.responseJSON.message);
-            if (errMsg == '"project name has exist."'){
+            var errMsg = JSON.stringify(data.responseJSON.errorMessage);
+            if (errMsg == '"Project name has exist."'){
                showToolTip("已有同名工程存在");
             }
        }

@@ -7,7 +7,7 @@ router.post('/project', function (req, res, next) {
     dbOperation.insertProject(req.body.project_name, res);
 });
 
-router.post('/projectInfo', function (req, res, next) {
+router.post('/project-info', function (req, res, next) {
      dbOperation.insertProjectInfo(req.body, res);
 });
 

@@ -9,8 +9,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var getData = require('./routes/getData')
 var insertData = require('./routes/insertData');
-var outGoing = require('./routes/outgoing.js')
-var uploadExl = require('./routes/uploadExl.js');
+var outGoing = require('./routes/outGoing.js')
+var uploadExcel = require('./routes/uploadExcel.js');
 var app = express();
 
 // view engine setup
@@ -29,10 +29,10 @@ app.use(express.static(path.join(__dirname, 'node_modules')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/getData', getData);
-app.use('/insertData', insertData);
-app.use('/outGoing',outGoing);
-app.use('/uploadExl', uploadExl);
+app.use('/get-data', getData);
+app.use('/insert-data', insertData);
+app.use('/out-going',outGoing);
+app.use('/upload-excel', uploadExcel);
 // catch 404 and forward to error handler
 
 app.use(function (req, res, next) {

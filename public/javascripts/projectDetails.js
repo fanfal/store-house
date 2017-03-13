@@ -74,6 +74,7 @@ function projectDetailsModal () {
             this.selectors.projectListSelect.append(option);
         }
     }
+    
     //根据类型分类工程
     this.doCluster = function(data) {
         var projectList = data.project_list;
@@ -92,7 +93,7 @@ function projectDetailsModal () {
     }
         //生成ajax请求的url
     this.generateAjaxUrl = function() {
-         return "http://localhost:8080/getData/projects";
+         return "http://localhost:8080/get-data/projects";
     }
 
     this.singleSelect = function (id,option) {
