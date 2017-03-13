@@ -5,22 +5,26 @@ var projectModel = project.projectModel;
 var projectInfoModel = projectInfo.projectInfoModel;
 
 exports.insertProject = function (projectName, res) {
-    projectModel.build({
-            project_name: projectName
-        })
-        .save()
-        .then(function () {
-            res.status(200).send({"success": true});
+    res.setHeader('Content-Type', 'application/json');
+    projectModel.findOne({where: {project_name: projectName}})
+        .then(function (data) {
+            if (data.length > 0) {
+                res.status(403).send({errorMessage: "project name has exist."});
+            } else {
+                insertProject(projectName, res);
+            }
         })
         .catch(function (error) {
-            console.log('Error occur insert project: ', error);
-            res.status(403).send({errorMessage: "project name has exist."});
+            console.log('Error occur get project: ', error);
+            res.status(400).send({errorMessage: "Query project has database error."});
         });
+
 }
 
 exports.insertProjectInfo = function (data, res) {
+    res.setHeader('Content-Type', 'application/json');
     var element = data;
-    if (element.project_name != null) {
+    if (element.project_name != null && data.product_id != null) {
         projectInfoModel.build({
                 project_name: element.project_name,
                 building: element.building,
@@ -45,6 +49,38 @@ exports.insertProjectInfo = function (data, res) {
     }
 }
 
+exports.insertProjectInfoByExcel = function (datas, res) {
+    var errorData = [];
+    datas.forEach(function (data) {
+        if (data.project_name != null && data.product_id != null) {
+            projectInfoModel.build({
+                    project_name: data.project_name,
+                    building: data.building,
+                    unit: data.unit,
+                    floor: data.floor,
+                    number: data.number,
+                    position: data.position,
+                    type: data.type,
+                    width: data.width,
+                    height: data.height,
+                    is_stored: data.is_stored,
+                    product_id: data.product_id
+                })
+                .save()
+                .catch(function(error){
+                    errorData.push(data);
+                })
+        } else {
+            errorData.push(data);
+        }
+    })
+    if (errorData.length > 0){
+        res.status(400).send({errorData: errorData});
+    } else {
+        res.status(200).send({"success": true});
+    }
+
+}
 exports.getProject = function (projectName, res) {
     res.setHeader('Content-Type', 'application/json');
     projectModel.findOne({where: {project_name: projectName}})
@@ -154,5 +190,19 @@ function updateProductStatus(projectName, productId, isStored) {
     projectInfoModel.update({is_stored: isStored}, {where: {project_name: projectName, product_id: productId}})
         .catch(function (error) {
             console.log('Update product store status error', error);
+        });
+}
+
+function insertProject(projectName, res) {
+    projectModel.build({
+            project_name: projectName
+        })
+        .save()
+        .then(function () {
+            res.status(200).send({"success": true});
+        })
+        .catch(function (error) {
+            console.log('Error occur insert project: ', error);
+            res.status(403).send({errorMessage: "project name has exist."});
         });
 }
