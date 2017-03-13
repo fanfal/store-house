@@ -9,19 +9,25 @@ var projectInfo = [];
 function showProjectEmptyAlert() {
     $("#alert_text").text(PROJECT_EMPTY_ALERT_MESSAGE);
     $("#alert").show();
+    playBeepAudio()
     hideAlert();
 
 }
 function showProductNotExistOrOutOfStoreAlert() {
     $("#alert_text").text(PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE);
     $("#alert").show();
+    playBeepAudio()
     hideAlert();
 }
 
+function playBeepAudio() {
+    document.getElementById("beep").play();
+}
 
 function showNoItemAlert() {
     $("#model_alert_text").text(NO_ITEMS_MESSAGE);
     $("#model_alert").show();
+    playBeepAudio()
     $("#model_alert").fadeOut(ALERT_TIME);
 }
 
