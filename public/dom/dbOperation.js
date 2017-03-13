@@ -24,10 +24,16 @@ exports.insertProject = function (projectName, res) {
 exports.insertProjectInfo = function (data, res) {
     res.setHeader('Content-Type', 'application/json');
     if (data.project_name != null && data.product_id != null) {
-        projectInfoModel.findAndCountAll({where: {project_name: data.project_name, product_id: data.product_id}})
+        projectInfoModel.findAndCountAll({
+                where: {
+                    project_name: data.project_name,
+                    product_id: data.product_id,
+                    is_stored: true
+                }
+            })
             .then(function (result) {
                 if (result.count > 0) {
-                    res.status(400).send({errorMessage: "Project id has exist."});
+                    res.status(400).send({errorMessage: "Product was stored."});
                 } else {
                     projectInfoModel.build({
                             project_name: data.project_name,
@@ -39,7 +45,7 @@ exports.insertProjectInfo = function (data, res) {
                             type: data.type,
                             width: data.width,
                             height: data.height,
-                            is_stored: data.is_stored,
+                            is_stored: true,
                             product_id: data.product_id
                         })
                         .save()

@@ -53,7 +53,7 @@ $("#btn_stop_scan").click(function () {
 app.controller('myCtrl', function ($scope, $http) {
 
     $scope.select_name = "";
-    $http.get("http://localhost:8080/getData/projectsName")
+    $http.get("http://localhost:8080/get-data/projects-name")
         .then(successCallback, errorCallback);
 
     function successCallback(response) {
