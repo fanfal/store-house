@@ -7,15 +7,11 @@ router.get("/", function (req, res, next) {
     var productId = req.query.productId;
     if (projectName == null || productId == null) {
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({errorMessage: "请确保项目名和产品ID发送成功"}));
+        res.status(400).send(JSON.stringify({errorMessage: "请确保项目名和产品ID发送成功"}));
         return;
     }
 
-    dbOperation.productOutGoing(projectName, productId, function(data){
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({project_info_list: data}));
-    });
-
+    dbOperation.productOutGoing(projectName, productId, res)
 });
 
 module.exports = router;
