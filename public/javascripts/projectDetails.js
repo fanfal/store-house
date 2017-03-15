@@ -152,7 +152,7 @@ function projectDetailsModel () {
     }
     this.getOption = function(model) {
         var option = {
-             url: "http://localhost:8080/getData/projectInfo",
+             url: "http://localhost:8080/get-data/project-info",
              method: "post",
              responseHandler:responseHandler,
              cache: false,
@@ -443,7 +443,7 @@ function onConfirm(){
 
         }
         $.ajax({
-            url: "http://localhost:8080/insertData/projectInfo",
+            url: "http://localhost:8080/insert-data/projectInfo",
             type : "POST",
             data: getData(),
             dataType : 'json',
