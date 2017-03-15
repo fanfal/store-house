@@ -33,5 +33,6 @@ function setUsage(usage){
 }
 
 function getUsage(){
-    $("#usage").attr("title");
+    var res = $("#usage").attr("title");
+    return res;
 }

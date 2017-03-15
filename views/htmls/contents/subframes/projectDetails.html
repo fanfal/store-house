@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html ng-app = "projectDetails">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet", href="/stylesheets/bootstrap.min.css">
-    <link rel="stylesheet", href="/stylesheets/flat-ui.css">
+    <!--link rel="stylesheet", href="/stylesheets/flat-ui.css"-->
     <link rel="stylesheet", href="/stylesheets/projectDetails.css">
     <link rel="stylesheet", href="/bootstrap-table/dist/bootstrap-table.css">
 </head>
@@ -23,7 +23,7 @@
                 <select  id = "projectListSelect" class="form-control select select-primary select-block mbl" style="width:100%;height:80%;margin-top:6%">
                 </select>
             </div>
-            <div class ="col-sm-4" style="height:100%">
+            <!--div class ="col-sm-4" style="height:100%">
                 <form class="navbar-form navbar-right" action="#" role="search" style="width:100%;height:80%;margin-top:6%;padding-left:0px;padding-top:0px;padding-bottom:0px">
                     <div class="form-group">
                         <div class="input-group">
@@ -34,18 +34,65 @@
                         </div>
                     </div>
                 </form>
-            </div>
+            </div-->
         </nav>
     </div>
     <div class="row" style="width:100%;margin-left:0px">
         <!--<table grid-manager="data-grid"></table>-->
-        <table id="bootstrapTable"></table>
+        <div id="exportBtn" class = "exportBtn-disabled" onclick="onExport()">
+            <img src = "/images/export.png" style = "margin-left:16px;margin-top:4px;" title = "导出到excel">
+        </div>
+        <br>
+        <table id="bootstrapTable" data-tableexport-display="always"></table>
     </div>
     <div class="row" style="margin-top:5px">
-        <button class="btn btn-primary btn-wide" id="insertBtn"onclick="onInsert()" style="margin-left:2%">
-            添加
-        </button>
+        <div class = "col-sm-3">
+            <button class="btn btn-primary btn-wide" id="insertBtn"onclick="onInsert()" style="margin-left:2%;width:80%">
+                添加
+            </button>
+        </div>
+        <div class = "col-sm-3">
+            <button class="btn btn-primary btn-wide" id="confirmProjReciver"onclick="onConfirmProjReciver()" style="margin-left:2%;width:80%">
+                确认收方
+            </button>
+        </div>
     </div>
+    <!--invisable table for export-->
+    <table id = "invisiableTable"ng-controller="exportController" style="display:none" data-tableexport-display="always">
+        <tr>
+            <th>序号</th>
+            <th>栋</th>
+            <th>单元</th>
+            <th>楼</th>
+            <th>号</th>
+            <th>洞</th>
+            <th>类型</th>
+            <th>宽度</th>
+            <th>高度</th>
+        </tr>
+        <tr>
+            <td>序号</td>
+            <td>栋</td>
+            <td>单元</td>
+            <td>楼</td>
+            <td>号</td>
+            <td>洞</td>
+            <td>类型</td>
+            <td>宽度</td>
+            <td>高度</td>
+        </tr>
+        <tr ng-repeat = "x in selected">
+            <td>{{x.id}}</td>
+            <td>{{x.building}}</td>
+            <td>{{x.unit}}</td>
+            <td>{{x.floor}}</td>
+            <td>{{x.number}}</td>
+            <td>{{x.position}}</td>
+            <td>{{x.type}}</td>
+            <td>{{x.width}}</td>
+            <td>{{x.height}}</td>
+        </tr>
+    </table>
 </div>
 <div class="modal fade" id="projInfoModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class = "modal-dialog" role="document">
@@ -67,7 +114,7 @@
                             <p>编号: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "productID" data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "productID" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -75,7 +122,7 @@
                             <p>栋: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "building"  data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "building"  data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -83,7 +130,7 @@
                             <p>单元: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "unit"  data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "unit"  data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -91,7 +138,7 @@
                             <p>楼: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "floor" data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "floor" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -99,7 +146,7 @@
                             <p>号: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "number" data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "number" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -107,7 +154,7 @@
                             <p>洞号: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "position" data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "position" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -115,7 +162,7 @@
                             <p>类型: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "type" data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "type" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -123,7 +170,7 @@
                             <p>宽度: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "width" data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "width" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
@@ -131,7 +178,7 @@
                             <p>高度: </p>
                         </div>
                         <div class = "col-sm-5">
-                            <input type="text" class="form-control projInfoInput" id = "height" data-toggle="" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "height" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                 </div>
@@ -150,14 +197,68 @@
         </div>
 
     </div>
-
 </div>
 
+<div class="modal fade" id="projReciverModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class = "modal-dialog" role="document">
+        <div class = "modal-content" style="width:600px">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="projReciverModalLabel">
+                    项目收方
+                </h4>
+            </div>
+            <div class ="modal-body">
+                <div class = "container" style="width:100%;text-align:center">
+                    <div class="row" style="width:100%">
+                        <div class="col-sm-3">
+                            <p>误差值(mm): </p>
+                        </div>
+                        <div class="col-sm-2">
+                            <p>宽度: </p>
+                        </div>
+                        <div class = "col-sm-2" style="padding:0px">
+                            <input type="text" class="form-control projInfoInput" id = "widthTolerance">
+                        </div>
+                        <div class="col-sm-2" >
+                            <p>高度: </p>
+                        </div>
+                        <div class = "col-sm-2" style="padding:0px">
+                            <input type="text" class="form-control projInfoInput" id = "heightTolerance" style="width:100%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class = "modal-footer">
+                <div class = "row">
+                    <div class = "col-sm-4">
+                        <button onclick="toleranceHandler.onConfirm()" id = "confirm-projReciver" class ="btn btn-primary bti-wide" style="width:100%;align:left">确定</button>
+                    </div>
+                    <div class = "col-sm-4">
+                        <button onclick="toleranceHandler.onCancel()" id = "cancel-projReciver" class = "btn btn-primary bti-wideW" style="width:100%">取消</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
     <script type="text/javascript", src="/javascripts/jquery.min.js"></script>
-    <script type="text/javascript", src="/javascripts/flat-ui.min.js"></script>
-    <script type="text/javascript", src="/javascripts/application.js"></script>
+    <script type="text/javascript", src="/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!--script type="text/javascript", src="/javascripts/flat-ui.min.js"></script-->
+    <!--script type="text/javascript", src="/javascripts/application.js"></script-->
     <script src="/bootstrap-table/dist/bootstrap-table.js"></script>
+    <script src="/bootstrap-table/dist/extensions/export/bootstrap-table-export.js"></script>
+    <script type="text/javascript", src="/javascripts/tableExport.js"></script>
+    <script type="text/javascript", src="/javascripts/jquery.base64.js"></script>
     <script src="/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+    <script type="text/javascript", src="/angular/angular.min.js"></script>
     <script type="text/javascript", src = "/javascripts/projectDetails.js"></script>
 </body>
 </html>

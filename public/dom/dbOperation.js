@@ -154,20 +154,6 @@ exports.getProjectInfoByName = function (projectName, res) {
         });
 }
 
-exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback) {
-    projectInfoModel.findAll({
-            where: {project_name: projectName},
-            order: 'created_at DESC',
-            'limit': sizePerPage,
-            'offset': (curPage - 1) * sizePerPage
-        })
-        .then(function (data) {
-            callback(data);
-        })
-        .catch(function (error) {
-            console.log('Error occured get project info by name: ', error);
-        });
-}
 
 exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback){
     //get total
