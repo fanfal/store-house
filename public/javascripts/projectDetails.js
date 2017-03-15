@@ -216,6 +216,9 @@ function projectDetailsModel () {
         this.projectListSelectChanged = function () {
             selectionIds = [];
             selected = [];
+            $("#exportBtn").attr("disabled", true);
+            $("#exportBtn").removeClass("exportBtn-enabled");
+            $("#exportBtn").addClass("exportBtn-disabled");
             $myScope.update(selected);
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
@@ -311,7 +314,6 @@ function projectDetailsModel () {
     this.Init = function () {
          //1. 下拉列表 和 按钮
          if(this.pageOperationType != pageOperationType.potcheckAndInsert){
-            alert(1);
                 this.selectors.projectTypeSelect.css("display", "hide"); //如果不是查看和添加页面，隐藏这个下拉列表
          }
          else{
@@ -394,7 +396,6 @@ function onConfirm(){
         $(".projInfoInput").each(function(index){
                if($(this).val() == ""){
                     errInputIndex = index;
-                    alert(errInputIndex);
                     return false;
                }
         })
