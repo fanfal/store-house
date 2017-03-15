@@ -130,10 +130,10 @@ function projectDetailsModel () {
         var projectList = data.project_list;
         for(var i = 0 ; i < projectList.length; i++) {
             var item = projectList[i];
-            if(item.operation_status == 0) {
+            if(item.operation_status == projectType.OPERABLE) {
                 this.projectNameCluster.operatableProjects.push(item.project_name);
             }
-            else if(item.operation_status == 1) {
+            else if(item.operation_status == projectType.OPERATING) {
                 this.projectNameCluster.operatingProjects.push(item.project_name);
             }
             else{

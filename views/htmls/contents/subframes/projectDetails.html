@@ -58,7 +58,8 @@
     </div>
     <!--invisable table for export-->
     <table id = "invisiableTable"ng-controller="exportController" style="display:none" data-tableexport-display="always">
-        <tr>
+        <thead>
+            <tr>
             <th>序号</th>
             <th>栋</th>
             <th>单元</th>
@@ -69,18 +70,9 @@
             <th>宽度</th>
             <th>高度</th>
         </tr>
-        <tr>
-            <td>序号</td>
-            <td>栋</td>
-            <td>单元</td>
-            <td>楼</td>
-            <td>号</td>
-            <td>洞</td>
-            <td>类型</td>
-            <td>宽度</td>
-            <td>高度</td>
-        </tr>
-        <tr ng-repeat = "x in selected">
+        </thead>
+        <tbody>
+            <tr ng-repeat = "x in selected">
             <td>{{x.id}}</td>
             <td>{{x.building}}</td>
             <td>{{x.unit}}</td>
@@ -91,6 +83,8 @@
             <td>{{x.width}}</td>
             <td>{{x.height}}</td>
         </tr>
+        </tbody>
+
     </table>
 </div>
 <div class="modal fade" id="projInfoModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -256,6 +250,7 @@
     <script type="text/javascript", src="/javascripts/jquery.base64.js"></script>
     <script src="/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
     <script type="text/javascript", src="/angular/angular.min.js"></script>
+    <script type="text/javascript" , src="/model/productType.js"></script>
     <script type="text/javascript", src = "/javascripts/projectDetails.js"></script>
 </body>
 </html>
