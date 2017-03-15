@@ -1,0 +1,10 @@
+{
+  "db": {
+    "driver": "mysql",
+    "user": "root",
+    "pass": "",
+    "host": "localhost",
+    "database": "storehouse",
+    "maxPool": 10
+  }
+}

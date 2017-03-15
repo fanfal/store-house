@@ -16,7 +16,7 @@ router.get('/projects', function (req, res, next) {
 })
 
 //前端页面分页渲染机制，必须支持该post方法
-router.post('/projectInfo', function (req, res, next) {
+router.post('/project-info', function (req, res, next) {
     try {
         if(req.body.name != ""){
              dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
@@ -38,16 +38,16 @@ router.post('/projectInfo', function (req, res, next) {
     }
 })
 
-router.get('/projectsName', function (req, res, next) {
+router.get('/projects-name', function (req, res, next) {
         dbOperation.getProjectsName(res);
 })
 
 
-router.get('/projectInfo', function (req, res, next) {
+router.get('/project-info', function (req, res, next) {
         dbOperation.getProjectInfoByName(req.query.name, res);
 })
 
-router.get('/projectsInfo', function (req, res, next) {
+router.get('/projects-info', function (req, res, next) {
         dbOperation.getProjectsInfo(res);
 })
 

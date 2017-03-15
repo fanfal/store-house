@@ -5,16 +5,16 @@
 *DB migrate document* : https://github.com/rsandor/node-migrate
 
 *URL:*
-       1.getProjects: http://localhost:8080/projectData/projects (获取所有project 起排列顺整体按照operation_status 升序排列,
+       1.getProjects: http://localhost:8080/project-data/projects (获取所有project 起排列顺整体按照operation_status 升序排列,
         每个status内部按照时间顺序降序排列).
 
-       2.getProjects: http://localhost:8080/projectData/projects?status= (获取单个operation_status的数据,排序按照时间降序排列).
+       2.getProjects: http://localhost:8080/project-data/projects?status= (获取单个operation_status的数据,排序按照时间降序排列).
 
-       3.getProject: http://localhost:8080/projectData/project?name=
+       3.getProject: http://localhost:8080/project-data/project?name=
 
-       4.getProjectInfo: http://localhost:8080/projectData/projectInfo?name=
+       4.getProjectInfo: http://localhost:8080/project-data/project-info?name=
 
-       5.*数据插API格式*  项目信息插入api url: http://localhost:8080/insertData/projectInfo, url 模式为post,
+       5.*数据插API格式*  项目信息插入api url: http://localhost:8080/insert-data/project-info, url 模式为post,
                header里面要定义为application/type(可查询http请求的header知识),Body包含的插入数据模式为Jason:
 
                 {
@@ -39,7 +39,7 @@
                  ]
                }
 
-             6. 项目创建格式api url: http://localhost:8080/insertData/project,剩下同上.
+             6. 项目创建格式api url: http://localhost:8080/insert-data/project,剩下同上.
                 {
                   "project_name": "test"
                 }

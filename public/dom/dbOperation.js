@@ -23,29 +23,48 @@ exports.insertProject = function (projectName, res) {
 
 exports.insertProjectInfo = function (data, res) {
     res.setHeader('Content-Type', 'application/json');
-    var element = data;
-    if (element.project_name != null && data.product_id != null) {
-        projectInfoModel.build({
-                project_name: element.project_name,
-                building: element.building,
-                unit: element.unit,
-                floor: element.floor,
-                number: element.number,
-                position: element.position,
-                type: element.type,
-                width: element.width,
-                height: element.height,
-                is_stored: element.is_stored,
-                product_id: element.product_id
+    if (data.project_name != null && data.product_id != null) {
+        projectInfoModel.findAndCountAll({
+                where: {
+                    project_name: data.project_name,
+                    product_id: data.product_id,
+                    is_stored: true
+                }
             })
-            .save()
-            .then(function () {
-                res.status(200).send({"success": true});
+            .then(function (result) {
+                if (result.count > 0) {
+                    res.status(400).send({errorMessage: "Product was stored."});
+                } else {
+                    projectInfoModel.build({
+                            project_name: data.project_name,
+                            building: data.building,
+                            unit: data.unit,
+                            floor: data.floor,
+                            number: data.number,
+                            position: data.position,
+                            type: data.type,
+                            width: data.width,
+                            height: data.height,
+                            is_stored: true,
+                            product_id: data.product_id
+                        })
+                        .save()
+                        .then(function () {
+                            res.status(200).send({"success": true});
+                        })
+                        .catch(function (error) {
+                            console.log('Error occur insert project info: ', error);
+                        });
+                }
+
             })
             .catch(function (error) {
                 console.log('Error occur insert project info: ', error);
-                res.status(403).send({errorMessage: "Project id has exist."});
-            });
+                res.status(403).send({errorMessage: "Insert project info operation error."});
+            })
+
+    } else {
+        res.status(400).send({errorMessage: "Must have name and id."});
     }
 }
 
@@ -67,14 +86,14 @@ exports.insertProjectInfoByExcel = function (datas, res) {
                     product_id: data.product_id
                 })
                 .save()
-                .catch(function(error){
+                .catch(function (error) {
                     errorData.push(data);
                 })
         } else {
             errorData.push(data);
         }
     })
-    if (errorData.length > 0){
+    if (errorData.length > 0) {
         res.status(400).send({errorData: errorData});
     } else {
         res.status(200).send({"success": true});
@@ -203,9 +222,5 @@ function insertProject(projectName, res) {
         .then(function () {
             res.status(200).send({"success": true});
         })
-        .catch(function (error) {
-            console.log('Error occur insert project: ', error);
-            res.status(403).send({errorMessage: "project name has exist."});
-        });
 }
 

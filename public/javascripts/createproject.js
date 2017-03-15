@@ -50,7 +50,7 @@ function onClick(){
     if(!validity()) return;
     $.ajax({
        type : "POST",
-       url : "http://localhost:8080/insertData/project",
+       url : "http://localhost:8080/insert-data/project",
        data : {"project_name": $("#project-name").val()},
        dataType : 'json',
        success : function (data) {
