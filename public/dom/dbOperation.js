@@ -8,7 +8,7 @@ exports.insertProject = function (projectName, res) {
     res.setHeader('Content-Type', 'application/json');
     projectModel.findOne({where: {project_name: projectName}})
         .then(function (data) {
-            if (data.length > 0) {
+            if (data != null && data.length > 0) {
                 res.status(403).send({errorMessage: "project name has exist."});
             } else {
                 insertProject(projectName, res);

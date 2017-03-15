@@ -111,10 +111,18 @@ function projectDetailsModel () {
     //往工程下拉列表中追加选项
     this.appendOptionsToProjectPickList = function(projNamePickList){
         this.selectors.projectListSelect.empty();
-        for(item in projNamePickList) {
-            var option = "<option value = '" + projNamePickList[item] + "'>" + projNamePickList[item]  + "</option>";
-            this.selectors.projectListSelect.append(option);
+        if(projNamePickList.length == 0){
+            $("#insertBtn").attr("disabled",true);
+            $("#bootstrapTable").bootstrapTable('removeAll');
         }
+        else{
+             for(item in projNamePickList) {
+                 var option = "<option value = '" + projNamePickList[item] + "'>" + projNamePickList[item]  + "</option>";
+                 this.selectors.projectListSelect.append(option);
+             }
+              $("#insertBtn").attr("disabled",false);
+        }
+
     }
     //根据类型分类工程
     this.doCluster = function(data) {
@@ -191,7 +199,7 @@ function projectDetailsModel () {
                     list = list.concat(model.projectNameCluster.exhaustedProjects);
                     model.appendOptionsToProjectPickList(list);
                 }
-                model.selectors.projectListSelect.change(this.projectListSelectChanged);
+                model.selectors.projectListSelect.change(model.projectListSelectChanged);
                 if(list.length > 0){
                      var first = $("#projectListSelect option:first")
                      first.attr("selected", true);
@@ -205,6 +213,9 @@ function projectDetailsModel () {
 
         //工程名称下拉列表变化
         this.projectListSelectChanged = function () {
+            selectionIds = [];
+            selected = [];
+            $myScope.update(selected);
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
             model.table.pullData(model.getOption(model));
@@ -382,6 +393,7 @@ function onConfirm(){
         $(".projInfoInput").each(function(index){
                if($(this).val() == ""){
                     errInputIndex = index;
+                    alert(errInputIndex);
                     return false;
                }
         })
@@ -439,6 +451,7 @@ function onConfirm(){
                           $(this).val("");
                      })
               feedBack(true, "添加成功");
+              projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
             },
             error : function (data){
                 var msg = "添加失败";
