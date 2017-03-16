@@ -18,24 +18,24 @@ exports.up = function (db) {
    return db.runSql("CREATE TABLE project (" +
         "id INT NOT NULL AUTO_INCREMENT, " +
         "project_name VARCHAR(30) NOT NULL, " +
-        "operation_status INT DEFAULT 0, " +
+        "operation_status INT DEFAULT 2, " +
         "created_at DATETIME , " +
         "updated_at DATETIME , " +
         "PRIMARY KEY (id), " +
         "UNIQUE (project_name)" +
         ");").then(result => db.runSql("CREATE TABLE project_info (" +
         "id INT NOT NULL AUTO_INCREMENT, " +
-        "project_name VARCHAR(30), " +
+        "project_name VARCHAR(30) NOT NULL, " +
         "building VARCHAR(255), " +
-        "unit INT, " +
-        "floor INT, " +
-        "number INT," +
-        "position INT, " +
+        "unit VARCHAR(255), " +
+        "floor VARCHAR(255), " +
+        "number VARCHAR(255), " +
+        "position VARCHAR(255), " +
         "type VARCHAR(255), " +
         "width FLOAT, " +
         "height FLOAT, " +
-        "is_stored BOOLEAN, " +
-        "product_id VARCHAR(255), " +
+        "is_stored BOOLEAN NOT NULL DEFAULT 1, " +
+        "product_id VARCHAR(255) NOT NULL, " +
         "created_at DATETIME, " +
         "updated_at DATETIME, " +
         "PRIMARY KEY (id), " +
