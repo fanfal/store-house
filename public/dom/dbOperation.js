@@ -26,14 +26,36 @@ exports.insertProjectInfo = function (data, res) {
     if (data.project_name != null && data.product_id != null) {
         projectInfoModel.findAndCountAll({
                 where: {
-                    project_name: data.project_name,
-                    product_id: data.product_id,
-                    is_stored: true
+                    product_id: data.product_id
                 }
             })
             .then(function (result) {
                 if (result.count > 0) {
-                    res.status(400).send({errorMessage: "Product was stored."});
+                    if (result.rows[0].is_stored === true) {
+                        res.status(400).send({errorMessage: "Product was stored."});
+                    } else {
+                        projectInfoModel.update({
+                                project_name: data.project_name,
+                                building: data.building,
+                                unit: data.unit,
+                                floor: data.floor,
+                                number: data.number,
+                                position: data.position,
+                                type: data.type,
+                                width: data.width,
+                                height: data.height,
+                                is_stored: true
+                            }, {
+                                where: {product_id: data.product_id}
+                            })
+                            .then(function () {
+                                res.status(200).send({"success": true});
+                            })
+                            .catch(function (error) {
+                                res.status(400).send({errorMessage: "Update product error."});
+                            })
+                    }
+
                 } else {
                     projectInfoModel.build({
                             project_name: data.project_name,
@@ -174,20 +196,22 @@ exports.getProjectInfoByName = function (projectName, res) {
 }
 
 
-exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback){
+exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback) {
     //get total
-    projectInfoModel.findAll({where : {project_name : projectName}}).then(function (data) {
+    projectInfoModel.findAll({where: {project_name: projectName}}).then(function (data) {
         var count = data.length;
-        projectInfoModel.findAll({where: {project_name: projectName},
-                    order: 'created_at DESC',
-                    'limit' : sizePerPage,
-                    'offset' : curPage}).then(function (data, total) {
-                callback(data, count);
-            }).catch(function (error) {
-                console.log('Error occured get project info by name: ', error);
-            });
+        projectInfoModel.findAll({
+            where: {project_name: projectName},
+            order: 'created_at DESC',
+            'limit': sizePerPage,
+            'offset': curPage
+        }).then(function (data, total) {
+            callback(data, count);
+        }).catch(function (error) {
+            console.log('Error occured get project info by name: ', error);
+        });
     }).catch(function (error) {
-                      console.log('Error occured get project info by name: ', error);
+        console.log('Error occured get project info by name: ', error);
     });
 }
 
