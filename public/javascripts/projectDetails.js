@@ -440,7 +440,7 @@ function onConfirm(){
 
         }
         $.ajax({
-            url: "http://localhost:8080/insert-data/projectInfo",
+            url: "http://localhost:8080/insert-data/project-info",
             type : "POST",
             data: getData(),
             dataType : 'json',
