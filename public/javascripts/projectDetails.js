@@ -114,6 +114,7 @@ function projectDetailsModel () {
         if(projNamePickList.length == 0){
             $("#insertBtn").attr("disabled",true);
             $("#bootstrapTable").bootstrapTable('removeAll');
+            setExportToExcelBtnEnable(false);
         }
         else{
              for(item in projNamePickList) {
@@ -216,9 +217,7 @@ function projectDetailsModel () {
         this.projectListSelectChanged = function () {
             selectionIds = [];
             selected = [];
-            $("#exportBtn").attr("disabled", true);
-            $("#exportBtn").removeClass("exportBtn-enabled");
-            $("#exportBtn").addClass("exportBtn-disabled");
+            setExportToExcelBtnEnable(false);
             $myScope.update(selected);
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
@@ -333,8 +332,7 @@ function projectDetailsModel () {
                  }
                   });
                  if(array.length > 0){
-                    $("#exportBtn").addClass("exportBtn-enabled");
-                    $("#exportBtn").removeClass("exportBtn-disabled");
+                    setExportToExcelBtnEnable(true);
                  }
                  return array;
          };
@@ -348,9 +346,7 @@ function projectDetailsModel () {
                       }
                   });
                  if(array.length == 0){
-                    $("#exportBtn").attr("disabled", true);
-                    $("#exportBtn").removeClass("exportBtn-enabled");
-                    $("#exportBtn").addClass("exportBtn-disabled");
+                    setExportToExcelBtnEnable(false);
                  }
                  return array;
          };
@@ -493,7 +489,7 @@ function onConfirmProjReciver(){
 }
 
 function onExport(){
-   if($("#exportBtn").hasClass("exportBtn-disabled")){return;}
+   if($("#exportBtn").attr("disable") == true){return;}
    var option = {
            csvSeparator: ',',
            csvEnclosure: '"',
@@ -526,4 +522,14 @@ function onExport(){
            worksheetName: projDetailsModelInstance.operatingProject
          };
     $("#invisiableTable").tableExport(option);
+}
+
+function setExportToExcelBtnEnable(bEnable){
+    if(bEnable){
+        $("#exportBtn").attr("disabled", false);
+    }
+    else{
+        $("#exportBtn").attr("disabled", true);
+    }
+
 }

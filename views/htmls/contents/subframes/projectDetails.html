@@ -38,23 +38,26 @@
     </div>
     <div class="row" style="width:100%;margin-left:0px">
         <!--<table grid-manager="data-grid"></table>-->
-        <div id="exportBtn" class = "exportBtn-disabled" onclick="onExport()">
-            <img src = "/images/export.png" style = "margin-left:16px;margin-top:4px;" title = "导出到excel">
-        </div>
-        <br>
         <table id="bootstrapTable" data-tableexport-display="always"></table>
     </div>
     <div class="row" style="margin-top:5px">
-        <div class = "col-sm-3">
-            <button class="btn btn-primary btn-wide" id="insertBtn"onclick="onInsert()" style="margin-left:2%;width:80%">
-                添加
-            </button>
-        </div>
-        <div class = "col-sm-3">
-            <button class="btn btn-primary btn-wide" id="confirmProjReciver"onclick="onConfirmProjReciver()" style="margin-left:2%;width:80%">
-                确认收方
-            </button>
-        </div>
+        <div class = "col-sm-3"></div>
+        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
+                <button class="btn btn-primary btn-wide" id="insertBtn"onclick="onInsert()" style="margin-left:2%;width:100%">
+                    添加
+                </button>
+            </div>
+        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
+                <button class="btn btn-primary btn-wide" id="confirmProjReciver"onclick="onConfirmProjReciver()" style="margin-left:2%;width:100%">
+                    确认收方
+                </button>
+            </div>
+        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
+                <button class="btn btn-primary btn-wide" id="exportBtn"onclick="onExport()" style="margin-left:2%;width:100%"
+                        disabled = true>
+                    导出到excel
+                </button>
+            </div>
     </div>
     <!--invisable table for export-->
     <table id = "invisiableTable"ng-controller="exportController" style="display:none" data-tableexport-display="always">
@@ -103,74 +106,74 @@
                 <div class = "container">
                     <div class ="row" style="width:500px;"><div class ="alert fade in" style="display:none"></div></div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>编号: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "productID" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>栋: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "building"  data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>单元: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "unit"  data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>楼: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "floor" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>号: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "number" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>洞号: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "position" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>类型: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "type" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>宽度: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "width" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 projInputControl">
                             <p>高度: </p>
                         </div>
-                        <div class = "col-sm-5">
+                        <div class = "col-sm-4 projInputControl">
                             <input type="text" class="form-control projInfoInput" id = "height" data-toggle="tooltip" data-placement="right" title="不能为空">
                         </div>
                     </div>
@@ -178,10 +181,11 @@
             </div>
             <div class = "modal-footer">
                     <div class = "row">
-                        <div class = "col-sm-4">
+                        <div class = "col-sm-3"></div>
+                        <div class = "col-sm-3" style="padding:0px;margin-left:2px;margin-right:2px">
                             <button onclick="onConfirm()" id = "confirm" class ="btn btn-primary bti-wide" style="width:100%;align:left">确定</button>
                         </div>
-                        <div class = "col-sm-4">
+                        <div class = "col-sm-3" style="padding:0px;margin-left:2px;margin-right:2px">
                             <button onclick="onCancel()" id = "cancel" class = "btn btn-primary bti-wideW" style="width:100%">取消</button>
                         </div>
                     </div>
@@ -227,10 +231,11 @@
             </div>
             <div class = "modal-footer">
                 <div class = "row">
-                    <div class = "col-sm-4">
+                    <div class = "col-sm-3"></div>
+                    <div class = "col-sm-3" style="padding:0px;margin-right:3px">
                         <button onclick="toleranceHandler.onConfirm()" id = "confirm-projReciver" class ="btn btn-primary bti-wide" style="width:100%;align:left">确定</button>
                     </div>
-                    <div class = "col-sm-4">
+                    <div class = "col-sm-3" style="padding:0px">
                         <button onclick="toleranceHandler.onCancel()" id = "cancel-projReciver" class = "btn btn-primary bti-wideW" style="width:100%">取消</button>
                     </div>
                 </div>
@@ -250,7 +255,8 @@
     <script type="text/javascript", src="/javascripts/jquery.base64.js"></script>
     <script type="text/javascript", src="/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
     <script type="text/javascript", src="/angular/angular.min.js"></script>
-    <script type="text/javascript" , src="/model/productType.js"></script>
+    <script type="text/javascript", src="/model/productType.js"></script>
+    <script type="text/javascript", src = "/model/projectStatus.js"></script>
     <script type="text/javascript", src = "/javascripts/projectDetails.js"></script>
 </body>
 </html>
