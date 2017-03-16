@@ -3,7 +3,7 @@ var router = express.Router();
 var multer = require('multer');
 var xlstojson = require("xls-to-json-lc");
 var xlsxtojson = require("xlsx-to-json-lc");
-var dbOperation = require("../public/dom/dbOperation.js")
+var dbOperation = require("../public/dbOperation.js")
 
 
 var storage = multer.diskStorage({ //multers disk storage settings

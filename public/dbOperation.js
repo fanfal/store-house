@@ -1,13 +1,20 @@
-var project = require("./model/project")
-var projectInfo = require("./model/projectInfo")
+var project = require("./dom/model/project");
+var projectInfo = require("./dom/model/projectInfo");
+var path = require('path');
+var projectStatus = require("./model/projectStatus");
 
 var projectModel = project.projectModel;
 var projectInfoModel = projectInfo.projectInfoModel;
+var projectType = {
+    OPERABLE: 0,       //可以出库
+    OPERATING: 1,      //正在出库
+    EXHAUSTED: 2        //出库完成
+}
 
 exports.insertProject = function (projectName, res) {
     projectModel.findOne({where: {project_name: projectName}})
         .then(function (data) {
-            if (data != null && data.length > 0) {
+            if (data != null) {
                 res.status(403).send({errorMessage: "project name has exist."});
             } else {
                 insertProject(projectName, res);
@@ -21,7 +28,7 @@ exports.insertProject = function (projectName, res) {
 }
 
 exports.insertProjectInfo = function (data, res) {
-    insertProjectInfo(data.project_name, data, res);
+    insertProjectInfo(data, res);
 }
 
 exports.insertProjectInfoByExcel = function (projectName, datas, res) {
@@ -125,7 +132,6 @@ exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, s
 }
 
 exports.productOutGoing = function (projectName, productId, res) {
-    res.setHeader('Content-Type', 'application/json');
     projectInfoModel.findAll({where: {project_name: projectName, product_id: productId, is_stored: true}})
         .then(function (data) {
             if (data.length > 0) {
@@ -140,8 +146,34 @@ exports.productOutGoing = function (projectName, productId, res) {
         });
 }
 
+exports.updateProjectStatus = function (projectName, status) {
+    updateProjectStatus(projectName, status);
+}
+
+function updateProjectStatus(projectName, status) {
+    projectModel.update({operation_status: status}, {where: {project_name: projectName}});
+
+}
+
+function updateProjectStatusWhenOutGoing(projectName) {
+    projectInfoModel.findAll({
+            where: {
+                project_name: projectName,
+                is_stored: true
+            }
+        })
+        .then(function (result) {
+            if (result.length == 0) {
+                updateProjectStatus(projectName, projectType.EXHAUSTED);
+            }
+        })
+}
+
 function updateProductStatus(projectName, productId, isStored) {
     projectInfoModel.update({is_stored: isStored}, {where: {project_name: projectName, product_id: productId}})
+        .then(function () {
+            updateProjectStatusWhenOutGoing(projectName)
+        })
         .catch(function (error) {
             console.log('Update product store status error', error);
         });
@@ -160,14 +192,14 @@ function insertProject(projectName, res) {
 
 function insertProjectInfo(data, res) {
     if (data.project_name != null && data.product_id != null) {
-        projectInfoModel.findAndCountAll({
+        projectInfoModel.findAll({
                 where: {
                     product_id: data.product_id
                 }
             })
             .then(function (result) {
-                if (result.count > 0) {
-                    if (result.rows[0].is_stored === true) {
+                if (result.length > 0) {
+                    if (result[0].is_stored === true) {
                         res.status(400).send({errorMessage: "Product was stored."});
                     } else {
                         projectInfoModel.update({
@@ -228,14 +260,14 @@ function insertProjectInfo(data, res) {
 
 function insertProjectInfoFromExcel(name, data, res) {
     if (data.product_id != null) {
-        projectInfoModel.findAndCountAll({
+        projectInfoModel.findAll({
                 where: {
                     product_id: data.product_id
                 }
             })
             .then(function (result) {
-                if (result.count > 0) {
-                    if (result.rows[0].is_stored === true) {
+                if (result.length > 0) {
+                    if (result[0].is_stored === true) {
                         //TODO
                     } else {
                         projectInfoModel.update({
