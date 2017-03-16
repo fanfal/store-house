@@ -5,7 +5,6 @@ var projectModel = project.projectModel;
 var projectInfoModel = projectInfo.projectInfoModel;
 
 exports.insertProject = function (projectName, res) {
-    res.setHeader('Content-Type', 'application/json');
     projectModel.findOne({where: {project_name: projectName}})
         .then(function (data) {
             if (data != null && data.length > 0) {
@@ -22,106 +21,16 @@ exports.insertProject = function (projectName, res) {
 }
 
 exports.insertProjectInfo = function (data, res) {
-    res.setHeader('Content-Type', 'application/json');
-    if (data.project_name != null && data.product_id != null) {
-        projectInfoModel.findAndCountAll({
-                where: {
-                    product_id: data.product_id
-                }
-            })
-            .then(function (result) {
-                if (result.count > 0) {
-                    if (result.rows[0].is_stored === true) {
-                        res.status(400).send({errorMessage: "Product was stored."});
-                    } else {
-                        projectInfoModel.update({
-                                project_name: data.project_name,
-                                building: data.building,
-                                unit: data.unit,
-                                floor: data.floor,
-                                number: data.number,
-                                position: data.position,
-                                type: data.type,
-                                width: data.width,
-                                height: data.height,
-                                is_stored: true
-                            }, {
-                                where: {product_id: data.product_id}
-                            })
-                            .then(function () {
-                                res.status(200).send({"success": true});
-                            })
-                            .catch(function (error) {
-                                res.status(400).send({errorMessage: "Update product error."});
-                            })
-                    }
-
-                } else {
-                    projectInfoModel.build({
-                            project_name: data.project_name,
-                            building: data.building,
-                            unit: data.unit,
-                            floor: data.floor,
-                            number: data.number,
-                            position: data.position,
-                            type: data.type,
-                            width: data.width,
-                            height: data.height,
-                            is_stored: true,
-                            product_id: data.product_id
-                        })
-                        .save()
-                        .then(function () {
-                            res.status(200).send({"success": true});
-                        })
-                        .catch(function (error) {
-                            console.log('Error occur insert project info: ', error);
-                        });
-                }
-
-            })
-            .catch(function (error) {
-                console.log('Error occur insert project info: ', error);
-                res.status(403).send({errorMessage: "Insert project info operation error."});
-            })
-
-    } else {
-        res.status(400).send({errorMessage: "Must have name and id."});
-    }
+    insertProjectInfo(data.project_name, data, res);
 }
 
-exports.insertProjectInfoByExcel = function (datas, res) {
-    var errorData = [];
+exports.insertProjectInfoByExcel = function (projectName, datas, res) {
     datas.forEach(function (data) {
-        if (data.project_name != null && data.product_id != null) {
-            projectInfoModel.build({
-                    project_name: data.project_name,
-                    building: data.building,
-                    unit: data.unit,
-                    floor: data.floor,
-                    number: data.number,
-                    position: data.position,
-                    type: data.type,
-                    width: data.width,
-                    height: data.height,
-                    is_stored: data.is_stored,
-                    product_id: data.product_id
-                })
-                .save()
-                .catch(function (error) {
-                    errorData.push(data);
-                })
-        } else {
-            errorData.push(data);
-        }
+        insertProjectInfoFromExcel(projectName, data, res);
     })
-    if (errorData.length > 0) {
-        res.status(400).send({errorData: errorData});
-    } else {
-        res.status(200).send({"success": true});
-    }
-
+    res.status(200).send({"success": true});
 }
+
 exports.getProject = function (projectName, res) {
     res.setHeader('Content-Type', 'application/json');
     projectModel.findOne({where: {project_name: projectName}})
@@ -246,5 +155,134 @@ function insertProject(projectName, res) {
         .then(function () {
             res.status(200).send({"success": true});
         })
+}
+
+
+function insertProjectInfo(data, res) {
+    if (data.project_name != null && data.product_id != null) {
+        projectInfoModel.findAndCountAll({
+                where: {
+                    product_id: data.product_id
+                }
+            })
+            .then(function (result) {
+                if (result.count > 0) {
+                    if (result.rows[0].is_stored === true) {
+                        res.status(400).send({errorMessage: "Product was stored."});
+                    } else {
+                        projectInfoModel.update({
+                                project_name: data.project_name,
+                                building: data.building,
+                                unit: data.unit,
+                                floor: data.floor,
+                                number: data.number,
+                                position: data.position,
+                                type: data.type,
+                                width: data.width,
+                                height: data.height,
+                                is_stored: true
+                            }, {
+                                where: {product_id: data.product_id}
+                            })
+                            .then(function () {
+                                res.status(200).send({"success": true});
+                            })
+                            .catch(function (error) {
+                                res.status(400).send({errorMessage: "Update product error."});
+                            })
+                    }
+
+                } else {
+                    projectInfoModel.build({
+                            project_name: data.project_name,
+                            building: data.building,
+                            unit: data.unit,
+                            floor: data.floor,
+                            number: data.number,
+                            position: data.position,
+                            type: data.type,
+                            width: data.width,
+                            height: data.height,
+                            is_stored: true,
+                            product_id: data.product_id
+                        })
+                        .save()
+                        .then(function () {
+                            res.status(200).send({"success": true});
+                        })
+                        .catch(function (error) {
+                            console.log('Error occur insert project info: ', error);
+                        });
+                }
+
+            })
+            .catch(function (error) {
+                console.log('Error occur insert project info: ', error);
+                res.status(403).send({errorMessage: "Insert project info operation error."});
+            })
+
+    } else {
+        res.status(400).send({errorMessage: "Must have name and id."});
+    }
+}
+
+function insertProjectInfoFromExcel(name, data, res) {
+    if (data.product_id != null) {
+        projectInfoModel.findAndCountAll({
+                where: {
+                    product_id: data.product_id
+                }
+            })
+            .then(function (result) {
+                if (result.count > 0) {
+                    if (result.rows[0].is_stored === true) {
+                        //TODO
+                    } else {
+                        projectInfoModel.update({
+                                project_name: name,
+                                building: data.building,
+                                unit: data.unit,
+                                floor: data.floor,
+                                number: data.number,
+                                position: data.position,
+                                type: data.type,
+                                width: data.width,
+                                height: data.height,
+                                is_stored: true
+                            }, {
+                                where: {product_id: data.product_id}
+                            })
+                            .catch(function (error) {
+                                console.log("Update product error.");
+                            })
+                    }
+                } else {
+                    projectInfoModel.build({
+                            project_name: name,
+                            building: data.building,
+                            unit: data.unit,
+                            floor: data.floor,
+                            number: data.number,
+                            position: data.position,
+                            type: data.type,
+                            width: data.width,
+                            height: data.height,
+                            is_stored: true,
+                            product_id: data.product_id
+                        })
+                        .save()
+                        .catch(function (error) {
+                            console.log('Error occur insert project info: ', error);
+                        });
+                }
+
+            })
+            .catch(function (error) {
+                console.log('Error occur insert project info: ', error);
+            })
+    } else {
+        //TODO
+    }
+
 }
 
