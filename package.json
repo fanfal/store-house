@@ -11,6 +11,7 @@
     "body-parser": "~1.16.0",
     "bootflat": "^2.0.4",
     "bootstrap": "^3.3.7",
+    "bootstrap-table": "^1.11.2",
     "config": "^1.25.1",
     "cookie-parser": "~1.4.3",
     "date-utils": "^1.2.21",

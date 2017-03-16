@@ -35,29 +35,8 @@ th{
     transition : all 0.5s
 }
 
-#exportBtn{
-    border : 1px solid #aaaaaa;
-    width : 64px;
-    height : 40px;
-
-}
-
-.exportBtn-disabled{
-    background-color : #cccccc
-    -webkit-filter: grayscale(100%);
-    -moz-filter: grayscale(100%);
-    -ms-filter: grayscale(100%);
-    -o-filter: grayscale(100%);
-    filter: grayscale(100%);
-    filter: gray;
-}
-
-.exportBtn-enabled{
-    background-color : #ffffff;
-    transition : all .5s;
-}
-
-.exportBtn-enabled:hover{
-     box-shadow: 3px 3px 5px #888888;
-     transition : all .5s;
+.projInputControl{
+    padding:0px;
+    margin-left:5px;
+    margin-right:2px
 }
