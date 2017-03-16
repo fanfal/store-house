@@ -16,8 +16,7 @@ $(document).ready(function () {
     var pageArray = new Array("homePage.html",
                               "projectManagement.html",
                               "homePage.html",
-                              "outGoing.html",
-                              "statistics.html");
+                              "outGoing.html");
 
     tabItems.click(function () {
         windowWidth = $(".Tab").width()

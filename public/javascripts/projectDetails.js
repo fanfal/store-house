@@ -2,7 +2,48 @@
 
 
 var inputList = new Array;
+var selectionIds = [];
+var selected = [];
 
+var app = angular.module("projectDetails", []);
+var $myScope = null;
+app.controller("exportController",
+        function ($scope){
+        $myScope = $scope;
+        $scope.update = function (data) {
+              $scope.selected = data;
+              $scope.$apply();
+        }});
+
+function tolerance () {
+    this.widthTolerance = 0.0;
+    this.heightTolerance = 0.0;
+    this.onConfirm = function () {
+        var widthTolerance = parseFloat($("#widthTolerance").val());
+        var heightTolerance = parseFloat($("#heightTolerance").val());
+        if((widthTolerance != this.widthTolerance) || (heightTolerance != this.heightTolerance)){
+             toleranceHandler.widthTolerance = widthTolerance;
+             toleranceHandler.heightTolerance = heightTolerance;
+             //拉取数据
+             projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+             //改变内存数据
+             for(var i = 0 ; i < selected.length ; ++i){
+                var width = parseFloat(selected[i].width);
+                var height = parseFloat(selected[i].height);
+                width += toleranceHandler.widthTolerance;
+                height += toleranceHandler.heightTolerance;
+                selected[i].width = width;
+                selected[i].height = height;
+             }
+             $myScope.update(selected);
+        }
+        $("#projReciverModalDialog").modal('hide');
+    }
+    this.onCancel = function (){
+        $("#projReciverModalDialog").modal('hide');
+    }
+}
+var toleranceHandler = new tolerance();
 function initInputList(){
    var id = {name:"product_id", control:$("#productID")};
    var building = {name:"building", control: $("#building")};
@@ -42,8 +83,9 @@ function bootStrapTable (bootStrapTableElement, model) {
     }
 }
 
-function projectDetailsModal () {
+function projectDetailsModel () {
     /////////////////////////////////////////成员变量/////////////////////////////////////////
+    this.pageNumber = 1;
     this.mainContainer = $("#Container");
     this.pageOperationType = parseInt(parent.getUsage());  //页功能类型
     this.table = new bootStrapTable($("#bootstrapTable"), this);
@@ -69,10 +111,18 @@ function projectDetailsModal () {
     //往工程下拉列表中追加选项
     this.appendOptionsToProjectPickList = function(projNamePickList){
         this.selectors.projectListSelect.empty();
-        for(item in projNamePickList) {
-            var option = "<option value = '" + projNamePickList[item] + "'>" + projNamePickList[item]  + "</option>";
-            this.selectors.projectListSelect.append(option);
+        if(projNamePickList.length == 0){
+            $("#insertBtn").attr("disabled",true);
+            $("#bootstrapTable").bootstrapTable('removeAll');
         }
+        else{
+             for(item in projNamePickList) {
+                 var option = "<option value = '" + projNamePickList[item] + "'>" + projNamePickList[item]  + "</option>";
+                 this.selectors.projectListSelect.append(option);
+             }
+              $("#insertBtn").attr("disabled",false);
+        }
+
     }
     
     //根据类型分类工程
@@ -80,10 +130,10 @@ function projectDetailsModal () {
         var projectList = data.project_list;
         for(var i = 0 ; i < projectList.length; i++) {
             var item = projectList[i];
-            if(item.operation_status == 0) {
+            if(item.operation_status == projectType.OPERABLE) {
                 this.projectNameCluster.operatableProjects.push(item.project_name);
             }
-            else if(item.operation_status == 1) {
+            else if(item.operation_status == projectType.OPERATING) {
                 this.projectNameCluster.operatingProjects.push(item.project_name);
             }
             else{
@@ -102,20 +152,25 @@ function projectDetailsModal () {
     }
     this.getOption = function(model) {
         var option = {
-             url: "http://localhost:8080/getData/projectInfo",
+             url: "http://localhost:8080/get-data/project-info",
              method: "post",
+             responseHandler:responseHandler,
              cache: false,
              pagination: true,
              queryParams: model.getQueryParams,
              sidePagination: "server",
-             pageNumber:1,
+             pageNumber:model.pageNumber,
              pageSize: 10,
              pageList: [10, 20, 30],
              uniqueId: "id",
              cardView: false,
              detailView: false,
              columns: model.getTableColumn(),
-             dataType: 'json'
+             dataType: 'json',
+             exportOptions:{
+                fileName : this.operatingProject,
+                worksheetName : this.operatingProject,
+             }
         };
         return option;
     }
@@ -145,7 +200,7 @@ function projectDetailsModal () {
                     list = list.concat(model.projectNameCluster.exhaustedProjects);
                     model.appendOptionsToProjectPickList(list);
                 }
-                model.selectors.projectListSelect.change(this.projectListSelectChanged);
+                model.selectors.projectListSelect.change(model.projectListSelectChanged);
                 if(list.length > 0){
                      var first = $("#projectListSelect option:first")
                      first.attr("selected", true);
@@ -159,6 +214,12 @@ function projectDetailsModal () {
 
         //工程名称下拉列表变化
         this.projectListSelectChanged = function () {
+            selectionIds = [];
+            selected = [];
+            $("#exportBtn").attr("disabled", true);
+            $("#exportBtn").removeClass("exportBtn-enabled");
+            $("#exportBtn").addClass("exportBtn-disabled");
+            $myScope.update(selected);
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
             model.table.pullData(model.getOption(model));
@@ -207,6 +268,17 @@ function projectDetailsModal () {
                      }, {
                          field: 'height',
                          title: '高度'
+                     }, {
+                        field: 'is_stored',
+                        title : '是否出库',
+                        formatter : function (value, row, index){
+                            if(value){
+                                return "在库";
+                            }
+                            else{
+                                return "已出库";
+                            }
+                        }
                      }];
             if(this.pageOperationType != 1){
                  columns.push({field:'is_stored', title:'是否出库'});
@@ -245,28 +317,72 @@ function projectDetailsModal () {
                 this.selectors.projectTypeSelect.css("display", "hide"); //如果不是查看和添加页面，隐藏这个下拉列表
          }
          else{
-            this.insertBtn.css("display", "none");
+            this.insertBtn.css("display", "show");
          }
          //2. 绑定下拉列表变化事件
         this.selectors.projectTypeSelect.change(this.projectTypeSelectChanged);
         this.selectors.projectListSelect.change(this.projectListSelectChanged);
         //3. 初始化表格
         this.table.pullData(this.getOption(this));
+         //选中事件操作数组
+         var union = function(array,ids,rows){
+             $.each(ids, function (i, id) {
+                 if($.inArray(id,array)==-1){
+                     array[array.length] = id;
+                     selected.push(rows[i]);
+                 }
+                  });
+                 if(array.length > 0){
+                    $("#exportBtn").addClass("exportBtn-enabled");
+                    $("#exportBtn").removeClass("exportBtn-disabled");
+                 }
+                 return array;
+         };
+         //取消选中事件操作数组
+         var difference = function(array,ids, rows){
+                 $.each(ids, function (i, id) {
+                      var index = $.inArray(id,array);
+                      if(index!=-1){
+                          selected.splice(index, 1);
+                          array.splice(index, 1);
+                      }
+                  });
+                 if(array.length == 0){
+                    $("#exportBtn").attr("disabled", true);
+                    $("#exportBtn").removeClass("exportBtn-enabled");
+                    $("#exportBtn").addClass("exportBtn-disabled");
+                 }
+                 return array;
+         };
+         var _ = {"union":union,"difference":difference};
+         //绑定选中事件、取消事件、全部选中、全部取消
+         $("#bootstrapTable").on('check.bs.table check-all.bs.table uncheck.bs.table uncheck-all.bs.table', function (e, rows) {
+                 var touchedRows = !$.isArray(rows) ? [rows] : rows;
+                 var ids = $.map(!$.isArray(rows) ? [rows] : rows, function (row) {
+                          return row.id;
+                 });
+                 func = $.inArray(e.type, ['check', 'check-all']) > -1 ? 'union' : 'difference';
+                 selectionIds = _[func](selectionIds, ids, touchedRows);
+                 $myScope.update(selected);
+          });
+          //切换页
+          $("#bootstrapTable").on('page-change.bs.table', function (number, size) {
+                projDetailsModelInstance.pageNumber = number;
+          })
+
          //4. 获取工程列表
         this.pullProjectList();
     }
 }
 
-var projDetailsModalInstance = null;
+var projDetailsModelInstance = null;
 $(document).ready(function () {
-    $("select").select2({dropdownCssClass:'select-inverse-dropdown'});
+    //$("select").select2({dropdownCssClass:'select-inverse-dropdown'});
     parent.setUsage(1);
-    projDetailsModalInstance = new projectDetailsModal();   //数据模型
+    projDetailsModelInstance = new projectDetailsModel();   //数据模型
     //初始化模型
-    projDetailsModalInstance.Init();
+    projDetailsModelInstance.Init();
     initInputList();
-    $("[data-toggle='tooltip']").tooltip();
-    $("[data-toggle='tooltip']").trigger('manual');
 })
 
 
@@ -285,13 +401,12 @@ function onConfirm(){
         })
 
         if(errInputIndex != -1){
-            inputList[errInputIndex].control.attr("data-toggle","tooltip");
+            inputList[errInputIndex].control.tooltip('show');
             var timer = setInterval(function () {
                  inputList[errInputIndex].control.tooltip('hide');
-                 inputList[errInputIndex].control.attr("data-toggle","none");
+                 inputList[errInputIndex].control.tooltip('destroy');
                  clearInterval(timer);
             }, 3000);
-            inputList[errInputIndex].control.tooltip('show');
             return false;
         }
         else{
@@ -302,7 +417,7 @@ function onConfirm(){
    function postToServer(){
         function getData(){
             var res = {};
-            res.project_name = projDetailsModalInstance.operatingProject;
+            res.project_name = projDetailsModelInstance.operatingProject;
             res.is_stored = true;
             for(var i = 0 ; i < inputList.length; ++i){
                 res[inputList[i].name] = inputList[i].control.val();
@@ -329,7 +444,7 @@ function onConfirm(){
 
         }
         $.ajax({
-            url: "http://localhost:8080/insertData/projectInfo",
+            url: "http://localhost:8080/insert-data/projectInfo",
             type : "POST",
             data: getData(),
             dataType : 'json',
@@ -338,9 +453,14 @@ function onConfirm(){
                           $(this).val("");
                      })
               feedBack(true, "添加成功");
+              projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
             },
             error : function (data){
-               feedBack(false, "添加失败");
+                var msg = "添加失败";
+                if(data.responseJSON.errorMessage == "Project id has exist."){
+                    msg += ", 该编号已存在";
+                }
+               feedBack(false, msg);
             }
         })
    }
@@ -349,7 +469,61 @@ function onConfirm(){
         postToServer();
    }
 }
+function responseHandler(res) {
+    $.each(res.rows, function (i, row) {
+         row.select = $.inArray(row.id, selectionIds) != -1; //判断当前行的数据id是否存在与选中的数组，存在则将多选框状态变为true
+         var width = parseFloat(row.width);
+         var height = parseFloat(row.height);
+         width += toleranceHandler.widthTolerance;
+         height += toleranceHandler.heightTolerance;
+         row.width = width;
+         row.height = height;
+    });
+    return res;
+}
 
 function onCancel(){
     $("#projInfoModalDialog").modal('hide');
+}
+
+function onConfirmProjReciver(){
+    $("#widthTolerance").val(toleranceHandler.widthTolerance);
+    $("#heightTolerance").val(toleranceHandler.heightTolerance);
+    $("#projReciverModalDialog").modal('show');
+}
+
+function onExport(){
+   if($("#exportBtn").hasClass("exportBtn-disabled")){return;}
+   var option = {
+           csvSeparator: ',',
+           csvEnclosure: '"',
+           consoleLog: false,
+           displayTableName: false,
+           escape: false,
+           excelstyles: [ 'border-bottom', 'border-top', 'border-left', 'border-right' ],
+           fileName: projDetailsModelInstance.operatingProject,
+           htmlContent: true,
+           ignoreColumn: [],
+           jspdf: { orientation: 'p',
+                    unit:'pt',
+                    format:'a4',
+                    margins: { left: 20, right: 10, top: 10, bottom: 10 },
+                    autotable: { padding: 2,
+                                 lineHeight: 12,
+                                 fontSize: 8,
+                                 tableExport: { onAfterAutotable: null,
+                                                onBeforeAutotable: null,
+                                                onTable: null
+                                              }
+                               }
+                  },
+           onCellData: null,
+           outputMode: 'file',  // file|string|base64
+           tbodySelector: 'tr',
+           theadSelector: 'tr',
+           tableName: 'myTableName',
+           type: 'excel',
+           worksheetName: projDetailsModelInstance.operatingProject
+         };
+    $("#invisiableTable").tableExport(option);
 }

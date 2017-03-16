@@ -6,10 +6,10 @@ var projectInfoModel = projectInfo.projectInfoModel;
 
 exports.insertProject = function (projectName, res) {
     res.setHeader('Content-Type', 'application/json');
-    projectModel.findAndCountAll({where: {project_name: projectName}})
-        .then(function (result) {
-            if (result.count > 0) {
-                res.status(400).send({errorMessage: "Project name has exist."});
+    projectModel.findOne({where: {project_name: projectName}})
+        .then(function (data) {
+            if (data != null && data.length > 0) {
+                res.status(403).send({errorMessage: "project name has exist."});
             } else {
                 insertProject(projectName, res);
             }
@@ -173,20 +173,6 @@ exports.getProjectInfoByName = function (projectName, res) {
         });
 }
 
-exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback) {
-    projectInfoModel.findAll({
-            where: {project_name: projectName},
-            order: 'created_at DESC',
-            'limit': sizePerPage,
-            'offset': (curPage - 1) * sizePerPage
-        })
-        .then(function (data) {
-            callback(data);
-        })
-        .catch(function (error) {
-            console.log('Error occured get project info by name: ', error);
-        });
-}
 
 exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback){
     //get total

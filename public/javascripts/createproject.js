@@ -2,23 +2,20 @@
 var alertToolTip = $("#topAlert");
 
 function showToolTip(msg, bSuc){
-    alertToolTip.css("display","block");
     if(bSuc){
-        alertToolTip.addClass("alert-success");
+         $("#topAlert").addClass("alert-success");
     }
     else{
-        alertToolTip.addClass("alert-danger");
+        $("#topAlert").addClass("alert-danger");
     }
-    alertToolTip.addClass("alert-show");
-    alertToolTip.html(msg);
+    $("#topAlert").text(msg);
+    $("#topAlert").show();
+    $("#topAlert").fadeOut(2000);
     var timer = setInterval(function () {
-        clearInterval(timer);
-        alertToolTip.removeClass("alert-show");
-        alertToolTip.removeClass("alert-success");
-        alertToolTip.removeClass("alert-danger");
-        alertToolTip.addClass("alert-show");
-        alertToolTip.css("display","none");
-      }, 3000);
+         $("#topAlert").removeClass("alert-danger");
+         $("#topAlert").removeClass("alert-success");
+         clearInterval(timer);
+    }, 3000);
 }
 
 
@@ -61,9 +58,29 @@ function onClick(){
        },
        error : function (data){
             var errMsg = JSON.stringify(data.responseJSON.errorMessage);
-            if (errMsg == '"Project name has exist."'){
-               showToolTip("已有同名工程存在");
+            if (errMsg == '"project name has exist."'){
+               showToolTip("已有同名工程存在.");
+            }
+            else{
+               showToolTip("创建失败, 未知错误.");
             }
        }
     })
+}
+
+function onUpload() {
+    $("#uploadModalDialog").modal('show');
+}
+
+function onChange(files){
+    function getFileName(o){
+     var pos=o.lastIndexOf("\\");
+     return o.substring(pos+1);
+     }
+    var fileName = getFileName($("#fileInput").val());
+    $("#fileHelp").html(fileName)
+}
+
+function onChooseFile(){
+    $("#fileInput").click();
 }

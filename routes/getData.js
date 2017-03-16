@@ -23,9 +23,12 @@ router.post('/project-info', function (req, res, next) {
                    req.body.offset,
                    req.body.limit
                    ,function (data, total) {
+                   console.log(JSON.stringify(data));
+                   console.log(total);
              res.setHeader('Content-Type', 'application/json');
              res.send(JSON.stringify({'rows' : data, 'total' : total}));
-        })}
+        })
+        }
         else {
              res.setHeader('Content-Type', 'application/json');
              res.send(JSON.stringify({'rows' : [], 'total' : 0}));
