@@ -86,21 +86,41 @@ app.controller('myCtrl', function ($scope, $http) {
     }
 
     $scope.select_name = "";
-    $http.get("http://localhost:8080/get-data/projects-name")
+    $scope.projectCluster = {
+        operable : [],
+        operating : []
+    }
+
+    $http.get("http://localhost:8080/get-data/projects")
         .then(successCallback, errorCallback);
 
     function successCallback(response) {
         var data = response.data.project_list;
-        var array = [];
         for (var i = 0; i < data.length; i++) {
-            array.push(data[i].project_name);
+            if(data[i].operation_status == projectType.OPERABLE){
+                $scope.projectCluster.operable.push(data[i].project_name);
+            }
+            else if(data[i].operation_status == projectType.OPERATING){
+                $scope.projectCluster.operating.push(data[i].project_name);
+            }
         }
-        $scope.names = array;
+        $scope.names = $scope.projectCluster.operating;
     }
 
     function errorCallback(error) {
         //error code
     }
+
+    $scope.propTypeChanged = function(){
+        value = $("#project_type_select").val();
+        if(value == projectType.OPERABLE){
+            $scope.names = $scope.projectCluster.operable;
+        }
+        else if(value == projectType.OPERATING){
+            $scope.names = $scope.projectCluster.operating;
+        }
+    }
+
 
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
