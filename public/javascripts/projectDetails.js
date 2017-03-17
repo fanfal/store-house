@@ -115,13 +115,15 @@ function projectDetailsModel () {
             $("#insertBtn").attr("disabled",true);
             $("#bootstrapTable").bootstrapTable('removeAll');
             setExportToExcelBtnEnable(false);
+            $("#uploadBtn").attr("disabled",true);
         }
         else{
              for(item in projNamePickList) {
                  var option = "<option value = '" + projNamePickList[item] + "'>" + projNamePickList[item]  + "</option>";
                  this.selectors.projectListSelect.append(option);
              }
-              $("#insertBtn").attr("disabled",false);
+             $("#insertBtn").attr("disabled",false);
+             $("#uploadBtn").attr("disabled",false);
         }
 
     }
@@ -222,6 +224,7 @@ function projectDetailsModel () {
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
             model.table.pullData(model.getOption(model));
+            $("#uploadBtn").attr("disabled",false);
         }
     /////////////////////////////////////////bootstrapTable用/////////////////////////////////////////
 
@@ -542,5 +545,12 @@ function setExportToExcelBtnEnable(bEnable){
     else{
         $("#exportBtn").attr("disabled", true);
     }
+
+}
+
+function onSubmitBtnClick(){
+    var action = $("#uploadForm").attr("action");
+    action += projDetailsModelInstance.operatingProject;
+    $("#uploadForm").attr("action", action);
 
 }

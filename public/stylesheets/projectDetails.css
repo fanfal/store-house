@@ -40,3 +40,6 @@ th{
     margin-left:5px;
     margin-right:2px
 }
+
+#fileInput{left:0;top:0; width:0px;height:0px;font-size:1px;opacity:0;filter:alpha(opacity=0);}
+#inputMask{width : 100px; height : 36px; padding:0px; margin:0px}
