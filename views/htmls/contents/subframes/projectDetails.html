@@ -63,7 +63,6 @@
     <table id = "invisiableTable"ng-controller="exportController" style="display:none" data-tableexport-display="always">
         <thead>
             <tr>
-            <th>序号</th>
             <th>栋</th>
             <th>单元</th>
             <th>楼</th>
@@ -76,7 +75,6 @@
         </thead>
         <tbody>
             <tr ng-repeat = "x in selected">
-            <td>{{x.id}}</td>
             <td>{{x.building}}</td>
             <td>{{x.unit}}</td>
             <td>{{x.floor}}</td>
@@ -158,7 +156,12 @@
                             <p>类型: </p>
                         </div>
                         <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "type" data-toggle="tooltip" data-placement="right" title="不能为空">
+                            <select  id = "typeSelect" class="form-control select select-primary select-block mbl projInfoInput">
+                                <option value= "框" selected="selected">框</option>
+                                <option value= "扇">扇</option>
+                                <option value= "玻璃">玻璃</option>
+                                <option value= "其它">其它</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -166,7 +169,7 @@
                             <p>宽度: </p>
                         </div>
                         <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "width" data-toggle="tooltip" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "width" data-toggle="tooltip" data-placement="right" title="请检查输入内容">
                         </div>
                     </div>
                     <div class="row">
@@ -174,7 +177,7 @@
                             <p>高度: </p>
                         </div>
                         <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "height" data-toggle="tooltip" data-placement="right" title="不能为空">
+                            <input type="text" class="form-control projInfoInput" id = "height" data-toggle="tooltip" data-placement="right" title="请检查输入内容">
                         </div>
                     </div>
                 </div>
