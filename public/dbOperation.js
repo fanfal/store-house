@@ -135,7 +135,7 @@ exports.productOutGoing = function (projectName, productId, res) {
     projectInfoModel.findAll({where: {project_name: projectName, product_id: productId, is_stored: true}})
         .then(function (data) {
             if (data.length > 0) {
-                updateProductStatus(projectName, productId, false);
+                updateProductStatusWhenOutGoing(projectName, productId, false);
             }
             res.send(JSON.stringify({project_info_list: data}));
         })
@@ -146,16 +146,25 @@ exports.productOutGoing = function (projectName, productId, res) {
         });
 }
 
-exports.updateProjectStatus = function (projectName, status) {
-    updateProjectStatus(projectName, status);
+exports.updateProjectStatusByRequest = function (projectName, status) {
+    switch (status) {
+        case projectType.OPERABLE:
+            updateProjectStatusBaseOnProduct(projectName, function (data) {
+                if (data.length > 0) {
+                    updateProjectStatus(projectName, status);
+                }
+            })
+            break;
+        case projectType.OPERATING:
+            updateProjectStatus(projectName, status);
+            break;
+        default:
+            break;
+    }
 }
 
-function updateProjectStatus(projectName, status) {
-    projectModel.update({operation_status: status}, {where: {project_name: projectName}});
 
-}
-
-function updateProjectStatusWhenOutGoing(projectName) {
+function updateProjectStatusBaseOnProduct(projectName, callback) {
     projectInfoModel.findAll({
             where: {
                 project_name: projectName,
@@ -163,16 +172,31 @@ function updateProjectStatusWhenOutGoing(projectName) {
             }
         })
         .then(function (result) {
-            if (result.length == 0) {
-                updateProjectStatus(projectName, projectType.EXHAUSTED);
+            callback(data);
+        })
+}
+
+function updateProjectStatus(projectName, status) {
+    projectModel.update({operation_status: status}, {where: {project_name: projectName}});
+}
+
+function updateProjectStatusWhenInsertProjectInfo(projectName) {
+    projectModel.findOne({where: {operation_status: projectType.EXHAUSTED, project_name: projectName}})
+        .then(function (result) {
+            if (result != null) {
+                updateProjectStatus(projectName, projectType.OPERABLE);
             }
         })
 }
 
-function updateProductStatus(projectName, productId, isStored) {
+function updateProductStatusWhenOutGoing(projectName, productId, isStored) {
     projectInfoModel.update({is_stored: isStored}, {where: {project_name: projectName, product_id: productId}})
         .then(function () {
-            updateProjectStatusWhenOutGoing(projectName)
+            updateProjectStatusBaseOnProduct(projectName, function (data) {
+                if (data.length == 0) {
+                    updateProjectStatus(projectName, projectType.EXHAUSTED);
+                }
+            });
         })
         .catch(function (error) {
             console.log('Update product store status error', error);
@@ -217,6 +241,7 @@ function insertProjectInfo(data, res) {
                                 where: {product_id: data.product_id}
                             })
                             .then(function () {
+                                updateProjectStatusWhenInsertProjectInfo(data.project_name);
                                 res.status(200).send({"success": true});
                             })
                             .catch(function (error) {
@@ -240,6 +265,7 @@ function insertProjectInfo(data, res) {
                         })
                         .save()
                         .then(function () {
+                            updateProjectStatusWhenInsertProjectInfo(data.project_name);
                             res.status(200).send({"success": true});
                         })
                         .catch(function (error) {
@@ -284,6 +310,9 @@ function insertProjectInfoFromExcel(name, data, res) {
                             }, {
                                 where: {product_id: data.product_id}
                             })
+                            .then(function(){
+                                updateProjectStatusWhenInsertProjectInfo(name);
+                            })
                             .catch(function (error) {
                                 console.log("Update product error.");
                             })
@@ -303,6 +332,9 @@ function insertProjectInfoFromExcel(name, data, res) {
                             product_id: data.product_id
                         })
                         .save()
+                        .then(function(){
+                            updateProjectStatusWhenInsertProjectInfo(name);
+                        })
                         .catch(function (error) {
                             console.log('Error occur insert project info: ', error);
                         });

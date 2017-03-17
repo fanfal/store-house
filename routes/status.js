@@ -11,7 +11,7 @@ router.post('/', function (req, res, next) {
     if (projectName == null || projectStatus == null) {
         res.status(400).send(JSON.stringify({errorMessage: "project or status is null"}));
     } else {
-        dbOperation.updateProjectStatus(projectName, projectStatus);
+        dbOperation.updateProjectStatusByRequest(projectName, projectStatus);
     }
 });
 module.exports = router;
