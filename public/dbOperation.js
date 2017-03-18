@@ -148,14 +148,14 @@ exports.productOutGoing = function (projectName, productId, res) {
 
 exports.updateProjectStatusByRequest = function (projectName, status) {
     switch (status) {
-        case projectType.OPERABLE:
+        case "0":
             updateProjectStatusBaseOnProduct(projectName, function (data) {
                 if (data.length > 0) {
                     updateProjectStatus(projectName, status);
                 }
             })
             break;
-        case projectType.OPERATING:
+        case "1":
             updateProjectStatus(projectName, status);
             break;
         default:
