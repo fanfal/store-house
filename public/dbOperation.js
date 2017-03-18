@@ -172,7 +172,7 @@ function updateProjectStatusBaseOnProduct(projectName, callback) {
             }
         })
         .then(function (result) {
-            callback(data);
+            callback(result);
         })
 }
 
