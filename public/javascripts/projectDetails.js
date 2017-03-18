@@ -32,8 +32,8 @@ function tolerance () {
                 var height = parseFloat(selected[i].height);
                 width += toleranceHandler.widthTolerance;
                 height += toleranceHandler.heightTolerance;
-                selected[i].width = width;
-                selected[i].height = height;
+                selected[i].width = width.toFixed(3);
+                selected[i].height = height.toFixed(3);
              }
              $myScope.update(selected);
         }
@@ -51,7 +51,7 @@ function initInputList(){
    var floor = {name:"floor", control: $("#floor")};
    var number = {name:"number", control:$("#number")};
    var position = {name:"position", control: $("#position")};
-   var type = {name:"type", control:$("#type")};
+   var type = {name:"type", control:$("#typeSelect")};
    var width = {name:"width", control: $("#width")};
    var height = {name:"height", control: $("#height")};
    inputList.push(id);
@@ -115,13 +115,15 @@ function projectDetailsModel () {
             $("#insertBtn").attr("disabled",true);
             $("#bootstrapTable").bootstrapTable('removeAll');
             setExportToExcelBtnEnable(false);
+            $("#uploadBtn").attr("disabled",true);
         }
         else{
              for(item in projNamePickList) {
                  var option = "<option value = '" + projNamePickList[item] + "'>" + projNamePickList[item]  + "</option>";
                  this.selectors.projectListSelect.append(option);
              }
-              $("#insertBtn").attr("disabled",false);
+             $("#insertBtn").attr("disabled",false);
+             $("#uploadBtn").attr("disabled",false);
         }
 
     }
@@ -222,6 +224,7 @@ function projectDetailsModel () {
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
             model.table.pullData(model.getOption(model));
+            $("#uploadBtn").attr("disabled",false);
         }
     /////////////////////////////////////////bootstrapTable用/////////////////////////////////////////
 
@@ -242,7 +245,8 @@ function projectDetailsModel () {
                      valign: "middle"//垂直
                      },{
                          field: 'id',
-                         title: '序号'
+                         title: '序号',
+                         visible : false
                      }, {
                          field: 'building',
                          title: '栋'
@@ -390,12 +394,19 @@ function onConfirm(){
    function checkValidity(){
         var errInputIndex = -1;
         $(".projInfoInput").each(function(index){
-               if($(this).val() == ""){
+               var value = $(this).val();
+               if(value == ""){
                     errInputIndex = index;
                     return false;
                }
+               if($(this).attr("id") == "width" || $(this).attr("id") == "height"){
+                    var pattern = /^(-)?\d+(\.\d+)?$/;
+                    if (pattern.exec(value) == null) {
+                        errInputIndex = index;
+                        return false
+                    }
+               }
         })
-
         if(errInputIndex != -1){
             inputList[errInputIndex].control.tooltip('show');
             var timer = setInterval(function () {
@@ -453,9 +464,12 @@ function onConfirm(){
             },
             error : function (data){
                 var msg = "添加失败";
-                if(data.responseJSON.errorMessage == "Project id has exist."){
-                    msg += ", 该编号已存在";
+                if(data.responseJSON != null){
+                    if(data.responseJSON.errorMessage == "Project id has exist."){
+                        msg += ", 该编号已存在";
+                    }
                 }
+
                feedBack(false, msg);
             }
         })
@@ -472,8 +486,8 @@ function responseHandler(res) {
          var height = parseFloat(row.height);
          width += toleranceHandler.widthTolerance;
          height += toleranceHandler.heightTolerance;
-         row.width = width;
-         row.height = height;
+         row.width = width.toFixed(3);
+         row.height = height.toFixed(3);
     });
     return res;
 }
@@ -531,5 +545,12 @@ function setExportToExcelBtnEnable(bEnable){
     else{
         $("#exportBtn").attr("disabled", true);
     }
+
+}
+
+function onSubmitBtnClick(){
+    var action = $("#uploadForm").attr("action");
+    action += projDetailsModelInstance.operatingProject;
+    $("#uploadForm").attr("action", action);
 
 }

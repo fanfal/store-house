@@ -47,6 +47,7 @@ router.post('/', function (req, res) {
             exceltojson = xlstojson;
         }
         try {
+            console.log(req.query.name);
             exceltojson({
                 input: req.file.path,
                 output: null, //since we don't need output.json

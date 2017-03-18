@@ -30,40 +30,10 @@
             <div class ="col-sm-3">
                 <button class = "btn btn-primary bti-wide" onclick="onClick()" style="width:100%">创建</button>
             </div>
-            <div class ="col-sm-3">
-                <button class = "btn btn-primary bti-wide" onclick="onUpload()" style="width:100%">从文件中上传</button>
-            </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="uploadModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class = "modal-dialog" role="document">
-        <div class = "modal-content" style="width:600px">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="projReciverModalLabel">
-                    上传文件
-                </h4>
-            </div>
-            <div class ="modal-body">
-                <div class = "container" style="width:100%;text-align:center">
-                    <button class = "btn btn-primary" id = "inputMask" onclick = "onChooseFile()">选择文件</button>
-                    <form id="uploadForm" enctype="multipart/form-data" action="/uploadExl" method="post">
-                        <div class="form-group ">
-                            <input type="file" name="file" class="form-control-file " aria-describedby="fileHelp"
-                                   onchange = "onChange(this.files)" id = "fileInput"/>
-                            <small id="fileHelp" class="form-text text-muted">选择Excel文件并上传.</small>
-                        </div>
-                        <button type="submit" class="btn btn-primary" onclick = "">提交</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <script type="text/javascript", src="/jquery/dist/jquery.js"></script>
 <script type="text/javascript", src="/javascripts/createProject.js"></script>
 <script type="text/javascript", src="/bootstrap/dist/js/bootstrap.min.js"></script>
