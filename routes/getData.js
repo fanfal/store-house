@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var dbOperation = require("../public/dom/dbOperation.js")
+var dbOperation = require("../public/dbOperation.js")
 
 router.get('/project', function (req, res, next) {
     dbOperation.getProject(req.query.name, res);

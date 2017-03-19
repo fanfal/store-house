@@ -39,34 +39,6 @@ $("#close").click(function () {
     $("#alert").fadeOut();
 });
 
-$("#btn_start_scan").click(function () {
-    $(this).addClass("disabled");
-    $("#btn_stop_scan").removeClass("disabled");
-    $("#scan_input").focus();
-    $("#scan_input").blur(function () {
-        $(this).focus();
-    });
-
-});
-
-$("#btn_generate_list").click(function () {
-    if ($("#btn_start_scan").hasClass("disabled")) {
-        $("#btn_start_scan").removeClass("disabled");
-        $("#btn_stop_scan").addClass("disabled");
-    }
-    $("#scan_input").off("blur");
-    $("#scan_input").blur();
-    $('#myModal').modal('show');
-})
-
-$("#btn_stop_scan").click(function () {
-    $("#btn_start_scan").removeClass("disabled");
-    $(this).addClass("disabled");
-    $("#scan_input").off("blur");
-    $("#scan_input").blur();
-})
-
-
 $("#btn_print_list").click(function () {
     if (projectInfo.length === 0) {
         showNoItemAlert();
@@ -87,8 +59,8 @@ app.controller('myCtrl', function ($scope, $http) {
 
     $scope.select_name = "";
     $scope.projectCluster = {
-        operable : [],
-        operating : []
+        operable: [],
+        operating: []
     }
 
     $http.get("http://localhost:8080/get-data/projects")
@@ -97,10 +69,10 @@ app.controller('myCtrl', function ($scope, $http) {
     function successCallback(response) {
         var data = response.data.project_list;
         for (var i = 0; i < data.length; i++) {
-            if(data[i].operation_status == projectType.OPERABLE){
+            if (data[i].operation_status == projectType.OPERABLE) {
                 $scope.projectCluster.operable.push(data[i].project_name);
             }
-            else if(data[i].operation_status == projectType.OPERATING){
+            else if (data[i].operation_status == projectType.OPERATING) {
                 $scope.projectCluster.operating.push(data[i].project_name);
             }
         }
@@ -111,12 +83,12 @@ app.controller('myCtrl', function ($scope, $http) {
         //error code
     }
 
-    $scope.propTypeChanged = function(){
+    $scope.propTypeChanged = function () {
         value = $("#project_type_select").val();
-        if(value == projectType.OPERABLE){
+        if (value == projectType.OPERABLE) {
             $scope.names = $scope.projectCluster.operable;
         }
-        else if(value == projectType.OPERATING){
+        else if (value == projectType.OPERATING) {
             $scope.names = $scope.projectCluster.operating;
         }
     }
@@ -125,11 +97,6 @@ app.controller('myCtrl', function ($scope, $http) {
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
         if (e.key == "Enter") {
-            if (projectName == "") {
-                showProjectEmptyAlert();
-                $scope.scan_text = "";
-                return;
-            }
             var projectId = $scope.scan_text;
             $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
                 .then(scanSuccessCallback, scanErrorCallBack);
@@ -152,6 +119,42 @@ app.controller('myCtrl', function ($scope, $http) {
 
     }
 
+    $("#btn_start_scan").click(function () {
+        if ($scope.select_name == "") {
+            showProjectEmptyAlert();
+            $scope.scan_text = "";
+            return;
+        }
+        $(this).addClass("disabled");
+        $("#btn_stop_scan").removeClass("disabled");
+        $("#scan_input").focus();
+        $("#scan_input").blur(function () {
+            $(this).focus();
+        });
+        updateProjectStatus($scope.select_name, projectType.OPERATING);
+
+    });
+
+    $("#btn_generate_list").click(function () {
+        updateProjectStatus($scope.select_name, projectType.OPERABLE);
+        if ($("#btn_start_scan").hasClass("disabled")) {
+            $("#btn_start_scan").removeClass("disabled");
+            $("#btn_stop_scan").addClass("disabled");
+        }
+        $("#scan_input").off("blur");
+        $("#scan_input").blur();
+        $('#myModal').modal('show');
+    })
+
+    $("#btn_stop_scan").click(function () {
+        updateProjectStatus($scope.select_name, projectType.OPERABLE);
+        $("#btn_start_scan").removeClass("disabled");
+        $(this).addClass("disabled");
+        $("#scan_input").off("blur");
+        $("#scan_input").blur();
+    })
+
+
     function countProductType(data) {
         switch (data[0].type) {
             case type.FRAME:
@@ -168,6 +171,21 @@ app.controller('myCtrl', function ($scope, $http) {
                 break;
         }
     }
+
+    function updateProjectStatus(projectName, status) {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/status",
+            data: {"project_name": projectName, status: status},
+            dataType: 'json',
+            success: function (data) {
+            },
+            error: function (e) {
+            }
+
+        })
+    }
+
 });
 
 

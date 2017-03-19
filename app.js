@@ -10,6 +10,7 @@ var getData = require('./routes/getData')
 var insertData = require('./routes/insertData');
 var outGoing = require('./routes/outGoing.js')
 var uploadExcel = require('./routes/uploadExcel.js');
+var status = require('./routes/status.js')
 var app = express();
 
 // view engine setup
@@ -31,6 +32,7 @@ app.use('/get-data', getData);
 app.use('/insert-data', insertData);
 app.use('/out-going',outGoing);
 app.use('/upload-excel', uploadExcel);
+app.use('/status', status);
 // catch 404 and forward to error handler
 
 app.use(function (req, res, next) {
