@@ -1,4 +1,8 @@
-*{margin: 0px; padding: 0px;}
+*{margin: 0px;
+  padding: 0px;
+  font-family:"SF Pro SC","SF Pro Display",
+  "SF Pro Icons","PingFang SC",
+  "Helvetica Neue","Helvetica","Arial",sans-serif}
 
 #main-content{
     background-color: #ffffff;

@@ -15,6 +15,9 @@ app.controller("exportController",
               $scope.$apply();
         }});
 
+
+
+
 function tolerance () {
     this.widthTolerance = 0.0;
     this.heightTolerance = 0.0;
@@ -85,6 +88,7 @@ function bootStrapTable (bootStrapTableElement, model) {
 
 function projectDetailsModel () {
     /////////////////////////////////////////成员变量/////////////////////////////////////////
+    this.projectDetailsStateMachine = new projectDetailsStateMachine()
     this.pageNumber = 1;
     this.mainContainer = $("#Container");
     this.pageOperationType = parseInt(parent.getUsage());  //页功能类型
@@ -112,22 +116,20 @@ function projectDetailsModel () {
     this.appendOptionsToProjectPickList = function(projNamePickList){
         this.selectors.projectListSelect.empty();
         if(projNamePickList.length == 0){
-            $("#insertBtn").attr("disabled",true);
             $("#bootstrapTable").bootstrapTable('removeAll');
-            setExportToExcelBtnEnable(false);
-            $("#uploadBtn").attr("disabled",true);
+            //工程列表是空的，禁止插入
+            projDetailsModelInstance.projectDetailsStateMachine.enableInsert(false);
         }
         else{
              for(item in projNamePickList) {
                  var option = "<option value = '" + projNamePickList[item] + "'>" + projNamePickList[item]  + "</option>";
                  this.selectors.projectListSelect.append(option);
              }
-             $("#insertBtn").attr("disabled",false);
-             $("#uploadBtn").attr("disabled",false);
+             projDetailsModelInstance.projectDetailsStateMachine.enableInsert(true);
         }
 
     }
-    
+
     //根据类型分类工程
     this.doCluster = function(data) {
         var projectList = data.project_list;
@@ -182,26 +184,31 @@ function projectDetailsModel () {
         var model = this;
         this.projectTypeSelectChanged = function () {
                 model.selectors.projectListSelect.unbind('change');
+                var selectType = -1;
                 //往projectListSelect中添加选项, 然后默认选第一个
                 var selection = model.selectors.projectTypeSelect.val();
                 var list = new Array();
                 if (selection == 'selOperating'){
                     list = model.projectNameCluster.operatingProjects
                     model.appendOptionsToProjectPickList(list);
+                    selectType = projectType.OPERATING;
                 }
                 else if(selection == 'selOperatable'){
                     list = model.projectNameCluster.operatableProjects;
                     model.appendOptionsToProjectPickList(list);
+                    selectType = projectType.OPERABLE;
                 }
                 else if(selection == 'selExhausted'){
                     list = model.projectNameCluster.exhaustedProjects;
                     model.appendOptionsToProjectPickList(list);
+                    selectType = projectType.EXHAUSTED;
                 }
                 else{
                     list = model.projectNameCluster.operatingProjects;
                     list = list.concat(model.projectNameCluster.operatableProjects);
                     list = list.concat(model.projectNameCluster.exhaustedProjects);
                     model.appendOptionsToProjectPickList(list);
+                    selectType = 4;
                 }
                 model.selectors.projectListSelect.change(model.projectListSelectChanged);
                 if(list.length > 0){
@@ -213,18 +220,19 @@ function projectDetailsModel () {
                 else{
                     $("#s2id_projectListSelect a .select2-chosen").html("&nbsp;");
                 }
+                projDetailsModelInstance.projectDetailsStateMachine.setSelectedProjectType(selectType);
         }
 
         //工程名称下拉列表变化
         this.projectListSelectChanged = function () {
             selectionIds = [];
             selected = [];
-            setExportToExcelBtnEnable(false);
+            //setExportToExcelBtnEnable(false);
             $myScope.update(selected);
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
             model.table.pullData(model.getOption(model));
-            $("#uploadBtn").attr("disabled",false);
+            //$("#uploadBtn").attr("disabled",false);
         }
     /////////////////////////////////////////bootstrapTable用/////////////////////////////////////////
 
@@ -315,13 +323,6 @@ function projectDetailsModel () {
 
     //初始化
     this.Init = function () {
-         //1. 下拉列表 和 按钮
-         if(this.pageOperationType != pageOperationType.potcheckAndInsert){
-                this.selectors.projectTypeSelect.css("display", "hide"); //如果不是查看和添加页面，隐藏这个下拉列表
-         }
-         else{
-            this.insertBtn.css("display", "show");
-         }
          //2. 绑定下拉列表变化事件
         this.selectors.projectTypeSelect.change(this.projectTypeSelectChanged);
         this.selectors.projectListSelect.change(this.projectListSelectChanged);
@@ -336,7 +337,7 @@ function projectDetailsModel () {
                  }
                   });
                  if(array.length > 0){
-                    setExportToExcelBtnEnable(true);
+                    projDetailsModelInstance.projectDetailsStateMachine.enableExport(true);
                  }
                  return array;
          };
@@ -350,7 +351,7 @@ function projectDetailsModel () {
                       }
                   });
                  if(array.length == 0){
-                    setExportToExcelBtnEnable(false);
+                    projDetailsModelInstance.projectDetailsStateMachine.enableExport(false);
                  }
                  return array;
          };
@@ -373,6 +374,12 @@ function projectDetailsModel () {
          //4. 获取工程列表
         this.pullProjectList();
     }
+
+    this.onInsertSuc = function () {
+        //插入成功，可能需要调整下拉列表状态
+        var state = this.projectDetailsStateMachine.insertDone();
+        state.exec(this);
+    }
 }
 
 var projDetailsModelInstance = null;
@@ -387,7 +394,12 @@ $(document).ready(function () {
 
 
 function onInsert(){
-    $("#projInfoModalDialog").modal('show');
+    if(!projDetailsModelInstance.projectDetailsStateMachine.insertEnable) {
+        showMessageBox("请选择一个项目.");
+    }
+    else{
+        $("#projInfoModalDialog").modal('show');
+    }
 }
 
 function onConfirm(){
@@ -460,6 +472,7 @@ function onConfirm(){
                           $(this).val("");
                      })
               feedBack(true, "添加成功");
+              projDetailsModelInstance.onInsertSuc();
               projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
             },
             error : function (data){
@@ -469,7 +482,6 @@ function onConfirm(){
                         msg += ", 该编号已存在";
                     }
                 }
-
                feedBack(false, msg);
             }
         })
@@ -479,8 +491,11 @@ function onConfirm(){
         postToServer();
    }
 }
+
 function responseHandler(res) {
+    var count = 0;
     $.each(res.rows, function (i, row) {
+         ++count;
          row.select = $.inArray(row.id, selectionIds) != -1; //判断当前行的数据id是否存在与选中的数组，存在则将多选框状态变为true
          var width = parseFloat(row.width);
          var height = parseFloat(row.height);
@@ -489,6 +504,10 @@ function responseHandler(res) {
          row.width = width.toFixed(3);
          row.height = height.toFixed(3);
     });
+    if(count > 0) {
+        //不是一个空工程
+        projDetailsModelInstance.projectDetailsStateMachine.isSelectedProjectEmpty = false;
+    }
     return res;
 }
 
@@ -503,7 +522,14 @@ function onConfirmProjReciver(){
 }
 
 function onExport(){
-   if($("#exportBtn").attr("disable") == true){return;}
+   //if($("#exportBtn").attr("disable") == true){return;}
+
+   if (!projDetailsModelInstance.projectDetailsStateMachine.exportEnable) {
+        //不允许导出
+        showMessageBox("请勾选要导出的项.");
+        return ;
+   }
+
    var option = {
            csvSeparator: ',',
            csvEnclosure: '"',
@@ -538,6 +564,7 @@ function onExport(){
     $("#invisiableTable").tableExport(option);
 }
 
+
 function setExportToExcelBtnEnable(bEnable){
     if(bEnable){
         $("#exportBtn").attr("disabled", false);
@@ -545,12 +572,48 @@ function setExportToExcelBtnEnable(bEnable){
     else{
         $("#exportBtn").attr("disabled", true);
     }
-
 }
 
 function onSubmitBtnClick(){
-    var action = $("#uploadForm").attr("action");
-    action += projDetailsModelInstance.operatingProject;
-    $("#uploadForm").attr("action", action);
+    //提交文件
+    var postURL = "/upload-excel?name=";
+    postURL += projDetailsModelInstance.operatingProject;
+    var fileData = new FormData(document.getElementById("uploadForm"));
+    alert(JSON.stringify(fileData));
+    $.ajax({
+      url: postURL,
+      type : "POST",
+      data: fileData,
+      dataType : 'json',
+      success : function (data){
+            feedBack(true, "添加成功");
+            projDetailsModelInstance.onInsertSuc();
+            projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+      },
+      error : function (data){
+          var msg = "添加失败";
+          if(data.responseJSON != null){
+            if(data.responseJSON.errorMessage == "Project id has exist."){
+               msg += ", 该编号已存在";
+            }
+          }
+          feedBack(false, msg);
+      }
+    });
+}
 
+function showMessageBox(msg) {
+    $("#messageBoxHint").html(msg);
+    $("#messageBox").modal('show');
+}
+function hideMessageBox() {
+    $("#messageBox").modal('hide');
+}
+
+function onUpload() {
+    if(!projDetailsModelInstance.projectDetailsStateMachine.insertEnable){
+        showMessageBox("请选择一个项目.");
+        return;
+    }
+    $("#uploadModalDialog").modal('show');
 }

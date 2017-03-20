@@ -1,10 +1,4 @@
 /* global $*/
-
-
-function onUpload() {
-    $("#uploadModalDialog").modal('show');
-}
-
 function onChange(files){
     function getFileName(o){
      var pos=o.lastIndexOf("\\");
