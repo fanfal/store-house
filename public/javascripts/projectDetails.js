@@ -275,10 +275,10 @@ function projectDetailsModel () {
                          title: '类型'
                      },  {
                          field: 'width',
-                         title: '宽度'
+                         title: '宽度(mm)'
                      }, {
                          field: 'height',
-                         title: '高度'
+                         title: '高度(mm)'
                      }, {
                         field: 'is_stored',
                         title : '是否出库',
