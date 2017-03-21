@@ -409,7 +409,6 @@ function onConfirm(){
             for(var i = 0 ; i < inputList.length; ++i){
                 res[inputList[i].name] = inputList[i].control.val();
             }
-            alert(JSON.stringify(res));
             return res;
         }
 
@@ -436,6 +435,7 @@ function onConfirm(){
             type : "POST",
             data: getData(),
             dataType : 'json',
+            async:false,
             success : function (data){
               $(".projInfoInput").each(function(index){
                           $(this).val("");
@@ -447,8 +447,11 @@ function onConfirm(){
             error : function (data){
                 var msg = "添加失败";
                 if(data.responseJSON != null){
-                    if(data.responseJSON.errorMessage == "Project id has exist."){
-                        msg += ", 该编号已存在";
+                    if(data.responseJSON.errorMessage == "Product was stored."){
+                        msg += ", 该项目在库.";
+                    }
+                    else if(data.responseJSON.errorMessage == "Update product error.") {
+                        msg += ", 在插入项目时发生异常.";
                     }
                 }
                feedBack(false, msg);

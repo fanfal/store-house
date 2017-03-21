@@ -20,6 +20,8 @@ function exhaustedToOperableState() {
         model.projectTypeSelectChanged();
         //4. 选中刚才切换过来那个
         $("#projectListSelect").val(curProjName);
+        //5. 切换到刚才编辑的工程
+        model.projectListSelectChanged();
     }
 }
 
