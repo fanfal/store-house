@@ -642,17 +642,18 @@ function createQRCode(data, bodyContent, qrDraw) {
     var subContent = document.createElement('div');
     subContent.classList.add("row");
     subContent.classList.add("qrSubContent");
-
+    var qrImageRow = document.createElement('div');
+    qrImageRow.classList.add("row");
     var qrCode = document.createElement('canvas');
     qrDraw.draw(qrCode, data.product_id, function (error, canvas) {
         if (error) console.error(error)
         console.log('success!');
     });
-
+    qrImageRow.appendChild(qrCode);
     var text = document.createElement("h");
     text.textContent = data.product_id;
 
-    subContent.appendChild(qrCode);
+    subContent.appendChild(qrImageRow);
     subContent.appendChild(text);
     bodyContent.appendChild(subContent);
 }
