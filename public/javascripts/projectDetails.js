@@ -250,10 +250,6 @@ function projectDetailsModel () {
                      align: "center",//水平
                      valign: "middle"//垂直
                      },{
-                         field: 'id',
-                         title: '序号',
-                         visible : false
-                     }, {
                          field: 'building',
                          title: '栋'
                      }, {

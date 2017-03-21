@@ -63,14 +63,6 @@
                     <div class ="row" style="width:500px;"><div class ="alert fade in" style="display:none"></div></div>
                     <div class="row">
                         <div class="col-sm-2 projInputControl">
-                            <p>编号: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "productID" data-toggle="tooltip" data-placement="right" title="不能为空">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
                             <p>栋: </p>
                         </div>
                         <div class = "col-sm-4 projInputControl">
@@ -152,54 +144,6 @@
                 </div>
             </div>
 
-        </div>
-
-    </div>
-</div>
-<div class="modal fade" id="projReciverModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class = "modal-dialog" role="document">
-        <div class = "modal-content" style="width:600px">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="projReciverModalLabel">
-                    项目收方
-                </h4>
-            </div>
-            <div class ="modal-body">
-                <div class = "container" style="width:100%;text-align:center">
-                    <div class="row" style="width:100%">
-                        <div class="col-sm-3">
-                            <p>误差值(mm): </p>
-                        </div>
-                        <div class="col-sm-2">
-                            <p>宽度(mm): </p>
-                        </div>
-                        <div class = "col-sm-2" style="padding:0px">
-                            <input type="text" class="form-control" id = "widthTolerance">
-                        </div>
-                        <div class="col-sm-2" >
-                            <p>高度(mm): </p>
-                        </div>
-                        <div class = "col-sm-2" style="padding:0px">
-                            <input type="text" class="form-control" id = "heightTolerance" style="width:100%">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "modal-footer">
-                <div class = "row">
-                    <div class = "col-sm-3"></div>
-                    <div class = "col-sm-3" style="padding:0px;margin-right:3px">
-                        <button onclick="toleranceHandler.onConfirm()" id = "confirm-projReciver" class ="btn btn-primary bti-wide" style="width:100%;align:left">确定</button>
-                    </div>
-                    <div class = "col-sm-3" style="padding:0px">
-                        <button onclick="toleranceHandler.onCancel()" id = "cancel-projReciver" class = "btn btn-primary bti-wideW" style="width:100%">取消</button>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </div>
