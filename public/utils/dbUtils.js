@@ -1,10 +1,10 @@
-const BUILDING = "栋";
-const UNIT = "单元";
-const FLOOR = "楼";
-const NUMBER = "号";
-const POSITION = "洞";
-const CM = "mm";
-const PLUS = "*";
+    const BUILDING = "栋";
+    const UNIT = "单元";
+    const FLOOR = "楼";
+    const NUMBER = "号";
+    const POSITION = "洞";
+    const CM = "mm";
+    const PLUS = "*";
 
 
 exports.createProductId = function (projectName, data) {
