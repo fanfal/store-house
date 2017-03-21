@@ -70,12 +70,6 @@ function initInputList(){
 
 }
 
-var pageOperationType = {
-    potcheckAndInsert : 1,  //查看和添加
-    potOutGoing : 2,        //出库
-    potStastics : 3,        //统计查询
-}
-
 //自己实现一个tableview
 function bootStrapTable (bootStrapTableElement, model) {
     this.model = model;
@@ -91,7 +85,6 @@ function projectDetailsModel () {
     this.projectDetailsStateMachine = new projectDetailsStateMachine()
     this.pageNumber = 1;
     this.mainContainer = $("#Container");
-    this.pageOperationType = parseInt(parent.getUsage());  //页功能类型
     this.table = new bootStrapTable($("#bootstrapTable"), this);
     this.insertBtn = $("#insertBtn");   //添加按钮
     this.operatingProject = "";        //现在正在操作的工程表
@@ -291,9 +284,6 @@ function projectDetailsModel () {
                             }
                         }
                      }];
-            if(this.pageOperationType != 1){
-                 columns.push({field:'is_stored', title:'是否出库'});
-            }
             return columns;
     }
 
@@ -385,7 +375,7 @@ function projectDetailsModel () {
 var projDetailsModelInstance = null;
 $(document).ready(function () {
     //$("select").select2({dropdownCssClass:'select-inverse-dropdown'});
-    parent.setUsage(1);
+    //parent.setUsage(1);
     projDetailsModelInstance = new projectDetailsModel();   //数据模型
     //初始化模型
     projDetailsModelInstance.Init();
@@ -616,4 +606,8 @@ function onUpload() {
         return;
     }
     $("#uploadModalDialog").modal('show');
+}
+
+function onPrint(){
+//to do
 }

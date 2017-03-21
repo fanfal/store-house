@@ -41,21 +41,24 @@
         <table id="bootstrapTable" data-tableexport-display="always"></table>
     </div>
     <div class="row" style="margin-top:5px">
-        <div class = "col-sm-2"></div>
-        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
+        <div class = "col-sm-3"></div>
+        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:5px">
             <button class="btn btn-primary btn-wide" id="insertBtn"onclick="onInsert()" style="margin-left:2%;width:100%">
                 添加
             </button>
         </div>
-        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
+        <!--<div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
             <button class="btn btn-primary btn-wide" id="confirmProjReciver"onclick="onConfirmProjReciver()" style="margin-left:2%;width:100%">
                 确认收方
             </button>
-        </div>
-        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:4px">
+        </div>-->
+        <!--<div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:4px">
             <button class="btn btn-primary btn-wide" id="exportBtn"onclick="onExport()" style="margin-left:2%;width:100%">
                 导出到excel
             </button>
+        </div>-->
+        <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
+            <button class = "btn btn-primary bti-wide" onclick="onPrint()" style="width:100%" id = "printQRCode">打印标签</button>
         </div>
         <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
             <button class = "btn btn-primary bti-wide" onclick="onUpload()" style="width:100%" id = "uploadBtn">从文件中上传</button>
@@ -63,7 +66,7 @@
     </div>
     <!--invisable table for export-->
     <table id = "invisiableTable"ng-controller="exportController" style="display:none" data-tableexport-display="always">
-        <thead>
+        <!--<thead>
         <tr>
             <th>栋</th>
             <th>单元</th>
@@ -74,10 +77,9 @@
             <th>宽度(mm)</th>
             <th>高度(mm)</th>
         </tr>
-        </thead>
-        <tbody>
+        </thead>-->
+        <!--<tbody>
         <tr ng-repeat = "x in selected">
-            <td>{{x.product_id}}</td>
             <td>{{x.building}}</td>
             <td>{{x.unit}}</td>
             <td>{{x.floor}}</td>
@@ -87,7 +89,7 @@
             <td>{{x.width}}</td>
             <td>{{x.height}}</td>
         </tr>
-        </tbody>
+        </tbody>-->
 
     </table>
 </div>
