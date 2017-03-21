@@ -22,18 +22,6 @@
                 <select  id = "projectListSelect" class="form-control select select-primary select-block mbl" style="width:100%;height:80%;margin-top:6%">
                 </select>
             </div>
-            <!--div class ="col-sm-4" style="height:100%">
-                <form class="navbar-form navbar-right" action="#" role="search" style="width:100%;height:80%;margin-top:6%;padding-left:0px;padding-top:0px;padding-bottom:0px">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input class="form-control" id="navbarInput-01" type="search" placeholder="Search">
-                            <span class="input-group-btn">
-                            <button type="submit" class="btn"><span class="fui-search"></span></button>
-                            </span>
-                        </div>
-                    </div>
-                </form>
-            </div-->
         </nav>
     </div>
     <div class="row" style="width:100%;margin-left:0px">
@@ -42,11 +30,6 @@
     </div>
     <div class="row" style="margin-top:5px">
         <div class = "col-sm-3"></div>
-        <!--<div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
-            <button class="btn btn-primary btn-wide" id="insertBtn"onclick="onInsert()" style="margin-left:2%;width:100%">
-                添加
-            </button>
-        </div>-->
         <div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
             <button class="btn btn-primary btn-wide" id="confirmProjReciver"onclick="onConfirmProjReciver()" style="margin-left:2%;width:100%">
                 确认收方
@@ -58,9 +41,6 @@
                 导出到excel
             </button>
         </div>
-        <!--<div class = "col-sm-2" style="padding:0px;margin-left:2px;margin-right:2px">
-            <button class = "btn btn-primary bti-wide" onclick="onUpload()" style="width:100%" id = "uploadBtn">从文件中上传</button>
-        </div>-->
     </div>
     <!--invisable table for export-->
     <table id = "invisiableTable"ng-controller="exportController" style="display:none" data-tableexport-display="always">
@@ -91,116 +71,7 @@
 
     </table>
 </div>
-<div class="modal fade" id="projInfoModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class = "modal-dialog" role="document">
-        <div class = "modal-content" style="width:600px">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    创建
-                </h4>
-            </div>
-            <div class ="modal-body">
-                <div class = "container">
-                    <div class ="row" style="width:500px;"><div class ="alert fade in" style="display:none"></div></div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>编号: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "productID" data-toggle="tooltip" data-placement="right" title="不能为空">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>栋: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "building"  data-toggle="tooltip" data-placement="right" title="不能为空">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>单元: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "unit"  data-toggle="tooltip" data-placement="right" title="不能为空">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>楼: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "floor" data-toggle="tooltip" data-placement="right" title="不能为空">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>号: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "number" data-toggle="tooltip" data-placement="right" title="不能为空">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>洞号: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "position" data-toggle="tooltip" data-placement="right" title="不能为空">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>类型: </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <select  id = "typeSelect" class="form-control select select-primary select-block mbl projInfoInput">
-                                <option value= "框" selected="selected">框</option>
-                                <option value= "扇">扇</option>
-                                <option value= "玻璃">玻璃</option>
-                                <option value= "其它">其它</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>宽度(mm): </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "width" data-toggle="tooltip" data-placement="right" title="请检查输入内容">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2 projInputControl">
-                            <p>高度(mm): </p>
-                        </div>
-                        <div class = "col-sm-4 projInputControl">
-                            <input type="text" class="form-control projInfoInput" id = "height" data-toggle="tooltip" data-placement="right" title="请检查输入内容">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "modal-footer">
-                <div class = "row">
-                    <div class = "col-sm-3"></div>
-                    <div class = "col-sm-3" style="padding:0px;margin-left:2px;margin-right:2px">
-                        <button onclick="onConfirm()" id = "confirm" class ="btn btn-primary bti-wide" style="width:100%;align:left">确定</button>
-                    </div>
-                    <div class = "col-sm-3" style="padding:0px;margin-left:2px;margin-right:2px">
-                        <button onclick="onCancel()" id = "cancel" class = "btn btn-primary bti-wideW" style="width:100%">取消</button>
-                    </div>
-                </div>
-            </div>
 
-        </div>
-
-    </div>
-</div>
 <div class="modal fade" id="projReciverModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class = "modal-dialog" role="document">
         <div class = "modal-content" style="width:600px">
@@ -247,34 +118,6 @@
             </div>
         </div>
 
-    </div>
-</div>
-<div class="modal fade" id="uploadModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class = "modal-dialog" role="document">
-        <div class = "modal-content" style="width:600px">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="uploadTitle">
-                    上传文件
-                </h4>
-            </div>
-            <div class ="modal-body">
-                <div class = "container" style="width:100%;text-align:center">
-                    <button class = "btn btn-primary" id = "inputMask" onclick = "onChooseFile()">选择文件</button>
-                    <form id="uploadForm" enctype="multipart/form-data" action="" method="post">
-                        <div class="form-group ">
-                            <input type="file" name="file" class="form-control-file " aria-describedby="fileHelp"
-                                   onchange = "onChange(this.files)" id = "fileInput"/>
-                            <small id="fileHelp" class="form-text text-muted">选择Excel文件并上传.</small>
-                        </div>
-                        <button type="submit" class="btn btn-primary" onclick = "onSubmitBtnClick()">提交</button>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 <div class="modal fade" id="messageBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
