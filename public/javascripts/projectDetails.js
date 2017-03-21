@@ -1,10 +1,17 @@
 /*global $*/
 
+const c_selOperating = "selOperating";
+const c_selOperable = "selOperatable";
+const c_selExhausted = "selExhausted";
+const c_selAll = "selAll";
+const c_getProjectsURL = "http://localhost:8080/get-data/projects";
+const c_getProjectInfoURL = "http://localhost:8080/get-data/project-info";
+const c_insertProjectInfoURL = "http://localhost:8080/insert-data/project-info";
+
 
 var inputList = new Array;
 var selectionIds = [];
 var selected = [];
-
 var app = angular.module("projectDetails", []);
 var $myScope = null;
 app.controller("exportController",
@@ -141,7 +148,7 @@ function projectDetailsModel () {
     }
         //生成ajax请求的url
     this.generateAjaxUrl = function() {
-         return "http://localhost:8080/get-data/projects";
+         return c_getProjectsURL;
     }
 
     this.singleSelect = function (id,option) {
@@ -150,7 +157,7 @@ function projectDetailsModel () {
     }
     this.getOption = function(model) {
         var option = {
-             url: "http://localhost:8080/get-data/project-info",
+             url: c_getProjectInfoURL,
              method: "post",
              responseHandler:responseHandler,
              cache: false,
@@ -181,17 +188,17 @@ function projectDetailsModel () {
                 //往projectListSelect中添加选项, 然后默认选第一个
                 var selection = model.selectors.projectTypeSelect.val();
                 var list = new Array();
-                if (selection == 'selOperating'){
+                if (selection == c_selOperating){
                     list = model.projectNameCluster.operatingProjects
                     model.appendOptionsToProjectPickList(list);
                     selectType = projectType.OPERATING;
                 }
-                else if(selection == 'selOperatable'){
+                else if(selection == c_selOperable){
                     list = model.projectNameCluster.operatableProjects;
                     model.appendOptionsToProjectPickList(list);
                     selectType = projectType.OPERABLE;
                 }
-                else if(selection == 'selExhausted'){
+                else if(selection == c_selExhausted){
                     list = model.projectNameCluster.exhaustedProjects;
                     model.appendOptionsToProjectPickList(list);
                     selectType = projectType.EXHAUSTED;
@@ -201,7 +208,7 @@ function projectDetailsModel () {
                     list = list.concat(model.projectNameCluster.operatableProjects);
                     list = list.concat(model.projectNameCluster.exhaustedProjects);
                     model.appendOptionsToProjectPickList(list);
-                    selectType = 4;
+                    selectType = projectType.ALL;
                 }
                 model.selectors.projectListSelect.change(model.projectListSelectChanged);
                 if(list.length > 0){
@@ -220,12 +227,10 @@ function projectDetailsModel () {
         this.projectListSelectChanged = function () {
             selectionIds = [];
             selected = [];
-            //setExportToExcelBtnEnable(false);
             $myScope.update(selected);
             //1. 拿到选中的选项
             model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
             model.table.pullData(model.getOption(model));
-            //$("#uploadBtn").attr("disabled",false);
         }
     /////////////////////////////////////////bootstrapTable用/////////////////////////////////////////
 
@@ -374,8 +379,6 @@ function projectDetailsModel () {
 
 var projDetailsModelInstance = null;
 $(document).ready(function () {
-    //$("select").select2({dropdownCssClass:'select-inverse-dropdown'});
-    //parent.setUsage(1);
     projDetailsModelInstance = new projectDetailsModel();   //数据模型
     //初始化模型
     projDetailsModelInstance.Init();
@@ -453,7 +456,7 @@ function onConfirm(){
 
         }
         $.ajax({
-            url: "http://localhost:8080/insert-data/project-info",
+            url: c_insertProjectInfoURL,
             type : "POST",
             data: getData(),
             dataType : 'json',
@@ -569,7 +572,6 @@ function onSubmitBtnClick(){
     var postURL = "/upload-excel?name=";
     postURL += projDetailsModelInstance.operatingProject;
     var fileData = new FormData(document.getElementById("uploadForm"));
-    alert(JSON.stringify(fileData));
     $.ajax({
       url: postURL,
       type : "POST",
