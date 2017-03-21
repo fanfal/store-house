@@ -7,6 +7,8 @@ const c_selAll = "selAll";
 const c_getProjectsURL = "http://localhost:8080/get-data/projects";
 const c_getProjectInfoURL = "http://localhost:8080/get-data/project-info";
 const c_insertProjectInfoURL = "http://localhost:8080/insert-data/project-info";
+var qrDivTemplate = "<div class = 'row'><div class = 'row'>{0}</div><div class = 'row'><h>{1}</h></div></div>"
+
 
 const BUILDING = "栋";
 const UNIT = "单元";
@@ -619,12 +621,25 @@ function onUpload() {
     $("#uploadModalDialog").modal('show');
 }
 
+String.prototype.format = function(){
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g,
+        function(m,i){
+            return args[i];
+        });
+}
+
+
 function onPrint() {
     var bodyContent = document.getElementById('qr-content');
     selected.forEach(function (data) {
         if (data.product_id != null) {
             var subContent = document.createElement('div');
+            subContent.classList.add("row");
+            subContent.classList.add("qrSubContent");
             var qrCode = document.createElement('div');
+            qrCode.classList.add("row");
+            qrCode.classList.add("qrCode");
             new QRCode(qrCode, {
                 text: data.product_id,
                 width: 128,
