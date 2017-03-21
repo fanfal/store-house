@@ -7,16 +7,6 @@ const c_selAll = "selAll";
 const c_getProjectsURL = "http://localhost:8080/get-data/projects";
 const c_getProjectInfoURL = "http://localhost:8080/get-data/project-info";
 const c_insertProjectInfoURL = "http://localhost:8080/insert-data/project-info";
-var qrDivTemplate = "<div class = 'row'><div class = 'row'>{0}</div><div class = 'row'><h>{1}</h></div></div>"
-
-
-const BUILDING = "栋";
-const UNIT = "单元";
-const FLOOR = "楼";
-const NUMBER = "号";
-const POSITION = "洞";
-const CM = "mm";
-const PLUS = "*";
 
 var inputList = new Array;
 var selectionIds = [];
@@ -621,69 +611,48 @@ function onUpload() {
     $("#uploadModalDialog").modal('show');
 }
 
-String.prototype.format = function(){
+String.prototype.format = function () {
     var args = arguments;
     return this.replace(/\{(\d+)\}/g,
-        function(m,i){
+        function (m, i) {
             return args[i];
         });
 }
 
-
 function onPrint() {
     var bodyContent = document.getElementById('qr-content');
+    var qrcodedraw = new qrcodelib.qrcodedraw()
+    cleanOldQRCode(bodyContent);
     selected.forEach(function (data) {
         if (data.product_id != null) {
-            var subContent = document.createElement('div');
-            subContent.classList.add("row");
-            subContent.classList.add("qrSubContent");
-            var qrCode = document.createElement('div');
-            qrCode.classList.add("row");
-            qrCode.classList.add("qrCode");
-            new QRCode(qrCode, {
-                text: data.product_id,
-                width: 128,
-                height: 128,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            var text = document.createElement("h");
-            text.textContent = createProductId(data);
-            subContent.appendChild(qrCode);
-            subContent.appendChild(text);
-            bodyContent.appendChild(subContent);
+            createQRCode(data, bodyContent, qrcodedraw);
         }
-
     });
     $("#printQRCodeDialog").modal('show');
 }
 
-function createProductId(data) {
-    var productId = data.project_name;
-    if (data.building != null) {
-        productId += data.building + BUILDING;
+function cleanOldQRCode(bodyContent) {
+    while (bodyContent.hasChildNodes()) {
+        bodyContent.removeChild(bodyContent.lastChild);
     }
+}
 
-    if (data.unit != null) {
-        productId += data.unit + UNIT;
-    }
+function createQRCode(data, bodyContent, qrDraw) {
 
-    if (data.floor != null) {
-        productId += data.floor + FLOOR;
-    }
+    var subContent = document.createElement('div');
+    subContent.classList.add("row");
+    subContent.classList.add("qrSubContent");
 
-    if (data.number != null) {
-        productId += data.number + NUMBER;
-    }
+    var qrCode = document.createElement('canvas');
+    qrDraw.draw(qrCode, data.product_id, function (error, canvas) {
+        if (error) console.error(error)
+        console.log('success!');
+    });
 
-    if (data.position != null) {
-        productId += data.position + POSITION;
-    }
+    var text = document.createElement("h");
+    text.textContent = data.product_id;
 
-    productId += data.type;
-    productId += data.width + CM;
-    productId += PLUS + data.height + CM;
-
-    return productId;
+    subContent.appendChild(qrCode);
+    subContent.appendChild(text);
+    bodyContent.appendChild(subContent);
 }
