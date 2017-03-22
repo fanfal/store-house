@@ -8,9 +8,9 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var getData = require('./routes/getData')
 var insertData = require('./routes/insertData');
-var outGoing = require('./routes/outGoing.js')
-var uploadExcel = require('./routes/uploadExcel.js');
-var status = require('./routes/status.js')
+var outGoing = require('./routes/outGoing')
+var upload = require('./routes/upload');
+var status = require('./routes/status')
 var app = express();
 
 // view engine setup
@@ -31,7 +31,7 @@ app.use('/', index);
 app.use('/get-data', getData);
 app.use('/insert-data', insertData);
 app.use('/out-going',outGoing);
-app.use('/upload-excel', uploadExcel);
+app.use('/upload', upload);
 app.use('/status', status);
 // catch 404 and forward to error handler
 

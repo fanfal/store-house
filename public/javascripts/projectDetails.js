@@ -157,65 +157,66 @@ function projectDetailsModel() {
         return option;
     }
     /////////////////////////////////////////事件回调/////////////////////////////////////////////////
-        //工程类别下拉列表变化
-        var model = this;
-        this.projectTypeSelectChanged = function () {
-                function requestForProjectList(status){
-                    var getURL = "";
-                    if(status == projectType.ALL){
-                        getURL = c_getProjectsURL;
+    //工程类别下拉列表变化
+    var model = this;
+    this.projectTypeSelectChanged = function () {
+        function requestForProjectList(status) {
+            var getURL = "";
+            if (status == projectType.ALL) {
+                getURL = c_getProjectsURL;
+            }
+            else {
+                getURL = c_getProjectsURL + "?status=" + status;
+            }
+            var array = new Array;
+            $.ajax({
+                url: getURL,
+                type: "GET",
+                async: false,
+                success: function (data) {
+                    var list = data.project_list;
+                    for (var i = 0; i < list.length; ++i) {
+                        array.push(list[i].project_name);
                     }
-                    else{
-                        getURL = c_getProjectsURL + "?status="+status;
-                    }
-                    var array = new Array;
-                    $.ajax({
-                        url : getURL,
-                        type : "GET",
-                        async: false,
-                        success : function (data) {
-                             var list = data.project_list;
-                             for(var i = 0; i < list.length; ++i){
-                                array.push(list[i].project_name);
-                             }
-                        },
-                        error: function (){
-                            alert("拉取工程信息时发生错误，请刷新页面或联系管理员。")
-                        }
-                    })
-                    return array;
+                },
+                error: function () {
+                    alert("拉取工程信息时发生错误，请刷新页面或联系管理员。")
                 }
-                model.selectors.projectListSelect.unbind('change');
-                var selectType = -1;
-                //往projectListSelect中添加选项, 然后默认选第一个
-                var selection = model.selectors.projectTypeSelect.val();
-                if (selection == c_selOperating){
-                    selectType = projectType.OPERATING;
-                }
-                else if(selection == c_selOperable){
-
-                    selectType = projectType.OPERABLE;
-                }
-                else if(selection == c_selExhausted){
-                    selectType = projectType.EXHAUSTED;
-                }
-                else{
-                    selectType = projectType.ALL;
-                }
-                var projects = requestForProjectList(selectType);
-                model.appendOptionsToProjectPickList(projects);
-                model.selectors.projectListSelect.change(model.projectListSelectChanged);
-                if(projects.length > 0){
-                     var first = $("#projectListSelect option:first")
-                     first.attr("selected", true);
-                     $("#s2id_projectListSelect a .select2-chosen").html(first.html());
-                     model.projectListSelectChanged();
-                }
-                else{
-                    $("#s2id_projectListSelect a .select2-chosen").html("&nbsp;");
-                }
-                projDetailsModelInstance.projectDetailsStateMachine.setSelectedProjectType(selectType);
+            })
+            return array;
         }
+
+        model.selectors.projectListSelect.unbind('change');
+        var selectType = -1;
+        //往projectListSelect中添加选项, 然后默认选第一个
+        var selection = model.selectors.projectTypeSelect.val();
+        if (selection == c_selOperating) {
+            selectType = projectType.OPERATING;
+        }
+        else if (selection == c_selOperable) {
+
+            selectType = projectType.OPERABLE;
+        }
+        else if (selection == c_selExhausted) {
+            selectType = projectType.EXHAUSTED;
+        }
+        else {
+            selectType = projectType.ALL;
+        }
+        var projects = requestForProjectList(selectType);
+        model.appendOptionsToProjectPickList(projects);
+        model.selectors.projectListSelect.change(model.projectListSelectChanged);
+        if (projects.length > 0) {
+            var first = $("#projectListSelect option:first")
+            first.attr("selected", true);
+            $("#s2id_projectListSelect a .select2-chosen").html(first.html());
+            model.projectListSelectChanged();
+        }
+        else {
+            $("#s2id_projectListSelect a .select2-chosen").html("&nbsp;");
+        }
+        projDetailsModelInstance.projectDetailsStateMachine.setSelectedProjectType(selectType);
+    }
 
     //工程名称下拉列表变化
     this.projectListSelectChanged = function () {
@@ -237,56 +238,57 @@ function projectDetailsModel() {
     }
 
     this.getTableColumn = function () {
-            var columns = [{title: "全选",
-                     field: "select",
-                     checkbox: true,
-                     width: 20,//宽度
-                     align: "center",//水平
-                     valign: "middle"//垂直
-                     },{
-                         field: 'building',
-                         title: '栋'
-                     }, {
-                         field: 'unit',
-                         title: '单元'
-                     }, {
-                         field: 'floor',
-                         title: '楼'
-                     }, {
-                         field: 'number',
-                         title: '号'
-                     }, {
-                         field: 'position',
-                         title: '洞'
-                     },  {
-                         field: 'type',
-                         title: '类型'
-                     },  {
-                         field: 'width',
-                         title: '宽度(mm)'
-                     }, {
-                         field: 'height',
-                         title: '高度(mm)'
-                     }, {
-                        field: 'is_stored',
-                        title : '是否出库',
-                        formatter : function (value, row, index){
-                            if(value){
-                                return "在库";
-                            }
-                            else{
-                                return "已出库";
-                            }
-                        }
-                     }];
-            return columns;
+        var columns = [{
+            title: "全选",
+            field: "select",
+            checkbox: true,
+            width: 20,//宽度
+            align: "center",//水平
+            valign: "middle"//垂直
+        }, {
+            field: 'building',
+            title: '栋'
+        }, {
+            field: 'unit',
+            title: '单元'
+        }, {
+            field: 'floor',
+            title: '楼'
+        }, {
+            field: 'number',
+            title: '号'
+        }, {
+            field: 'position',
+            title: '洞'
+        }, {
+            field: 'type',
+            title: '类型'
+        }, {
+            field: 'width',
+            title: '宽度(mm)'
+        }, {
+            field: 'height',
+            title: '高度(mm)'
+        }, {
+            field: 'is_stored',
+            title: '是否出库',
+            formatter: function (value, row, index) {
+                if (value) {
+                    return "在库";
+                }
+                else {
+                    return "已出库";
+                }
+            }
+        }];
+        return columns;
     }
 
     //拉取工程列表
     var projDetailsModel = this;
-    this.pullProjectList = function() {
-          model.singleSelect("projectTypeSelect", model.projTypeOptions.selAll);
-          projDetailsModel.projectTypeSelectChanged();
+    this.pullProjectList = function () {
+        model.singleSelect("projectTypeSelect", model.projTypeOptions.selAll);
+        projDetailsModel.projectTypeSelectChanged();
     }
 
     //初始化
@@ -433,23 +435,23 @@ function onConfirm() {
             url: c_insertProjectInfoURL,
             type: "POST",
             data: getData(),
-            dataType : 'json',
-            async:false,
-            success : function (data){
-              $(".projInfoInput").each(function(index){
-                          $(this).val("");
-                     })
-              feedBack(true, "添加成功");
-              projDetailsModelInstance.onInsertSuc();
-              projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                $(".projInfoInput").each(function (index) {
+                    $(this).val("");
+                })
+                feedBack(true, "添加成功");
+                projDetailsModelInstance.onInsertSuc();
+                projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
             },
             error: function (data) {
                 var msg = "添加失败";
-                if(data.responseJSON != null){
-                    if(data.responseJSON.errorMessage == "Product was stored."){
+                if (data.responseJSON != null) {
+                    if (data.responseJSON.errorMessage == "Product was stored.") {
                         msg += ", 该项目在库.";
                     }
-                    else if(data.responseJSON.errorMessage == "Update product error.") {
+                    else if (data.responseJSON.errorMessage == "Update product error.") {
                         msg += ", 在插入项目时发生异常.";
                     }
                 }
@@ -551,29 +553,10 @@ function setExportToExcelBtnEnable(bEnable) {
 
 function onSubmitBtnClick() {
     //提交文件
-    var postURL = "/upload-excel?name=";
+    var postURL = "http://localhost:8080/upload/excel?name=";
     postURL += projDetailsModelInstance.operatingProject;
-    var fileData = new FormData(document.getElementById("uploadForm"));
-    $.ajax({
-        url: postURL,
-        type: "POST",
-        data: fileData,
-        dataType: 'json',
-        success: function (data) {
-            feedBack(true, "添加成功");
-            projDetailsModelInstance.onInsertSuc();
-            projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
-        },
-        error: function (data) {
-            var msg = "添加失败";
-            if (data.responseJSON != null) {
-                if (data.responseJSON.errorMessage == "Project id has exist.") {
-                    msg += ", 该编号已存在";
-                }
-            }
-            feedBack(false, msg);
-        }
-    });
+    $('#uploadForm').attr('action', postURL).submit();
+    $("uploadButton").addClass("disabled");
 }
 
 function showMessageBox(msg) {
