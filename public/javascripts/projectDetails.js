@@ -41,8 +41,8 @@ function tolerance() {
                 var height = parseFloat(selected[i].height);
                 width += toleranceHandler.widthTolerance;
                 height += toleranceHandler.heightTolerance;
-                selected[i].width = width.toFixed(3);
-                selected[i].height = height.toFixed(3);
+                selected[i].width = width.toFixed(1);
+                selected[i].height = height.toFixed(1);
             }
             $myScope.update(selected);
         }
@@ -473,8 +473,8 @@ function responseHandler(res) {
         var height = parseFloat(row.height);
         width += toleranceHandler.widthTolerance;
         height += toleranceHandler.heightTolerance;
-        row.width = width.toFixed(3);
-        row.height = height.toFixed(3);
+        row.width = width.toFixed(1);
+        row.height = height.toFixed(1);
     });
     if (count > 0) {
         //不是一个空工程

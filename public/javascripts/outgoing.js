@@ -58,6 +58,8 @@ app.controller('myCtrl', function ($scope, $http) {
     }
 
     $scope.select_name = "";
+    $scope.projType = ["正在出库", "可以出库"];
+    $scope.select_type = "正在出库";
     $scope.projectCluster = {
         operable: [],
         operating: []
@@ -90,6 +92,9 @@ app.controller('myCtrl', function ($scope, $http) {
         }
         else if (value == projectType.OPERATING) {
             $scope.names = $scope.projectCluster.operating;
+        }
+        if($scope.names.length > 0) {
+             $scope.select_name = $scope.names[0];
         }
     }
 

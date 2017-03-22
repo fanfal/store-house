@@ -15,25 +15,26 @@
             </div>
         </div>
         </br>
-        <div class ="row">
-            <div>
-                <label>请选择项目类型</label>
+        <div class = "row">
+            <div class ="col-sm-2"><label style="width:100%;height:80%;margin-top:5%;text-align:right">请选择项目类型</label></div>
+            <div class = "col-sm-3">
                 <select id="project_type_select"class="input-sm" style="width:150px;margin-right:10px"
-                        ng-change="propTypeChanged()" ng-model="select_projType">
-                    <option value = 1 selected="selected">正在出库</option>
-                    <option value = 0>可以出库</option>
+                        ng-change="propTypeChanged()" ng-model="select_type" ng-options="type for type in projType">
                 </select>
-                <label>请选择项目</label>
-                <select id="select_project"class="input-sm" style="width:150px;margin-right:10px"  ng-model="select_name" ng-options="x for x in names"/>
-                <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 0px; height:0px; margin-left: 250px"/>
             </div>
-            </br>
+            <div class ="col-sm-2"><label style="width:100%;height:80%;margin-top:5%;text-align:right">请选择项目</label></div>
+            <div class="col-sm-3">
+                <select id="select_project"class="input-sm" style="width:150px;margin-right:10px"  ng-model="select_name" ng-options="x for x in names">
+                </select>
+            </div>
+            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 0px; height:0px; margin-left: 250px">
         </div>
+
         <div class = "row">
             <div style="overflow: auto; max-height:500px;">
                 <table class="table table-striped table-responsive table-hover table-bordered" ng-init="items = []"
                        ng-model="items">
-                    <thead>
+                    <thead style="font-weight:lighter;">
                     <tr >
                         <th id="product_id" class="text-center">物品码&nbsp;</th>
                         <th id="project_name" class="text-center">项目名&nbsp;</th>
@@ -69,7 +70,6 @@
                 </table>
             </div>
         </div>
-
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -124,10 +124,8 @@
                     </div>
                 </div>
             </div>
+        </div>
     </div>
-
-    </div>
-
     <div style="text-align:center">
         <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始出库</button>
         <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止出库</button>
@@ -141,5 +139,6 @@
     <script type="text/javascript" , src="/javascripts/outgoing.js"></script>
     <script type="text/javascript" , src="/bootstrap/dist/js/bootstrap.min.js"></script>
 
+    </div>
 </body>
 </html>
