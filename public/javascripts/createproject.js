@@ -1,7 +1,9 @@
 /*global $ */
 var alertToolTip = $("#topAlert");
-
+var timer = null;
 function showToolTip(msg, bSuc){
+    if(timer != null) clearInterval(timer);
+
     if(bSuc){
          $("#topAlert").addClass("alert-success");
     }
@@ -11,7 +13,7 @@ function showToolTip(msg, bSuc){
     $("#topAlert").text(msg);
     $("#topAlert").show();
     $("#topAlert").fadeOut(2000);
-    var timer = setInterval(function () {
+    timer = setInterval(function () {
          $("#topAlert").removeClass("alert-danger");
          $("#topAlert").removeClass("alert-success");
          clearInterval(timer);

@@ -41,8 +41,8 @@ function tolerance() {
                 var height = parseFloat(selected[i].height);
                 width += toleranceHandler.widthTolerance;
                 height += toleranceHandler.heightTolerance;
-                selected[i].width = width.toFixed(3);
-                selected[i].height = height.toFixed(3);
+                selected[i].width = width.toFixed(1);
+                selected[i].height = height.toFixed(1);
             }
             $myScope.update(selected);
         }
@@ -94,11 +94,6 @@ function projectDetailsModel() {
     this.table = new bootStrapTable($("#bootstrapTable"), this);
     this.insertBtn = $("#insertBtn");   //添加按钮
     this.operatingProject = "";        //现在正在操作的工程表
-    this.projectNameCluster = {         //分类好的工程名称
-        operatingProjects: new Array,
-        operatableProjects: new Array,
-        exhaustedProjects: new Array,
-    }
     this.selectors = {
         projectTypeSelect: $("#projectTypeSelect"),
         projectListSelect: $("#projectListSelect"),
@@ -127,23 +122,6 @@ function projectDetailsModel() {
             projDetailsModelInstance.projectDetailsStateMachine.enableInsert(true);
         }
 
-    }
-
-    //根据类型分类工程
-    this.doCluster = function (data) {
-        var projectList = data.project_list;
-        for (var i = 0; i < projectList.length; i++) {
-            var item = projectList[i];
-            if (item.operation_status == projectType.OPERABLE) {
-                this.projectNameCluster.operatableProjects.push(item.project_name);
-            }
-            else if (item.operation_status == projectType.OPERATING) {
-                this.projectNameCluster.operatingProjects.push(item.project_name);
-            }
-            else {
-                this.projectNameCluster.exhaustedProjects.push(item.project_name);
-            }
-        }
     }
     //生成ajax请求的url
     this.generateAjaxUrl = function () {
@@ -179,48 +157,65 @@ function projectDetailsModel() {
         return option;
     }
     /////////////////////////////////////////事件回调/////////////////////////////////////////////////
-    //工程类别下拉列表变化
-    var model = this;
-    this.projectTypeSelectChanged = function () {
-        model.selectors.projectListSelect.unbind('change');
-        var selectType = -1;
-        //往projectListSelect中添加选项, 然后默认选第一个
-        var selection = model.selectors.projectTypeSelect.val();
-        var list = new Array();
-        if (selection == c_selOperating) {
-            list = model.projectNameCluster.operatingProjects
-            model.appendOptionsToProjectPickList(list);
-            selectType = projectType.OPERATING;
+        //工程类别下拉列表变化
+        var model = this;
+        this.projectTypeSelectChanged = function () {
+                function requestForProjectList(status){
+                    var getURL = "";
+                    if(status == projectType.ALL){
+                        getURL = c_getProjectsURL;
+                    }
+                    else{
+                        getURL = c_getProjectsURL + "?status="+status;
+                    }
+                    var array = new Array;
+                    $.ajax({
+                        url : getURL,
+                        type : "GET",
+                        async: false,
+                        success : function (data) {
+                             var list = data.project_list;
+                             for(var i = 0; i < list.length; ++i){
+                                array.push(list[i].project_name);
+                             }
+                        },
+                        error: function (){
+                            alert("拉取工程信息时发生错误，请刷新页面或联系管理员。")
+                        }
+                    })
+                    return array;
+                }
+                model.selectors.projectListSelect.unbind('change');
+                var selectType = -1;
+                //往projectListSelect中添加选项, 然后默认选第一个
+                var selection = model.selectors.projectTypeSelect.val();
+                if (selection == c_selOperating){
+                    selectType = projectType.OPERATING;
+                }
+                else if(selection == c_selOperable){
+
+                    selectType = projectType.OPERABLE;
+                }
+                else if(selection == c_selExhausted){
+                    selectType = projectType.EXHAUSTED;
+                }
+                else{
+                    selectType = projectType.ALL;
+                }
+                var projects = requestForProjectList(selectType);
+                model.appendOptionsToProjectPickList(projects);
+                model.selectors.projectListSelect.change(model.projectListSelectChanged);
+                if(projects.length > 0){
+                     var first = $("#projectListSelect option:first")
+                     first.attr("selected", true);
+                     $("#s2id_projectListSelect a .select2-chosen").html(first.html());
+                     model.projectListSelectChanged();
+                }
+                else{
+                    $("#s2id_projectListSelect a .select2-chosen").html("&nbsp;");
+                }
+                projDetailsModelInstance.projectDetailsStateMachine.setSelectedProjectType(selectType);
         }
-        else if (selection == c_selOperable) {
-            list = model.projectNameCluster.operatableProjects;
-            model.appendOptionsToProjectPickList(list);
-            selectType = projectType.OPERABLE;
-        }
-        else if (selection == c_selExhausted) {
-            list = model.projectNameCluster.exhaustedProjects;
-            model.appendOptionsToProjectPickList(list);
-            selectType = projectType.EXHAUSTED;
-        }
-        else {
-            list = model.projectNameCluster.operatingProjects;
-            list = list.concat(model.projectNameCluster.operatableProjects);
-            list = list.concat(model.projectNameCluster.exhaustedProjects);
-            model.appendOptionsToProjectPickList(list);
-            selectType = projectType.ALL;
-        }
-        model.selectors.projectListSelect.change(model.projectListSelectChanged);
-        if (list.length > 0) {
-            var first = $("#projectListSelect option:first")
-            first.attr("selected", true);
-            $("#s2id_projectListSelect a .select2-chosen").html(first.html());
-            model.projectListSelectChanged();
-        }
-        else {
-            $("#s2id_projectListSelect a .select2-chosen").html("&nbsp;");
-        }
-        projDetailsModelInstance.projectDetailsStateMachine.setSelectedProjectType(selectType);
-    }
 
     //工程名称下拉列表变化
     this.projectListSelectChanged = function () {
@@ -289,27 +284,9 @@ function projectDetailsModel() {
 
     //拉取工程列表
     var projDetailsModel = this;
-    this.pullProjectList = function () {
-        var model = this;
-
-        function ajax_suc(data) {
-            model.mainContainer.css("display", "");
-            model.doCluster(data);
-            //1. 默认选中 "全部"
-            model.singleSelect("projectTypeSelect", model.projTypeOptions.selAll);
-            projDetailsModel.projectTypeSelectChanged();
-        }
-
-        function ajax_fail(data) {
-            alert("在拉取工程信息的时候发生错误, 请联系管理员");
-        }
-
-        $.ajax({
-            url: this.generateAjaxUrl(),
-            type: "GET",
-            success: ajax_suc,
-            error: ajax_fail
-        })
+    this.pullProjectList = function() {
+          model.singleSelect("projectTypeSelect", model.projTypeOptions.selAll);
+          projDetailsModel.projectTypeSelectChanged();
     }
 
     //初始化
@@ -456,20 +433,24 @@ function onConfirm() {
             url: c_insertProjectInfoURL,
             type: "POST",
             data: getData(),
-            dataType: 'json',
-            success: function (data) {
-                $(".projInfoInput").each(function (index) {
-                    $(this).val("");
-                })
-                feedBack(true, "添加成功");
-                projDetailsModelInstance.onInsertSuc();
-                projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+            dataType : 'json',
+            async:false,
+            success : function (data){
+              $(".projInfoInput").each(function(index){
+                          $(this).val("");
+                     })
+              feedBack(true, "添加成功");
+              projDetailsModelInstance.onInsertSuc();
+              projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
             },
             error: function (data) {
                 var msg = "添加失败";
-                if (data.responseJSON != null) {
-                    if (data.responseJSON.errorMessage == "Project id has exist.") {
-                        msg += ", 该编号已存在";
+                if(data.responseJSON != null){
+                    if(data.responseJSON.errorMessage == "Product was stored."){
+                        msg += ", 该项目在库.";
+                    }
+                    else if(data.responseJSON.errorMessage == "Update product error.") {
+                        msg += ", 在插入项目时发生异常.";
                     }
                 }
                 feedBack(false, msg);
@@ -492,8 +473,8 @@ function responseHandler(res) {
         var height = parseFloat(row.height);
         width += toleranceHandler.widthTolerance;
         height += toleranceHandler.heightTolerance;
-        row.width = width.toFixed(3);
-        row.height = height.toFixed(3);
+        row.width = width.toFixed(1);
+        row.height = height.toFixed(1);
     });
     if (count > 0) {
         //不是一个空工程

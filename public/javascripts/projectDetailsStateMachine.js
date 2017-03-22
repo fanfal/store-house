@@ -14,21 +14,14 @@ function exhaustedToOperableState() {
         //也就是说插入了若干记录
         //1. 把当前项目移动到"operable里面"
         var curProjName = model.operatingProject;
-        //2. 从exhausted里删除掉
-        var exhaustedArray = model.projectNameCluster.exhaustedProjects;
-        for(var i = 0 ; i < exhaustedArray.length; ++i){
-            if(exhaustedArray[i] == curProjName) {
-                exhaustedArray.splice(i, 1);
-                break;
-            }
-        }
-        model.projectNameCluster.operatableProjects.push(curProjName);
-        //3. 切换下拉列表
+        //2. 切换下拉列表
         $("#projectTypeSelect").val("selOperatable");
-        //4. 主动激发工程类型下拉列表变化事件
+        //3. 主动激发工程类型下拉列表变化事件
         model.projectTypeSelectChanged();
-        //5. 选中刚才切换过来那个
+        //4. 选中刚才切换过来那个
         $("#projectListSelect").val(curProjName);
+        //5. 切换到刚才编辑的工程
+        model.projectListSelectChanged();
     }
 }
 
