@@ -153,6 +153,8 @@ exports.updateProjectStatusByRequest = function (projectName, status) {
             updateProjectStatusBaseOnProduct(projectName, function (data) {
                 if (data.length > 0) {
                     updateProjectStatus(projectName, status);
+                } else {
+                    updateProjectStatus(projectName, projectType.EXHAUSTED);
                 }
             })
             break;
