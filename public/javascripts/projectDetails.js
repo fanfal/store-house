@@ -584,6 +584,11 @@ String.prototype.format = function () {
 }
 
 function onPrint() {
+    if (selected.length == 0) {
+        showMessageBox("请勾选要导出的项.");
+        return;
+    }
+
     var bodyContent = document.getElementById('qr-content');
     var qrcodedraw = new qrcodelib.qrcodedraw()
     cleanOldQRCode(bodyContent);
