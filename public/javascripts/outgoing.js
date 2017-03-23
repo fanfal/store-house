@@ -57,12 +57,28 @@ app.controller('myCtrl', function ($scope, $http) {
         $scope.productCount.otherNum = 0;
     }
 
-    $scope.select_name = "";
-    $scope.projType = ["正在出库", "可以出库"];
-    $scope.select_type = "正在出库";
     $scope.projectCluster = {
         operable: [],
         operating: []
+    }
+
+
+    var projTypeArray = ["正在出库", "可以出库"];
+    $scope.select_name = "";
+    $scope.projType = projTypeArray;
+    $scope.select_type = "正在出库";
+    $scope.propTypeChanged = function () {
+        value = $scope.select_type;
+        var type = (value == projTypeArray[0]) ? projectType.OPERATING : projectType.OPERABLE;
+        if (type == projectType.OPERABLE) {
+            $scope.names = $scope.projectCluster.operable;
+        }
+        else if (type == projectType.OPERATING) {
+            $scope.names = $scope.projectCluster.operating;
+        }
+        if($scope.names.length > 0) {
+             $scope.select_name = $scope.names[0];
+        }
     }
 
     $http.get("http://localhost:8080/get-data/projects")
@@ -79,26 +95,12 @@ app.controller('myCtrl', function ($scope, $http) {
             }
         }
         $scope.names = $scope.projectCluster.operating;
+        $scope.propTypeChanged();
     }
 
     function errorCallback(error) {
         //error code
     }
-
-    $scope.propTypeChanged = function () {
-        value = $("#project_type_select").val();
-        if (value == projectType.OPERABLE) {
-            $scope.names = $scope.projectCluster.operable;
-        }
-        else if (value == projectType.OPERATING) {
-            $scope.names = $scope.projectCluster.operating;
-        }
-        if($scope.names.length > 0) {
-             $scope.select_name = $scope.names[0];
-        }
-    }
-
-
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
         if (e.key == "Enter") {
@@ -187,10 +189,7 @@ app.controller('myCtrl', function ($scope, $http) {
             },
             error: function (e) {
             }
-
         })
     }
-
 });
-
 
