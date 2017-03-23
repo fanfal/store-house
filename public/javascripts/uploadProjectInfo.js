@@ -5,7 +5,8 @@ function onChange(files){
      return o.substring(pos+1);
      }
     var fileName = getFileName($("#fileInput").val());
-    $("#fileHelp").html(fileName)
+    $("#fileHelp").html(fileName);
+    $("uploadButton").removeClass("disabled");
 }
 
 function onChooseFile(){

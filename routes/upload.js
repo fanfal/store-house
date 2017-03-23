@@ -18,7 +18,7 @@ var upload = multer({ //multer settings
     storage: storage,
     fileFilter: function (req, file, callback) { //file filter
         if (['xls', 'xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
-            return callback(new Error('Wrong extension type'));
+            return callback(new Error('文件格式错误.'));
         }
         callback(null, true);
     }
@@ -34,7 +34,7 @@ function uploadExcel(req, res, projectName) {
         }
         /** Multer gives us file info in req.file object */
         if (!req.file) {
-            res.status(400).send({errorMessage: "No file passed"});
+            res.status(400).send({errorMessage: "没有文件被上传."});
             return;
         }
         /** Check the extension of the incoming file and
@@ -53,18 +53,18 @@ function uploadExcel(req, res, projectName) {
                 lowerCaseHeaders: true
             }, function (err, result) {
                 if (err) {
-                    res.status(400).send({errorMessage: "Data is null"});
+                    res.status(400).send({errorMessage: "所上传文件中数据为空."});
                 }
                 dbOperation.insertProjectInfoByExcel(projectName, result, res);
             });
         } catch (e) {
-            res.status(400).send({errorMessage: "Corrupted excel file."});
+            res.status(400).send({errorMessage: "文件已经损坏."});
         }
     })
 }
 
 
-router.post('/', function (req, res) {
+router.post('/excel', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     var projectName = req.query.name;
     if (projectName != null) {
