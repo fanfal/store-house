@@ -2,6 +2,9 @@ const PROJECT_EMPTY_ALERT_MESSAGE = "您好,请选择出库项目!";
 const PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE = "你所扫描的产品不在所选项目中, 或者已经出库!";
 const NO_ITEMS_MESSAGE = "您还没有扫描数据!";
 const ALERT_TIME = 2000;
+const STR_OPERATING = "正在出库";
+const STR_OPERABLE = "可以出库";
+
 
 var app = angular.module('myApp', []);
 var projectInfo = [];
@@ -48,6 +51,11 @@ $("#btn_print_list").click(function () {
 
 });
 
+var pageReady = false;
+$(document).ready(function () {
+    pageReady = true;
+});
+
 app.controller('myCtrl', function ($scope, $http) {
     $scope.init = function () {
         $scope.productCount = {};
@@ -62,14 +70,34 @@ app.controller('myCtrl', function ($scope, $http) {
         operating: []
     }
 
+    function clearCluster(){
+        $scope.projectCluster.operable = [];
+        $scope.projectCluster.operating = [];
+    }
 
-    var projTypeArray = ["正在出库", "可以出库"];
+    function enableSelector(bEnable) {
+        if(bEnable){
+            $("#project_type_select").attr("disabled", false);
+            $("#select_project").attr("disabled", false);
+        }
+        else{
+            $("#project_type_select").attr("disabled", true);
+            $("#select_project").attr("disabled", true);
+        }
+
+    }
+
+    var designatedProjType = projectType.OPERATING;
+    var designatedProjName = "";
+
+    var projTypeArray = [STR_OPERATING, STR_OPERABLE];
     $scope.select_name = "";
     $scope.projType = projTypeArray;
-    $scope.select_type = "正在出库";
-    $scope.propTypeChanged = function () {
+
+    $scope.projTypeChanged = function () {
         value = $scope.select_type;
         var type = (value == projTypeArray[0]) ? projectType.OPERATING : projectType.OPERABLE;
+        designatedProjType = type;
         if (type == projectType.OPERABLE) {
             $scope.names = $scope.projectCluster.operable;
         }
@@ -77,30 +105,56 @@ app.controller('myCtrl', function ($scope, $http) {
             $scope.names = $scope.projectCluster.operating;
         }
         if($scope.names.length > 0) {
-             $scope.select_name = $scope.names[0];
+             if(designatedProjName == ""){
+                designatedProjName = $scope.names[0];
+             }
+             $scope.select_name = designatedProjName;
+        }
+        else{
+            $scope.select_name = "";
         }
     }
 
-    $http.get("http://localhost:8080/get-data/projects")
-        .then(successCallback, errorCallback);
+    function requestProjectList () {
+    //修改成同步的，异步请求下，状态需要延时同步，太麻烦了
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/get-data/projects",
+            dataType: 'json',
+            async:false,
+            success: successCallback,
+            error: errorCallback
+        });
 
-    function successCallback(response) {
-        var data = response.data.project_list;
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].operation_status == projectType.OPERABLE) {
-                $scope.projectCluster.operable.push(data[i].project_name);
+        function successCallback(response) {
+            clearCluster();
+            var data = response.project_list;
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].operation_status == projectType.OPERABLE) {
+                    $scope.projectCluster.operable.push(data[i].project_name);
+                }
+                else if (data[i].operation_status == projectType.OPERATING) {
+                    $scope.projectCluster.operating.push(data[i].project_name);
+                }
             }
-            else if (data[i].operation_status == projectType.OPERATING) {
-                $scope.projectCluster.operating.push(data[i].project_name);
+            if(designatedProjType == projectType.OPERATING){
+                $scope.select_type = STR_OPERATING;
+            }
+            else{
+                $scope.select_type = STR_OPERABLE;
+            }
+            $scope.projTypeChanged();
+            if(pageReady){
+                $scope.$apply();
             }
         }
-        $scope.names = $scope.projectCluster.operating;
-        $scope.propTypeChanged();
+
+        function errorCallback(error) {
+            //error code
+        }
     }
 
-    function errorCallback(error) {
-        //error code
-    }
+    requestProjectList();
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
         if (e.key == "Enter") {
@@ -140,6 +194,12 @@ app.controller('myCtrl', function ($scope, $http) {
         });
         updateProjectStatus($scope.select_name, projectType.OPERATING);
 
+        designatedProjType = projectType.OPERATING;
+        designatedProjName = $scope.select_name;
+        requestProjectList();
+        designatedProjName = "";
+        enableSelector(false);
+
     });
 
     $("#btn_generate_list").click(function () {
@@ -159,6 +219,12 @@ app.controller('myCtrl', function ($scope, $http) {
         $(this).addClass("disabled");
         $("#scan_input").off("blur");
         $("#scan_input").blur();
+
+        enableSelector(true);
+        designatedProjType = projectType.OPERABLE;
+        designatedProjName = $scope.select_name;
+        requestProjectList();
+        designatedProjName = "";
     })
 
 
@@ -185,6 +251,7 @@ app.controller('myCtrl', function ($scope, $http) {
             url: "http://localhost:8080/status",
             data: {"project_name": projectName, status: status},
             dataType: 'json',
+            async:false,
             success: function (data) {
             },
             error: function (e) {
