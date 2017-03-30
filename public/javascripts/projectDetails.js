@@ -614,7 +614,7 @@ function createQRCode(data, bodyContent, qrDraw) {
     var qrImageRow = document.createElement('div');
     qrImageRow.classList.add("row");
     var qrCode = document.createElement('canvas');
-    qrDraw.draw(qrCode, data.product_id, function (error, canvas) {
+    qrDraw.draw(qrCode, data.product_id, {type: "Byte"}, function (error, canvas) {
         if (error) console.error(error)
         console.log('success!');
     });
