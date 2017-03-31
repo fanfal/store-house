@@ -563,6 +563,7 @@ function onSubmitBtnClick() {
         processData: false,
         success: function (data, status) {
             showMessageBox("上传数据成功.");
+            projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
         },
         error: function (xhr, desc, err) {
             showMessageBox(JSON.stringify(xhr.responseJSON.errorMessage));
