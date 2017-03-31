@@ -552,10 +552,24 @@ function setExportToExcelBtnEnable(bEnable) {
 }
 
 function onSubmitBtnClick() {
-    //提交文件
     var postURL = "http://localhost:8080/upload/excel?name=";
     postURL += projDetailsModelInstance.operatingProject;
-    $('#uploadForm').attr('action', postURL).submit();
+    var formData = new FormData($("#uploadForm")[0]);
+    $.ajax({
+        url: postURL,
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data, status) {
+            showMessageBox("上传数据成功.");
+            projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+        },
+        error: function (xhr, desc, err) {
+            showMessageBox(JSON.stringify(xhr.responseJSON.errorMessage));
+        }
+    });
+
     $("uploadButton").addClass("disabled");
 }
 
