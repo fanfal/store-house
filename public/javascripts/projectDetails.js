@@ -585,16 +585,17 @@ String.prototype.format = function () {
 
 function onPrint() {
     if (selected.length == 0) {
-        showMessageBox("请勾选要导出的项.");
+        showMessageBox("请勾选要打印的项.");
         return;
     }
 
     var bodyContent = document.getElementById('qr-content');
     var qrcodedraw = new qrcodelib.qrcodedraw()
     cleanOldQRCode(bodyContent);
+    var index = 0;
     selected.forEach(function (data) {
         if (data.product_id != null) {
-            createQRCode(data, bodyContent, qrcodedraw);
+            createQRCode(data, bodyContent, qrcodedraw, index++);
         }
     });
     $("#printQRCodeDialog").modal('show');
@@ -606,23 +607,58 @@ function cleanOldQRCode(bodyContent) {
     }
 }
 
-function createQRCode(data, bodyContent, qrDraw) {
+function createQRCode(data, bodyContent, qrDraw, index) {
 
     var subContent = document.createElement('div');
+    subContent.id = "qr_" + index.toString();
     subContent.classList.add("row");
     subContent.classList.add("qrSubContent");
     var qrImageRow = document.createElement('div');
     qrImageRow.classList.add("row");
     var qrCode = document.createElement('canvas');
+    qrCode.classList.add("qrCanvas");
     qrDraw.draw(qrCode, data.product_id, function (error, canvas) {
-        if (error) console.error(error)
-        console.log('success!');
     });
-    qrImageRow.appendChild(qrCode);
+    var qrImage = document.createElement('img');
+    qrImage.src = qrCode.toDataURL();
+    qrImageRow.appendChild(qrImage);
+
     var text = document.createElement("h");
     text.textContent = data.product_id;
 
     subContent.appendChild(qrImageRow);
     subContent.appendChild(text);
     bodyContent.appendChild(subContent);
+}
+
+function printQRCodes() {
+    $("#printQRCodeDialog").modal('hide');
+    $("body").append("<div id = 'invisible' style='display:none'></div>");
+    $("#invisible").append("<div id = 'printTemplate' class = 'singleQR' style='width:30mm;margin:0;padding:0;'></div>");
+    var template = $("#printTemplate");
+    var index = 0;
+    var count = $("#qr-content").children().length;
+    var height = 0;
+    $("#qr-content").children().each(function () {
+        height += 20;
+        //regenerate a new div for print
+        var id = "singleQRContent_" + index.toString();
+        ++index;
+        template.append("<div id = " + id + " style='width:30mm;height:19.99mm'></div>");
+        var singleQR = $("#"+id);
+        //1. 拿到图片
+        $(this).find("img").each(function () {
+            var imgStr = "<img src=" + $(this).attr("src") + " style='width:20mm;height:19.99mm;margin-left:4mm;'><img>";
+            singleQR.append(imgStr);
+        })
+    });
+    template.css("height", height);
+    template.jqprint({
+        debug: false,
+        importCSS: false,
+        printContainer: true,
+        operaSupport: false,
+        height: height
+    })
+    template.remove();
 }
