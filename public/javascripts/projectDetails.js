@@ -54,7 +54,6 @@ function tolerance() {
 }
 var toleranceHandler = new tolerance();
 function initInputList() {
-    var id = {name: "product_id", control: $("#productID")};
     var building = {name: "building", control: $("#building")};
     var unit = {name: "unit", control: $("#unit")};
     var floor = {name: "floor", control: $("#floor")};
@@ -63,7 +62,6 @@ function initInputList() {
     var type = {name: "type", control: $("#typeSelect")};
     var width = {name: "width", control: $("#width")};
     var height = {name: "height", control: $("#height")};
-    inputList.push(id);
     inputList.push(building);
     inputList.push(unit);
     inputList.push(floor);
@@ -631,7 +629,7 @@ function createQRCode(data, bodyContent, qrDraw, index) {
     qrImageRow.classList.add("row");
     var qrCode = document.createElement('canvas');
     qrCode.classList.add("qrCanvas");
-    qrDraw.draw(qrCode, data.product_id, {type: "Byte"});
+    qrDraw.draw(qrCode, data.product_id, {type: "Byte"}, function (error, canvas) {});
     var qrImage = document.createElement('img');
     qrImage.src = qrCode.toDataURL();
     qrImageRow.appendChild(qrImage);

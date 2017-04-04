@@ -56,6 +56,56 @@ $(document).ready(function () {
     pageReady = true;
 });
 
+
+function OutgoingDuplicateRemoval() {
+    this.enableOutgoing = true;
+    this.operatingProduct = [];
+
+    this.beginOutGoing = function (projectName, productID, removal) {
+        this.operatingProduct.push({pn:projectName, pi:productID});
+        setTimeout(function () {
+            removal.endOutGoing(projectName, productID);
+        }, 50);
+    }
+
+    this.endOutGoing = function (projectName, productID) {
+        for(var i = 0; i < this.operatingProduct.length; ++i) {
+           var productSchema = this.operatingProduct[i];
+           if(productSchema.pn == projectName
+           && productSchema.pi == productID) {
+               this.operatingProduct.splice(i, 1);
+               break;
+           }
+        }
+    }
+
+    this.hasDuplicatedProduct = function (projectName, productID) {
+        var hasDuplicatedProjectName = false;
+        for(var i = 0; i < this.operatingProduct.length; ++i) {
+            var productSchema = this.operatingProduct[i];
+            if(productSchema.pn == projectName
+            && productSchema.pi == productID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    this.canDoOutGoing = function (projectName, productID){
+        if(projectName == "" || productID == ""){
+            return false;
+        }
+        if(this.hasDuplicatedProduct(projectName, productID)) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+}
+
 app.controller('myCtrl', function ($scope, $http) {
     $scope.init = function () {
         $scope.productCount = {};
@@ -104,11 +154,16 @@ app.controller('myCtrl', function ($scope, $http) {
         else if (type == projectType.OPERATING) {
             $scope.names = $scope.projectCluster.operating;
         }
+
         if($scope.names.length > 0) {
+             var selectedProjName = "";
              if(designatedProjName == ""){
-                designatedProjName = $scope.names[0];
+                selectedProjName = $scope.names[0];
              }
-             $scope.select_name = designatedProjName;
+             else{
+                selectedProjName = designatedProjName;
+             }
+             $scope.select_name = selectedProjName;
         }
         else{
             $scope.select_name = "";
@@ -155,12 +210,20 @@ app.controller('myCtrl', function ($scope, $http) {
     }
 
     requestProjectList();
+    //偷鸡取巧的解决方法, 最好还是把XXX楼XXX栋这些汉字换成英文
+    //10ms内禁止再发同样的内容发送第二次
+    //扫码枪在识别到汉字的时候，会发送一次回车按键消息，此时会向服务器提交一次出库请求
+    //扫码结束后，会再发一次回车按键消息，再次提交请求的时候，由于第一次出库完成了，所以第二次会报提示
+    var duplicateRemoval = new OutgoingDuplicateRemoval();
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
-        if (e.key == "Enter") {
+        if (e.key == "Enter"){
             var projectId = $scope.scan_text;
-            $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
-                .then(scanSuccessCallback, scanErrorCallBack);
+            if(duplicateRemoval.canDoOutGoing(projectName, projectId)){
+                 duplicateRemoval.beginOutGoing(projectName, projectId, duplicateRemoval);
+                 $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
+                     .then(scanSuccessCallback, scanErrorCallBack);
+            }
         }
     }
 
@@ -171,6 +234,7 @@ app.controller('myCtrl', function ($scope, $http) {
         } else {
             countProductType(data);
             projectInfo = data.concat(projectInfo);
+            console.log(JSON.stringify(projectInfo))
             $scope.items = projectInfo;
         }
         $scope.scan_text = "";
@@ -193,9 +257,8 @@ app.controller('myCtrl', function ($scope, $http) {
             $(this).focus();
         });
         updateProjectStatus($scope.select_name, projectType.OPERATING);
-
-        designatedProjType = projectType.OPERATING;
-        designatedProjName = $scope.select_name;
+        designatedProjType = projectType.OPERATING;    //切换到正在出库
+        designatedProjName = $scope.select_name;       //指定工程名称
         requestProjectList();
         designatedProjName = "";
         enableSelector(false);
