@@ -36,8 +36,30 @@ exports.insertProjectInfoByExcel = function (projectName, datas, res) {
     datas.forEach(function (data) {
         insertProjectInfoFromExcel(projectName, data);
     })
-    res.status(200).send({"success": true});
+    res.status(200).send({success: true});
 }
+
+exports.deleteProjectInfo = function (datas, res) {
+    var project_name = [];
+    var project_id = [];
+    datas.forEach(function (data) {
+        project_name.push(data.project_name);
+        project_id.push(data.product_id);
+    })
+    projectInfoModel.destroy({
+            where: {
+                project_name: project_name,
+                product_id: project_id
+            }
+        })
+        .then(function () {
+            res.status(200).send({success: true});
+        })
+        .catch(function (error) {
+            res.status(400).send({errorMessage: "Some data is error when delete."});
+        })
+}
+
 
 exports.getProject = function (projectName, res) {
     res.setHeader('Content-Type', 'application/json');
@@ -212,7 +234,7 @@ function insertProject(projectName, res) {
         })
         .save()
         .then(function () {
-            res.status(200).send({"success": true});
+            res.status(200).send({success: true});
         })
 }
 
