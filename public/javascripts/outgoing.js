@@ -2,6 +2,9 @@ const PROJECT_EMPTY_ALERT_MESSAGE = "您好,请选择出库项目!";
 const PRODUCT_NOT_EXIST_OR_OUT_OF_STORE_MESSAGE = "你所扫描的产品不在所选项目中, 或者已经出库!";
 const NO_ITEMS_MESSAGE = "您还没有扫描数据!";
 const ALERT_TIME = 2000;
+const STR_OPERATING = "正在出库";
+const STR_OPERABLE = "可以出库";
+
 
 var app = angular.module('myApp', []);
 var projectInfo = [];
@@ -48,6 +51,61 @@ $("#btn_print_list").click(function () {
 
 });
 
+var pageReady = false;
+$(document).ready(function () {
+    pageReady = true;
+});
+
+
+function OutgoingDuplicateRemoval() {
+    this.enableOutgoing = true;
+    this.operatingProduct = [];
+
+    this.beginOutGoing = function (projectName, productID, removal) {
+        this.operatingProduct.push({pn:projectName, pi:productID});
+        setTimeout(function () {
+            removal.endOutGoing(projectName, productID);
+        }, 50);
+    }
+
+    this.endOutGoing = function (projectName, productID) {
+        for(var i = 0; i < this.operatingProduct.length; ++i) {
+           var productSchema = this.operatingProduct[i];
+           if(productSchema.pn == projectName
+           && productSchema.pi == productID) {
+               this.operatingProduct.splice(i, 1);
+               break;
+           }
+        }
+    }
+
+    this.hasDuplicatedProduct = function (projectName, productID) {
+        var hasDuplicatedProjectName = false;
+        for(var i = 0; i < this.operatingProduct.length; ++i) {
+            var productSchema = this.operatingProduct[i];
+            if(productSchema.pn == projectName
+            && productSchema.pi == productID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    this.canDoOutGoing = function (projectName, productID){
+        if(projectName == "" || productID == ""){
+            return false;
+        }
+        if(this.hasDuplicatedProduct(projectName, productID)) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+}
+
 app.controller('myCtrl', function ($scope, $http) {
     $scope.init = function () {
         $scope.productCount = {};
@@ -62,51 +120,110 @@ app.controller('myCtrl', function ($scope, $http) {
         operating: []
     }
 
+    function clearCluster(){
+        $scope.projectCluster.operable = [];
+        $scope.projectCluster.operating = [];
+    }
 
-    var projTypeArray = ["正在出库", "可以出库"];
+    function enableSelector(bEnable) {
+        if(bEnable){
+            $("#project_type_select").attr("disabled", false);
+            $("#select_project").attr("disabled", false);
+        }
+        else{
+            $("#project_type_select").attr("disabled", true);
+            $("#select_project").attr("disabled", true);
+        }
+
+    }
+
+    var designatedProjType = projectType.OPERATING;
+    var designatedProjName = "";
+
+    var projTypeArray = [STR_OPERATING, STR_OPERABLE];
     $scope.select_name = "";
     $scope.projType = projTypeArray;
-    $scope.select_type = "正在出库";
-    $scope.propTypeChanged = function () {
+
+    $scope.projTypeChanged = function () {
         value = $scope.select_type;
         var type = (value == projTypeArray[0]) ? projectType.OPERATING : projectType.OPERABLE;
+        designatedProjType = type;
         if (type == projectType.OPERABLE) {
             $scope.names = $scope.projectCluster.operable;
         }
         else if (type == projectType.OPERATING) {
             $scope.names = $scope.projectCluster.operating;
         }
+
         if($scope.names.length > 0) {
-             $scope.select_name = $scope.names[0];
+             var selectedProjName = "";
+             if(designatedProjName == ""){
+                selectedProjName = $scope.names[0];
+             }
+             else{
+                selectedProjName = designatedProjName;
+             }
+             $scope.select_name = selectedProjName;
+        }
+        else{
+            $scope.select_name = "";
         }
     }
 
-    $http.get("http://localhost:8080/get-data/projects")
-        .then(successCallback, errorCallback);
+    function requestProjectList () {
+    //修改成同步的，异步请求下，状态需要延时同步，太麻烦了
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/get-data/projects",
+            dataType: 'json',
+            async:false,
+            success: successCallback,
+            error: errorCallback
+        });
 
-    function successCallback(response) {
-        var data = response.data.project_list;
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].operation_status == projectType.OPERABLE) {
-                $scope.projectCluster.operable.push(data[i].project_name);
+        function successCallback(response) {
+            clearCluster();
+            var data = response.project_list;
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].operation_status == projectType.OPERABLE) {
+                    $scope.projectCluster.operable.push(data[i].project_name);
+                }
+                else if (data[i].operation_status == projectType.OPERATING) {
+                    $scope.projectCluster.operating.push(data[i].project_name);
+                }
             }
-            else if (data[i].operation_status == projectType.OPERATING) {
-                $scope.projectCluster.operating.push(data[i].project_name);
+            if(designatedProjType == projectType.OPERATING){
+                $scope.select_type = STR_OPERATING;
+            }
+            else{
+                $scope.select_type = STR_OPERABLE;
+            }
+            $scope.projTypeChanged();
+            if(pageReady){
+                $scope.$apply();
             }
         }
-        $scope.names = $scope.projectCluster.operating;
-        $scope.propTypeChanged();
+
+        function errorCallback(error) {
+            //error code
+        }
     }
 
-    function errorCallback(error) {
-        //error code
-    }
+    requestProjectList();
+    //偷鸡取巧的解决方法, 最好还是把XXX楼XXX栋这些汉字换成英文
+    //10ms内禁止再发同样的内容发送第二次
+    //扫码枪在识别到汉字的时候，会发送一次回车按键消息，此时会向服务器提交一次出库请求
+    //扫码结束后，会再发一次回车按键消息，再次提交请求的时候，由于第一次出库完成了，所以第二次会报提示
+    var duplicateRemoval = new OutgoingDuplicateRemoval();
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.select_name;
-        if (e.key == "Enter") {
+        if (e.key == "Enter"){
             var projectId = $scope.scan_text;
-            $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
-                .then(scanSuccessCallback, scanErrorCallBack);
+            if(duplicateRemoval.canDoOutGoing(projectName, projectId)){
+                 duplicateRemoval.beginOutGoing(projectName, projectId, duplicateRemoval);
+                 $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
+                     .then(scanSuccessCallback, scanErrorCallBack);
+            }
         }
     }
 
@@ -117,6 +234,7 @@ app.controller('myCtrl', function ($scope, $http) {
         } else {
             countProductType(data);
             projectInfo = data.concat(projectInfo);
+            console.log(JSON.stringify(projectInfo))
             $scope.items = projectInfo;
         }
         $scope.scan_text = "";
@@ -139,6 +257,11 @@ app.controller('myCtrl', function ($scope, $http) {
             $(this).focus();
         });
         updateProjectStatus($scope.select_name, projectType.OPERATING);
+        designatedProjType = projectType.OPERATING;    //切换到正在出库
+        designatedProjName = $scope.select_name;       //指定工程名称
+        requestProjectList();
+        designatedProjName = "";
+        enableSelector(false);
 
     });
 
@@ -159,6 +282,12 @@ app.controller('myCtrl', function ($scope, $http) {
         $(this).addClass("disabled");
         $("#scan_input").off("blur");
         $("#scan_input").blur();
+
+        enableSelector(true);
+        designatedProjType = projectType.OPERABLE;
+        designatedProjName = $scope.select_name;
+        requestProjectList();
+        designatedProjName = "";
     })
 
 
@@ -185,6 +314,7 @@ app.controller('myCtrl', function ($scope, $http) {
             url: "http://localhost:8080/status",
             data: {"project_name": projectName, status: status},
             dataType: 'json',
+            async:false,
             success: function (data) {
             },
             error: function (e) {
