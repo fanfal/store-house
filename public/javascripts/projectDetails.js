@@ -7,6 +7,8 @@ const c_selAll = "selAll";
 const c_getProjectsURL = "http://localhost:8080/get-data/projects";
 const c_getProjectInfoURL = "http://localhost:8080/get-data/project-info";
 const c_insertProjectInfoURL = "http://localhost:8080/insert-data/project-info";
+const c_deleteProjectInfoURL = "http://localhost:8080/delete-data/project-info";
+const c_updateDataByExcelURL = "http://localhost:8080/upload/excel?name=";
 
 var inputList = new Array;
 var selectionIds = [];
@@ -362,12 +364,55 @@ $(document).ready(function () {
 
 
 function onInsert() {
-    if (!projDetailsModelInstance.projectDetailsStateMachine.insertEnable) {
-        showMessageBox("请选择一个项目.");
-    }
-    else {
+    if (isProjectSelected()) {
         $("#projInfoModalDialog").modal('show');
     }
+}
+
+function isProjectSelected() {
+    if (!projDetailsModelInstance.projectDetailsStateMachine.insertEnable) {
+        showMessageBox("请选择一个项目.");
+        return false;
+    }
+    return true;
+}
+
+function isProjectInfoSelected() {
+    if (selected.length == 0) {
+        showMessageBox("请勾选要导出的项.");
+        return false;
+    }
+    return true;
+}
+function onDelete() {
+    if (isProjectInfoSelected() && isProjectSelected()) {
+        $("#deletAlertDialog").modal('show');
+    }
+}
+
+function finalDelete() {
+    var data = {
+        project_info_list: selected
+    };
+    $.ajax({
+        url: c_deleteProjectInfoURL,
+        type: "POST",
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify(data),
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            $("#deletAlertDialog").modal('hide');
+            projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+        },
+        error: function (data) {
+            $("#deletAlertDialog").modal('hide');
+            showMessageBox(data.errorMessage);
+            projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+
+        }
+    })
+
 }
 
 function onConfirm() {
@@ -552,7 +597,7 @@ function setExportToExcelBtnEnable(bEnable) {
 }
 
 function onSubmitBtnClick() {
-    var postURL = "http://localhost:8080/upload/excel?name=";
+    var postURL = c_updateDataByExcelURL;
     postURL += projDetailsModelInstance.operatingProject;
     var formData = new FormData($("#uploadForm")[0]);
     $.ajax({
@@ -582,11 +627,9 @@ function hideMessageBox() {
 }
 
 function onUpload() {
-    if (!projDetailsModelInstance.projectDetailsStateMachine.insertEnable) {
-        showMessageBox("请选择一个项目.");
-        return;
+    if (isProjectSelected()) {
+        $("#uploadModalDialog").modal('show');
     }
-    $("#uploadModalDialog").modal('show');
 }
 
 String.prototype.format = function () {
@@ -598,8 +641,7 @@ String.prototype.format = function () {
 }
 
 function onPrint() {
-    if (selected.length == 0) {
-        showMessageBox("请勾选要导出的项.");
+    if (!isProjectInfoSelected()) {
         return;
     }
 

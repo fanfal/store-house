@@ -6,11 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
-var getData = require('./routes/getData')
+var getData = require('./routes/getData');
 var insertData = require('./routes/insertData');
-var outGoing = require('./routes/outGoing')
+var outGoing = require('./routes/outGoing');
 var upload = require('./routes/upload');
-var status = require('./routes/status')
+var status = require('./routes/status');
+var deleteData = require('./routes/deleteData');
 var app = express();
 
 // view engine setup
@@ -33,6 +34,7 @@ app.use('/insert-data', insertData);
 app.use('/out-going',outGoing);
 app.use('/upload', upload);
 app.use('/status', status);
+app.use('/delete-data', deleteData);
 // catch 404 and forward to error handler
 
 app.use(function (req, res, next) {
