@@ -485,9 +485,6 @@ function onConfirm() {
                     if($(element).attr("id") != "typeSelect") {
                         $(this).val("");
                     }
-                    else{
-                        $(this).val("框");
-                    }
                 })
                 feedBack(true, "添加成功");
                 projDetailsModelInstance.onInsertSuc();
