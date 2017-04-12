@@ -481,8 +481,13 @@ function onConfirm() {
             dataType: 'json',
             async: false,
             success: function (data) {
-                $(".projInfoInput").each(function (index) {
-                    $(this).val("");
+                $(".projInfoInput").each(function (index, element) {
+                    if($(element).attr("id") != "typeSelect") {
+                        $(this).val("");
+                    }
+                    else{
+                        $(this).val("框");
+                    }
                 })
                 feedBack(true, "添加成功");
                 projDetailsModelInstance.onInsertSuc();
