@@ -38,7 +38,16 @@ $(document).ready(function () {
     });
 
     $("#first").click();
-
+    resize();
 });
+
+function resize() {
+    //自适应高度
+    var  windowHeight = window.innerHeight;
+    windowHeight = windowHeight > 1000 ? windowHeight : 1000;
+    $("html").css("height", windowHeight);
+    $("#mainContent").css("height", windowHeight - 100);
+}
+window.onresize = resize;
 
  
