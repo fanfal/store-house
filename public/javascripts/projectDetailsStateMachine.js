@@ -45,7 +45,7 @@ function projectDetailsStateMachine(){
         this.selectedProjectType = type;
     }
 
-//state transform
+    //state transform
     this.insertDone = function (){
         if(this.selectedProjectType == projectType.EXHAUSTED){
             //如果插入前, 锁定的工程类型是出库完毕，那么插入后，跳转到"可以出库"
@@ -55,5 +55,9 @@ function projectDetailsStateMachine(){
         return new noneState();
     }
 
+    //删除后同步
+    this.afterRemove = function (model) {
+        var curSelectedProjectType = this.selectedProjectType
+    }
 }
 
