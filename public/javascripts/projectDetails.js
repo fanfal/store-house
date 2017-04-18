@@ -32,16 +32,13 @@ function tolerance() {
     this.validityCheck = function () {
         var width = $("#widthTolerance").val();
         var height = $("#heightTolerance").val();
+        var pattern = /^(-)?\d+(\.\d+)?$/;
         if(width == "" || height == "") {return false;}
-        else
+        else if (pattern.exec(width) == null || pattern.exec(height) == null)
         {
-            //必须输入数字
-            var pattern = /^(-)?\d+(\.\d+)?$/;
-            if (pattern.exec(width) == null || pattern.exec(height) == null) {
-                return false;
-            }
+            return false;
         }
-        return true;
+        else {return true;}
     }
     this.onConfirm = function () {
         if(!this.validityCheck()) {showMessageBox("误差值输入错误,误差值不能为空且只能为数字."); return;}
@@ -427,7 +424,7 @@ function finalDelete() {
 
         }
     })
-    projDetailsModelInstance.projectDetailsStateMachine.afterRemove();
+    projDetailsModelInstance.projectDetailsStateMachine.afterRemove(projDetailsModelInstance);
 }
 
 function onConfirm() {

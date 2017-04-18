@@ -137,17 +137,13 @@ app.controller('myCtrl', function ($scope, $http) {
 
     }
 
-    var designatedProjType = projectType.OPERATING;
-    var designatedProjName = "";
+    var projectTypeArray = [STR_OPERATING, STR_OPERABLE];
+    $scope.select_name = "";                //选择的工程名
+    $scope.projectType = projectTypeArray;  //工程类型列表
 
-    var projTypeArray = [STR_OPERATING, STR_OPERABLE];
-    $scope.select_name = "";
-    $scope.projType = projTypeArray;
-
-    $scope.projTypeChanged = function () {
+    $scope.projectTypeChanged = function () {
         value = $scope.select_type;
-        var type = (value == projTypeArray[0]) ? projectType.OPERATING : projectType.OPERABLE;
-        designatedProjType = type;
+        var type = (value == projectTypeArray[0]) ? projectType.OPERATING : projectType.OPERABLE;
         if (type == projectType.OPERABLE) {
             $scope.names = $scope.projectCluster.operable;
         }
@@ -156,14 +152,8 @@ app.controller('myCtrl', function ($scope, $http) {
         }
 
         if($scope.names.length > 0) {
-             var selectedProjName = "";
-             if(designatedProjName == ""){
-                selectedProjName = $scope.names[0];
-             }
-             else{
-                selectedProjName = designatedProjName;
-             }
-             $scope.select_name = selectedProjName;
+             //切下拉列表时默认选中第一个
+             $scope.select_name = $scope.names[0];
         }
         else{
             $scope.select_name = "";
@@ -171,7 +161,7 @@ app.controller('myCtrl', function ($scope, $http) {
     }
 
     function requestProjectList () {
-    //修改成同步的，异步请求下，状态需要延时同步，太麻烦了
+        //修改成同步的，异步请求下，状态需要延时同步，太麻烦了
         $.ajax({
             type: "GET",
             url: "http://localhost:8080/get-data/projects",
@@ -192,13 +182,8 @@ app.controller('myCtrl', function ($scope, $http) {
                     $scope.projectCluster.operating.push(data[i].project_name);
                 }
             }
-            if(designatedProjType == projectType.OPERATING){
-                $scope.select_type = STR_OPERATING;
-            }
-            else{
-                $scope.select_type = STR_OPERABLE;
-            }
-            $scope.projTypeChanged();
+            $scope.select_type = STR_OPERABLE;  //默认到可以出库
+            $scope.projectTypeChanged();
             if(pageReady){
                 $scope.$apply();
             }
@@ -234,7 +219,6 @@ app.controller('myCtrl', function ($scope, $http) {
         } else {
             countProductType(data);
             projectInfo = data.concat(projectInfo);
-            console.log(JSON.stringify(projectInfo))
             $scope.items = projectInfo;
         }
         $scope.scan_text = "";
@@ -257,12 +241,7 @@ app.controller('myCtrl', function ($scope, $http) {
             $(this).focus();
         });
         updateProjectStatus($scope.select_name, projectType.OPERATING);
-        designatedProjType = projectType.OPERATING;    //切换到正在出库
-        designatedProjName = $scope.select_name;       //指定工程名称
-        requestProjectList();
-        designatedProjName = "";
-        enableSelector(false);
-
+        startOutGoing();
     });
 
     $("#btn_generate_list").click(function () {
@@ -282,12 +261,7 @@ app.controller('myCtrl', function ($scope, $http) {
         $(this).addClass("disabled");
         $("#scan_input").off("blur");
         $("#scan_input").blur();
-
-        enableSelector(true);
-        designatedProjType = projectType.OPERABLE;
-        designatedProjName = $scope.select_name;
-        requestProjectList();
-        designatedProjName = "";
+        endOutGoing();
     })
 
 
@@ -320,6 +294,50 @@ app.controller('myCtrl', function ($scope, $http) {
             error: function (e) {
             }
         })
+    }
+
+    var projectStateBeforeOutGoing = -1;
+    function startOutGoing() {
+        projectStateBeforeOutGoing = ($scope.select_type == STR_OPERABLE) ? projectType.OPERABLE : projectType.OPERATING;
+        if (projectStateBeforeOutGoing == projectType.OPERABLE) {
+            //选择的工程是一个 可以出库 的状态
+            //1. 把所选的工程插入到正在出库的工程名列表的最后一个
+            $scope.projectCluster.operating.push($scope.select_name);
+            $scope.select_type = STR_OPERATING;
+        }
+        enableSelector(false);
+        $scope.$apply();
+    }
+
+    function endOutGoing() {
+        //1. 获取当前操作的工程的工程状态
+        var projectStateAfterOutGoing = getProjectState($scope.select_name);
+        //2.1 如果是可以出库
+        if (projectStateAfterOutGoing == projectType.OPERABLE) {
+            if(projectStateBeforeOutGoing == projectType.OPERABLE) {
+                //2.1.1 从可以出库 -> 可以出库
+                console.log("1:1")
+                $scope.projectCluster.operating.pop();
+                $scope.select_type = STR_OPERABLE;
+            }
+        }
+        //2.2 变成了出库完毕了
+        else if(projectStateAfterOutGoing == projectType.EXHAUSTED) {
+            //2.2.1 切换到可以出库里的第一个
+            //2.2.1.1 删除掉原有集合中的指定元素
+            var projectNameArrayBeforeOutGoing = projectStateBeforeOutGoing == projectType.OPERABLE ?
+                $scope.projectCluster.operable : $scope.projectCluster.operating;
+            var index = projectNameArrayBeforeOutGoing.indexOf($scope.select_name);
+            if(index > -1) {
+                projectNameArrayBeforeOutGoing.splice(index, 1);
+            }
+            //2.2.1.2 定位到指定位置上
+            $scope.select_type = STR_OPERABLE;
+            $scope.select_name = $scope.projectCluster.operable.length > 0 ? $scope.projectCluster.operable[0] : "";
+        }
+        enableSelector(true);
+        projectStateBeforeOutGoing = -1;
+        $scope.$apply();
     }
 });
 
