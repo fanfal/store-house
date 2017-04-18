@@ -401,6 +401,7 @@ function finalDelete() {
         async: false,
         success: function (data) {
             $("#deletAlertDialog").modal('hide');
+            selected = [];
             projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
         },
         error: function (data) {
@@ -482,7 +483,7 @@ function onConfirm() {
             async: false,
             success: function (data) {
                 $(".projInfoInput").each(function (index, element) {
-                    if($(element).attr("id") != "typeSelect") {
+                    if ($(element).attr("id") != "typeSelect") {
                         $(this).val("");
                     }
                 })
@@ -673,7 +674,8 @@ function createQRCode(data, bodyContent, qrDraw, index) {
     qrImageRow.classList.add("row");
     var qrCode = document.createElement('canvas');
     qrCode.classList.add("qrCanvas");
-    qrDraw.draw(qrCode, data.product_id, {type: "Byte"}, function (error, canvas) {});
+    qrDraw.draw(qrCode, data.product_id, {type: "Byte"}, function (error, canvas) {
+    });
     var qrImage = document.createElement('img');
     qrImage.src = qrCode.toDataURL();
     qrImageRow.appendChild(qrImage);
@@ -700,7 +702,7 @@ function printQRCodes() {
         var id = "singleQRContent_" + index.toString();
         ++index;
         template.append("<div id = " + id + " style='width:30mm;height:19.99mm'></div>");
-        var singleQR = $("#"+id);
+        var singleQR = $("#" + id);
         //1. 拿到图片
         $(this).find("img").each(function () {
             var imgStr = "<img src=" + $(this).attr("src") + " style='width:20mm;height:19.99mm;margin-left:4mm;'><img>";

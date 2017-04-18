@@ -53,6 +53,11 @@ exports.deleteProjectInfo = function (datas, res) {
             }
         })
         .then(function () {
+            updateProjectStatusBaseOnProduct(project_name[0], function (data) {
+                if (data.length == 0) {
+                    updateProjectStatus(project_name[0], projectType.EXHAUSTED);
+                }
+            });
             res.status(200).send({success: true});
         })
         .catch(function (error) {
