@@ -53,7 +53,7 @@ exports.deleteProjectInfo = function (datas, res) {
             }
         })
         .then(function () {
-            updateProjectStatusBaseOnProduct(project_name[0], function (data) {
+            updateProjectStatusBaseOnProductNumber(project_name[0], function (data) {
                 if (data.length == 0) {
                     updateProjectStatus(project_name[0], projectType.EXHAUSTED);
                 }
@@ -177,7 +177,7 @@ exports.productOutGoing = function (projectName, productId, res) {
 exports.updateProjectStatusByRequest = function (projectName, status) {
     switch (status) {
         case "0":
-            updateProjectStatusBaseOnProduct(projectName, function (data) {
+            updateProjectStatusBaseOnProductNumber(projectName, function (data) {
                 if (data.length > 0) {
                     updateProjectStatus(projectName, status);
                 } else {
@@ -194,7 +194,7 @@ exports.updateProjectStatusByRequest = function (projectName, status) {
 }
 
 
-function updateProjectStatusBaseOnProduct(projectName, callback) {
+function updateProjectStatusBaseOnProductNumber(projectName, callback) {
     projectInfoModel.findAll({
             where: {
                 project_name: projectName,
@@ -222,7 +222,7 @@ function updateProjectStatusWhenInsertProjectInfo(projectName) {
 function updateProductStatusWhenOutGoing(projectName, productId, isStored) {
     projectInfoModel.update({is_stored: isStored}, {where: {project_name: projectName, product_id: productId}})
         .then(function () {
-            updateProjectStatusBaseOnProduct(projectName, function (data) {
+            updateProjectStatusBaseOnProductNumber(projectName, function (data) {
                 if (data.length == 0) {
                     updateProjectStatus(projectName, projectType.EXHAUSTED);
                 }
