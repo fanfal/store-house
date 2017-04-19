@@ -708,10 +708,8 @@ function printQRCodes() {
     var template = $("#printTemplate");
     var index = 0;
     var count = $("#qr-content").children().length;
-    alert(count);
     var height = 0;
     $("#qr-content").children().each(function () {
-
         height += 60;
         //regenerate a new div for print
         var id = "singleQRContent_" + index.toString();
