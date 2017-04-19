@@ -312,17 +312,19 @@ app.controller('myCtrl', function ($scope, $http) {
     function endOutGoing() {
         //1. 获取当前操作的工程的工程状态
         var projectStateAfterOutGoing = getProjectState($scope.select_name);
-        //2.1 如果是可以出库
-        if (projectStateAfterOutGoing == projectType.OPERABLE) {
-            if(projectStateBeforeOutGoing == projectType.OPERABLE) {
-                //2.1.1 从可以出库 -> 可以出库
+        //2.1 如果出库前是可以出库状态
+        if (projectStateBeforeOutGoing == projectType.OPERABLE) {
+            if(projectStateAfterOutGoing != projectType.OPERATING) {
+                //2.1.1 出库后不是正在出库状态，需要从正在出库列表中取出来刚才的工程名
+                //如果出库前是可以出库，那么该工程名会被加到正在出库的工程列表中
+                //出库结束后，如果该工程不是一个正在出库状态，需要从列表中去除刚才加进去的工程名
                 console.log("1:1")
                 $scope.projectCluster.operating.pop();
                 $scope.select_type = STR_OPERABLE;
             }
         }
         //2.2 变成了出库完毕了
-        else if(projectStateAfterOutGoing == projectType.EXHAUSTED) {
+        if(projectStateAfterOutGoing == projectType.EXHAUSTED) {
             //2.2.1 切换到可以出库里的第一个
             //2.2.1.1 删除掉原有集合中的指定元素
             var projectNameArrayBeforeOutGoing = projectStateBeforeOutGoing == projectType.OPERABLE ?
