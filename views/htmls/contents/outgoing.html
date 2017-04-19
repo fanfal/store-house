@@ -27,11 +27,10 @@
                 <select id="select_project"class="input-sm" style="width:150px;margin-right:10px"  ng-model="select_name" ng-options="x for x in names">
                 </select>
             </div>
-            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 0px; height:0px; margin-left: 250px">
         </div>
 
         <div class = "row">
-            <div style="overflow: auto; max-height:500px;">
+            <div style="overflow: auto; max-height:700px;">
                 <table class="table table-striped table-responsive table-hover table-bordered" ng-init="items = []"
                        ng-model="items">
                     <thead style="font-weight:lighter;">
@@ -124,11 +123,15 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div style="text-align:center">
-        <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始出库</button>
-        <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止出库</button>
-        <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" data-toggle="modal">打印表单</button>
+
+        <div style="text-align:center">
+            <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始出库</button>
+            <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止出库</button>
+            <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" data-toggle="modal">打印表单</button>
+        </div>
+        <div>
+            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 0px; height:0px; margin-left: 250px">
+        </div>
     </div>
     </div>
     <script type="text/javascript" , src="/angular/angular.min.js"></script>
