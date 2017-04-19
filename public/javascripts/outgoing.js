@@ -228,7 +228,8 @@ app.controller('myCtrl', function ($scope, $http) {
 
     }
 
-    $("#btn_start_scan").click(function () {
+    $("#btn_start_scan").click(function (e) {
+        e.preventDefault();
         if ($scope.select_name == "") {
             showProjectEmptyAlert();
             $scope.scan_text = "";
@@ -244,7 +245,8 @@ app.controller('myCtrl', function ($scope, $http) {
         startOutGoing();
     });
 
-    $("#btn_generate_list").click(function () {
+    $("#btn_generate_list").click(function (e) {
+        e.preventDefault()
         updateProjectStatus($scope.select_name, projectType.OPERABLE);
         if ($("#btn_start_scan").hasClass("disabled")) {
             $("#btn_start_scan").removeClass("disabled");
@@ -255,7 +257,8 @@ app.controller('myCtrl', function ($scope, $http) {
         $('#myModal').modal('show');
     })
 
-    $("#btn_stop_scan").click(function () {
+    $("#btn_stop_scan").click(function (e) {
+        e.preventDefault();
         updateProjectStatus($scope.select_name, projectType.OPERABLE);
         $("#btn_start_scan").removeClass("disabled");
         $(this).addClass("disabled");
