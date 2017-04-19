@@ -29,7 +29,19 @@ app.controller("exportController",
 function tolerance() {
     this.widthTolerance = 0.0;
     this.heightTolerance = 0.0;
+    this.validityCheck = function () {
+        var width = $("#widthTolerance").val();
+        var height = $("#heightTolerance").val();
+        var pattern = /^(-)?\d+(\.\d+)?$/;
+        if(width == "" || height == "") {return false;}
+        else if (pattern.exec(width) == null || pattern.exec(height) == null)
+        {
+            return false;
+        }
+        else {return true;}
+    }
     this.onConfirm = function () {
+        if(!this.validityCheck()) {showMessageBox("误差值输入错误,误差值不能为空且只能为数字."); return;}
         var widthTolerance = parseFloat($("#widthTolerance").val());
         var heightTolerance = parseFloat($("#heightTolerance").val());
         if ((widthTolerance != this.widthTolerance) || (heightTolerance != this.heightTolerance)) {
@@ -222,6 +234,7 @@ function projectDetailsModel() {
     this.projectListSelectChanged = function () {
         selectionIds = [];
         selected = [];
+        model.projectDetailsStateMachine.enableExport(false);
         $myScope.update(selected);
         //1. 拿到选中的选项
         model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
@@ -411,7 +424,7 @@ function finalDelete() {
 
         }
     })
-
+    projDetailsModelInstance.projectDetailsStateMachine.afterRemove(projDetailsModelInstance);
 }
 
 function onConfirm() {

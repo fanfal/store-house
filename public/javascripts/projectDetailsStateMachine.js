@@ -1,5 +1,4 @@
 /*global $*/
-
 //状态机, 完成UI状态转换
 
 function noneState() {
@@ -8,20 +7,19 @@ function noneState() {
     }
 }
 
+function syncSelectList(strProjectType, strProjectName, model) {
+    $("#projectTypeSelect").val(strProjectType);
+    model.projectTypeSelectChanged();
+    $("#projectListSelect").val(strProjectName);
+    model.projectListSelectChanged();
+}
 function exhaustedToOperableState() {
     this.exec = function (model){
         //从出库完成变成了可以出库
         //也就是说插入了若干记录
         //1. 把当前项目移动到"operable里面"
         var curProjName = model.operatingProject;
-        //2. 切换下拉列表
-        $("#projectTypeSelect").val("selOperatable");
-        //3. 主动激发工程类型下拉列表变化事件
-        model.projectTypeSelectChanged();
-        //4. 选中刚才切换过来那个
-        $("#projectListSelect").val(curProjName);
-        //5. 切换到刚才编辑的工程
-        model.projectListSelectChanged();
+        syncSelectList("selOperatable", curProjName, model);
     }
 }
 
@@ -45,7 +43,7 @@ function projectDetailsStateMachine(){
         this.selectedProjectType = type;
     }
 
-//state transform
+    //state transform
     this.insertDone = function (){
         if(this.selectedProjectType == projectType.EXHAUSTED){
             //如果插入前, 锁定的工程类型是出库完毕，那么插入后，跳转到"可以出库"
@@ -55,5 +53,31 @@ function projectDetailsStateMachine(){
         return new noneState();
     }
 
+    //删除后同步
+    this.afterRemove = function (model) {
+        if(this.selectedProjectType == projectType.ALL) {return;}
+        var modelOperatingProjectName = model.operatingProject;
+        //1. 获取这个工程的status, 看是否发生变化了, 这一步必须与后台交互
+        var projectStatus = getProjectState(modelOperatingProjectName);
+        if (projectStatus != this.selectedProjectType) {
+            //工程类型变了
+            var strTargetProjectType = "";
+            if(projectStatus == projectType.OPERABLE) {
+                strTargetProjectType = "selOperatable";
+            }
+            else if(projectStatus == projectType.OPERATING) {
+                strTargetProjectType = "selOperating";
+            }
+            else if(projectStatus == projectType.EXHAUSTED) {
+                strTargetProjectType = "selExhausted";
+            }
+            if(strTargetProjectType != "") {
+                syncSelectList(strTargetProjectType, modelOperatingProjectName, model);
+            }
+        }
+    }
+
 }
+
+
 

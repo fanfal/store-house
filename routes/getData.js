@@ -21,8 +21,8 @@ router.post('/project-info', function (req, res, next) {
         if(req.body.name != ""){
              dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
                    req.body.offset,
-                   req.body.limit
-                   ,function (data, total) {
+                   req.body.limit,
+                   function (data, total) {
                    console.log(JSON.stringify(data));
                    console.log(total);
              res.setHeader('Content-Type', 'application/json');
