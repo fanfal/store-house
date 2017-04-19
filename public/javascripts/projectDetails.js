@@ -708,18 +708,25 @@ function printQRCodes() {
     var template = $("#printTemplate");
     var index = 0;
     var count = $("#qr-content").children().length;
+    alert(count);
     var height = 0;
     $("#qr-content").children().each(function () {
-        height += 20;
+
+        height += 60;
         //regenerate a new div for print
         var id = "singleQRContent_" + index.toString();
         ++index;
-        template.append("<div id = " + id + " style='width:30mm;height:19.99mm'></div>");
+        template.append("<div id = " + id + " style='width:80mm;height:60mm;text-align:center;'></div>");
         var singleQR = $("#" + id);
         //1. 拿到图片
         $(this).find("img").each(function () {
-            var imgStr = "<img src=" + $(this).attr("src") + " style='width:20mm;height:19.99mm;margin-left:4mm;'><img>";
+            var imgStr = "<img src=" + $(this).attr("src") + " style='width:40mm;height:40mm;'><img>";
             singleQR.append(imgStr);
+        })
+        //2. 拿到h
+        $(this).find("h").each(function () {
+            var hStr = "<br><h style='text-align:center;height:20;font-size:3px'>" + $(this).html() + "</h>";
+            singleQR.append(hStr);
         })
     });
     template.css("height", height);
