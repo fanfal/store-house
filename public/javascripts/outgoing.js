@@ -276,7 +276,7 @@ app.controller('myCtrl', function ($scope, $http) {
             case type.GLASS:
                 $scope.productCount.glassNum++;
                 break;
-            case type.OTHER:
+            default:
                 $scope.productCount.otherNum++;
                 break;
         }
