@@ -164,7 +164,7 @@ app.controller('myCtrl', function ($scope, $http) {
         //修改成同步的，异步请求下，状态需要延时同步，太麻烦了
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/get-data/projects",
+            url: c_getProjectsURL,
             dataType: 'json',
             async:false,
             success: successCallback,
@@ -206,7 +206,7 @@ app.controller('myCtrl', function ($scope, $http) {
             var projectId = $scope.scan_text;
             if(duplicateRemoval.canDoOutGoing(projectName, projectId)){
                  duplicateRemoval.beginOutGoing(projectName, projectId, duplicateRemoval);
-                 $http.get("http://localhost:8080/out-going?name=" + projectName + "&productId=" + projectId)
+                 $http.get( c_outgoingURL + projectName + "&productId=" + projectId)
                      .then(scanSuccessCallback, scanErrorCallBack);
             }
         }
@@ -288,7 +288,7 @@ app.controller('myCtrl', function ($scope, $http) {
     function updateProjectStatus(projectName, status) {
         $.ajax({
             type: "POST",
-            url: "http://localhost:8080/status",
+            url: c_statusURL,
             data: {"project_name": projectName, status: status},
             dataType: 'json',
             async:false,

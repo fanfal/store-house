@@ -4,11 +4,8 @@ const c_selOperating = "selOperating";
 const c_selOperable = "selOperatable";
 const c_selExhausted = "selExhausted";
 const c_selAll = "selAll";
-const c_getProjectsURL = "http://localhost:8080/get-data/projects";
-const c_getProjectInfoURL = "http://localhost:8080/get-data/project-info";
-const c_insertProjectInfoURL = "http://localhost:8080/insert-data/project-info";
-const c_deleteProjectInfoURL = "http://localhost:8080/delete-data/project-info";
-const c_updateDataByExcelURL = "http://localhost:8080/upload/excel?name=";
+
+
 
 var inputList = new Array;
 var selectionIds = [];
