@@ -619,6 +619,7 @@ function onSubmitBtnClick() {
         processData: false,
         success: function (data, status) {
             showMessageBox("上传数据成功.");
+            $("#uploadModalDialog").modal('hide');
             projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
         },
         error: function (xhr, desc, err) {
