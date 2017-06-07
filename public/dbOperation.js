@@ -3,6 +3,7 @@ var projectInfo = require("./dom/model/projectInfo");
 var path = require('path');
 var projectStatus = require("./model/projectStatus");
 var dbUtil = require("./utils/dbUtils");
+var Sequelize = require('sequelize');
 
 var projectModel = project.projectModel;
 var projectInfoModel = projectInfo.projectInfoModel;
@@ -67,7 +68,6 @@ exports.deleteProjectInfo = function (datas, res) {
 
 
 exports.getProject = function (projectName, res) {
-    res.setHeader('Content-Type', 'application/json');
     projectModel.findOne({where: {project_name: projectName}})
         .then(function (data) {
             res.send(JSON.stringify(data));
@@ -79,7 +79,6 @@ exports.getProject = function (projectName, res) {
 }
 
 exports.getProjects = function (res) {
-    res.setHeader('Content-Type', 'application/json');
     projectModel.findAll({order: 'operation_status, created_at ASC'})
         .then(function (data) {
             res.send(JSON.stringify({project_list: data}));
@@ -91,7 +90,6 @@ exports.getProjects = function (res) {
 }
 
 exports.getProjectsName = function (res) {
-    res.setHeader('Content-Type', 'application/json');
     projectModel.findAll({attributes: ['project_name'], order: 'created_at ASC'})
         .then(function (data) {
             res.send(JSON.stringify({project_list: data}));
@@ -103,7 +101,6 @@ exports.getProjectsName = function (res) {
 }
 
 exports.getProjectsWithStatus = function (operationStatus, res) {
-    res.setHeader('Content-Type', 'application/json');
     projectModel.findAll({where: {operation_status: operationStatus}, order: 'created_at ASC'})
         .then(function (data) {
             res.send(JSON.stringify({project_list: data}));
@@ -115,7 +112,6 @@ exports.getProjectsWithStatus = function (operationStatus, res) {
 }
 
 exports.getProjectsInfo = function (res) {
-    res.setHeader('Content-Type', 'application/json');
     projectInfoModel.findAll({order: 'created_at ASC'})
         .then(function (data) {
             res.send(JSON.stringify({project_info_list: data}));
@@ -128,8 +124,37 @@ exports.getProjectsInfo = function (res) {
 }
 
 exports.getProjectInfoByName = function (projectName, res) {
-    res.setHeader('Content-Type', 'application/json');
     projectInfoModel.findAll({where: {project_name: projectName}, order: 'created_at ASC'})
+        .then(function (data) {
+            res.send(JSON.stringify({'project_info_list': data, 'totals': data.length}));
+        })
+        .catch(function (error) {
+            console.log('Get project info by name has database error: ', error);
+            res.status(400).send({errorMessage: "Get project info by name has database error."});
+        });
+}
+
+exports.getProjectInfoFilterType = function (projectName, filterType, res) {
+    projectInfoModel.findAll({
+            where: {project_name: projectName},
+            distinct: true,
+            attributes: [[Sequelize.fn('DISTINCT', Sequelize.col(filterType)), filterType]]
+        })
+        .then(function (datas) {
+
+            res.send(JSON.stringify({'filterData': datas}));
+        })
+        .catch(function (error) {
+            console.log('Fetch filter data error ', filterType);
+            res.status(400).send({errorMessage: "Fetch filter data error" + filterType});
+        });
+}
+
+exports.getProjectInfoByFilter = function (filterData, res) {
+    projectInfoModel.findAll({
+            where: filterData,
+            order: 'created_at ASC'
+        })
         .then(function (data) {
             res.send(JSON.stringify({'project_info_list': data, 'totals': data.length}));
         })

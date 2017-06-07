@@ -6,7 +6,6 @@ const c_selExhausted = "selExhausted";
 const c_selAll = "selAll";
 
 
-
 var inputList = new Array;
 var selectionIds = [];
 var selected = [];
@@ -30,15 +29,21 @@ function tolerance() {
         var width = $("#widthTolerance").val();
         var height = $("#heightTolerance").val();
         var pattern = /^(-)?\d+(\.\d+)?$/;
-        if(width == "" || height == "") {return false;}
-        else if (pattern.exec(width) == null || pattern.exec(height) == null)
-        {
+        if (width == "" || height == "") {
             return false;
         }
-        else {return true;}
+        else if (pattern.exec(width) == null || pattern.exec(height) == null) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
     this.onConfirm = function () {
-        if(!this.validityCheck()) {showMessageBox("误差值输入错误,误差值不能为空且只能为数字."); return;}
+        if (!this.validityCheck()) {
+            showMessageBox("误差值输入错误,误差值不能为空且只能为数字.");
+            return;
+        }
         var widthTolerance = parseFloat($("#widthTolerance").val());
         var heightTolerance = parseFloat($("#heightTolerance").val());
         if ((widthTolerance != this.widthTolerance) || (heightTolerance != this.heightTolerance)) {
@@ -733,4 +738,93 @@ function printQRCodes() {
         height: height
     })
     template.remove();
+}
+
+String.prototype.format = function () {
+    var content = this;
+    for (var i = 0; i < arguments.length; i++) {
+        var replacement = '{' + i + '}';
+        content = content.replace(replacement, arguments[i]);
+    }
+    return content;
+};
+
+$("#confirm-search").click(function () {
+    if ($("#projectListSelect").val() != "") {
+        showMessageBox("请先选择项目");
+    } else {
+        var filterData = new Object();
+        filterData.project_name = $("#projectListSelect").val();
+        if ($("#buildingSelect").val() != "") {
+            filterData.building = $("#buildingSelect").val();
+        }
+        if ($("#unitSelect").val() != "") {
+            filterData.unit = $("#unitSelect").val();
+        }
+        if ($("#floorSelect").val() != "") {
+            filterData.floor = $("#floorSelect").val();
+        }
+        if ($("#numberSelect").val() != "") {
+            filterData.number = $("#numberSelect").val();
+        }
+        if ($("#positionSelect").val() != "") {
+            filterData.position = $("#positionSelect").val();
+        }
+        if (filterData.type = $("#typeSelect").val() != "") {
+            filterData.type = $("#typeSelect").val();
+        }
+        querySearchFilterData(filterData)
+    }
+});
+
+$("#cancel-search").click(function () {
+    $("#searchFilter").modal('hide');
+});
+
+
+function querySearchFilterData(filterData) {
+    $.ajax({
+        url: c_quertFilterDataURL,
+        data: JSON.stringify(filterData),
+        contentType: 'application/json; charset=UTF-8',
+        type: "POST",
+        dataType: 'json',
+        success: function (data) {
+            var test = data;
+        },
+        error: function (data) {
+            console.log("fetch search filter error");
+        }
+    })
+}
+
+function getSearchFilterValue(element, projectName, filterType) {
+    $.ajax({
+        url: c_getFilterValueURL.format(projectName, filterType),
+        type: "GET",
+        dataType: 'json',
+        success: function (data) {
+            element.append($("<option></option>")
+                .attr("value", null)
+                .text(""));
+            data.filterData.forEach(function (value) {
+                element.append($("<option></option>")
+                    .attr("value", value[filterType])
+                    .text(value[filterType]))
+            });
+        },
+        error: function (data) {
+            console.log("fetch search filter error");
+        }
+    })
+}
+
+function onAccurateSearchClicked() {
+    $("#searchFilter").modal('show');
+    getSearchFilterValue($("#buildingSelect"), "3", "building")
+    getSearchFilterValue($("#unitSelect"), "3", "unit")
+    getSearchFilterValue($("#floorSelect"), "3", "floor")
+    getSearchFilterValue($("#numberSelect"), "3", "number")
+    getSearchFilterValue($("#positionSelect"), "3", "position")
+
 }
