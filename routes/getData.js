@@ -65,7 +65,7 @@ router.get('/filter-value', function (req, res, next) {
 
 router.post('/filter-value', function (req, res, next) {
     res.setHeader('Content-Type', 'application/json');
-    dbOperation.getProjectInfoByFilter(req.body, res);
+    dbOperation.getProjectInfoByFilter(req.body.filterCondition, res);
 
 })
 

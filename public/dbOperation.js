@@ -156,7 +156,7 @@ exports.getProjectInfoByFilter = function (filterData, res) {
             order: 'created_at ASC'
         })
         .then(function (data) {
-            res.send(JSON.stringify({'project_info_list': data, 'totals': data.length}));
+            res.send(JSON.stringify({'rows': data, 'total': data.length}));
         })
         .catch(function (error) {
             console.log('Get project info by name has database error: ', error);
