@@ -150,27 +150,11 @@ exports.getProjectInfoFilterType = function (projectName, filterType, res) {
         });
 }
 
-exports.getProjectInfoByFilter = function (filterData, res) {
-    projectInfoModel.findAll({
-            where: filterData,
-            order: 'created_at ASC'
-        })
-        .then(function (data) {
-            res.send(JSON.stringify({'rows': data, 'total': data.length}));
-        })
-        .catch(function (error) {
-            console.log('Get project info by name has database error: ', error);
-            res.status(400).send({errorMessage: "Get project info by name has database error."});
-        });
-}
-
-
-exports.getProjectInfoByNameForPaggingRender = function (projectName, curPage, sizePerPage, callback) {
-    //get total
-    projectInfoModel.findAll({where: {project_name: projectName}}).then(function (data) {
+exports.getProjectInfoByNameForPagingRender = function (curPage, sizePerPage, queryCondition, callback) {
+    projectInfoModel.findAll({where: queryCondition}).then(function (data) {
         var count = data.length;
         projectInfoModel.findAll({
-            where: {project_name: projectName},
+            where: queryCondition,
             order: 'created_at DESC',
             'limit': sizePerPage,
             'offset': curPage

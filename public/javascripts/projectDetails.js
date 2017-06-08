@@ -4,7 +4,7 @@ const c_selOperating = "selOperating";
 const c_selOperable = "selOperatable";
 const c_selExhausted = "selExhausted";
 const c_selAll = "selAll";
-
+const FILTER_TYPE_COUNT = 6;
 
 var inputList = new Array;
 var selectionIds = [];
@@ -102,8 +102,7 @@ function bootStrapTable(bootStrapTableElement, model) {
 
 function projectDetailsModel() {
     /////////////////////////////////////////成员变量/////////////////////////////////////////
-    this.defaultQueryURL = c_getProjectInfoURL;
-    this.queryURL = this.defaultQueryURL;    //get data default
+    this.queryURL = c_getProjectInfoURL;
     this.additionalQueryParams = {};
     this.projectDetailsStateMachine = new projectDetailsStateMachine()
     this.pageNumber = 1;
@@ -245,8 +244,7 @@ function projectDetailsModel() {
         model.projectDetailsStateMachine.enableExport(false);
         $myScope.update(selected);
         //1. 拿到选中的选项
-        model.queryURL = model.defaultQueryURL;
-        model.filterCondition = {};
+        model.additionalQueryParams = {};
         model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
         model.table.pullData(model.getOption(model));
     }
@@ -254,10 +252,8 @@ function projectDetailsModel() {
 
 
     this.getQueryParams = function (params) {
-        if (model.operatingProject != "") {
-            params.name = model.operatingProject;
-        }
         params.filterCondition = model.additionalQueryParams;
+        params.filterCondition.project_name = model.operatingProject;
         return params;
     }
 
@@ -773,7 +769,6 @@ $("#confirm-search").click(function () {
         selectorArray.push($("#query-positionSelect"));
         selectorArray.push($("#query-typeSelect"));
         var queryAdditionalCondition = {};
-        queryAdditionalCondition.project_name = searchingProjectName;
         function searchConditionCheck () {
             var emptyConditionCount = 0;
             selectorArray.forEach(function(selector, index){
@@ -785,7 +780,7 @@ $("#confirm-search").click(function () {
                        queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
                    }
             });
-            return emptyConditionCount != 6;
+            return emptyConditionCount != FILTER_TYPE_COUNT;
         }
 
         if(searchConditionCheck ()) {
@@ -805,7 +800,6 @@ $("#cancel-search").click(function () {
 function querySearchFilterData(filterData) {
     //换一种方式, 通过修改参数, 改变bootstrap-table的POST参数
     var projectDetailsModel = projDetailsModelInstance;
-    projectDetailsModel.queryURL = c_queryFilterDataURL;
     projectDetailsModel.additionalQueryParams = filterData;
     projectDetailsModel.table.pullData(projectDetailsModel.getOption(projectDetailsModel));
 }

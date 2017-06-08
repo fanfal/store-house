@@ -9,4 +9,3 @@ const c_insertProjectURL = c_hostIP + "/insert-data/project";
 const c_statusURL = c_hostIP + "/status";
 const c_outgoingURL = c_hostIP + "/out-going?name=";
 const c_getFilterValueURL = c_hostIP + "/get-data/filter-value?name={0}&filterType={1}"
-const c_queryFilterDataURL = c_hostIP + "/get-data/filter-value";

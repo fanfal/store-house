@@ -21,12 +21,10 @@ router.get('/projects', function (req, res, next) {
 router.post('/project-info', function (req, res, next) {
     try {
         if (req.body.name != "") {
-            dbOperation.getProjectInfoByNameForPaggingRender(req.body.name,
-                req.body.offset,
+            dbOperation.getProjectInfoByNameForPagingRender(req.body.offset,
                 req.body.limit,
+                req.body.filterCondition,
                 function (data, total) {
-                    console.log(JSON.stringify(data));
-                    console.log(total);
                     res.setHeader('Content-Type', 'application/json');
                     res.send(JSON.stringify({'rows': data, 'total': total}));
                 })
@@ -59,13 +57,6 @@ router.get('/projects-info', function (req, res, next) {
 router.get('/filter-value', function (req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     dbOperation.getProjectInfoFilterType(req.query.name, req.query.filterType, res);
-
-})
-
-
-router.post('/filter-value', function (req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
-    dbOperation.getProjectInfoByFilter(req.body.filterCondition, res);
 
 })
 
