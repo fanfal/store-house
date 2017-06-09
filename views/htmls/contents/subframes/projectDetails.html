@@ -26,6 +26,12 @@
                     style="width:100%;height:80%;margin-top:6%">
             </select>
         </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary btn-wide" id="accurateSearch" onclick="onAccurateSearchClicked()"
+                    style="width:100%;height:80%;margin-top:8%">
+                精确查找
+            </button>
+        </div>
     </div>
     <div class="row" style="width:100%;margin-left:0px;margin-top:20px">
         <!--<table grid-manager="data-grid"></table>-->
@@ -170,12 +176,9 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
-
 <div class="modal fade" id="uploadModalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -261,7 +264,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="deletAlertDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -285,7 +287,105 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="searchFilter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width:400px">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    精确搜索
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="container" style="width:500px">
+                    <div class="row" style ="margin-left : 5%">
+                        <div class="row">
+                            <div class="col-sm-2 projInputControl">
+                                <p>栋: </p>
+                            </div>
+                            <div class="col-sm-4 projInputControl">
+                                <select id="query-buildingSelect" queryKey = "building"
+                                        class="form-control select select-primary select-block mbl">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 projInputControl">
+                                <p>单元: </p>
+                            </div>
+                            <div class="col-sm-4 projInputControl">
+                                <select id="query-unitSelect" queryKey = "unit"
+                                        class="form-control select select-primary select-block mbl">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 projInputControl">
+                                <p>楼: </p>
+                            </div>
+                            <div class="col-sm-4 projInputControl">
+                                <select id="query-floorSelect" queryKey = "floor"
+                                        class="form-control select select-primary select-block mbl">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 projInputControl">
+                                <p>号: </p>
+                            </div>
+                            <div class="col-sm-4 projInputControl">
+                                <select id="query-numberSelect" queryKey = "number"
+                                        class="form-control select select-primary select-block mbl">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 projInputControl">
+                                <p>洞号: </p>
+                            </div>
+                            <div class="col-sm-4 projInputControl">
+                                <select id="query-positionSelect" queryKey = "position"
+                                        class="form-control select select-primary select-block mbl">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 projInputControl">
+                                <p>类型: </p>
+                            </div>
+                            <div class="col-sm-4 projInputControl">
+                                <select id="query-typeSelect" queryKey = "type"
+                                        class="form-control select select-primary select-block mbl">
+                                    <option value="" selected = "selected"></option>
+                                    <option value="框">框</option>
+                                    <option value="扇">扇</option>
+                                    <option value="玻璃">玻璃</option>
+                                    <option value="其它">其它</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3" style="padding:0px;margin-right:3px">
+                        <button id="confirm-search" class="btn btn-primary bti-wide" style="width:100%;align:left">确定
+                        </button>
+                    </div>
+                    <div class="col-sm-3" style="padding:0px">
+                        <button id="cancel-search" class="btn btn-primary bti-wideW" style="width:100%">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+    </div>
+</div>
 <script type="text/javascript" , src="/javascripts/qrcode.min.js"></script>
 <script type="text/javascript" , src="/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" , src="/bootstrap/dist/js/bootstrap.min.js"></script>

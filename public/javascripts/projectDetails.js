@@ -4,8 +4,7 @@ const c_selOperating = "selOperating";
 const c_selOperable = "selOperatable";
 const c_selExhausted = "selExhausted";
 const c_selAll = "selAll";
-
-
+const FILTER_TYPE_COUNT = 6;
 
 var inputList = new Array;
 var selectionIds = [];
@@ -30,15 +29,21 @@ function tolerance() {
         var width = $("#widthTolerance").val();
         var height = $("#heightTolerance").val();
         var pattern = /^(-)?\d+(\.\d+)?$/;
-        if(width == "" || height == "") {return false;}
-        else if (pattern.exec(width) == null || pattern.exec(height) == null)
-        {
+        if (width == "" || height == "") {
             return false;
         }
-        else {return true;}
+        else if (pattern.exec(width) == null || pattern.exec(height) == null) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
     this.onConfirm = function () {
-        if(!this.validityCheck()) {showMessageBox("误差值输入错误,误差值不能为空且只能为数字."); return;}
+        if (!this.validityCheck()) {
+            showMessageBox("误差值输入错误,误差值不能为空且只能为数字.");
+            return;
+        }
         var widthTolerance = parseFloat($("#widthTolerance").val());
         var heightTolerance = parseFloat($("#heightTolerance").val());
         if ((widthTolerance != this.widthTolerance) || (heightTolerance != this.heightTolerance)) {
@@ -97,6 +102,8 @@ function bootStrapTable(bootStrapTableElement, model) {
 
 function projectDetailsModel() {
     /////////////////////////////////////////成员变量/////////////////////////////////////////
+    this.queryURL = c_getProjectInfoURL;
+    this.additionalQueryParams = {};
     this.projectDetailsStateMachine = new projectDetailsStateMachine()
     this.pageNumber = 1;
     this.mainContainer = $("#Container");
@@ -141,9 +148,12 @@ function projectDetailsModel() {
         $("#" + id + " option").attr("selected", false);
         option.attr("selected", true);
     }
+    this.getQueryURL = function () {
+        return this.queryURL;
+    }
     this.getOption = function (model) {
         var option = {
-            url: c_getProjectInfoURL,
+            url: model.getQueryURL(),
             method: "post",
             responseHandler: responseHandler,
             cache: false,
@@ -234,6 +244,7 @@ function projectDetailsModel() {
         model.projectDetailsStateMachine.enableExport(false);
         $myScope.update(selected);
         //1. 拿到选中的选项
+        model.additionalQueryParams = {};
         model.operatingProject = model.selectors.projectListSelect.find("option:selected").text();
         model.table.pullData(model.getOption(model));
     }
@@ -241,9 +252,8 @@ function projectDetailsModel() {
 
 
     this.getQueryParams = function (params) {
-        if (this.operatingProject != "") {
-            params.name = model.operatingProject;
-        }
+        params.filterCondition = model.additionalQueryParams;
+        params.filterCondition.project_name = model.operatingProject;
         return params;
     }
 
@@ -734,4 +744,102 @@ function printQRCodes() {
         height: height
     })
     template.remove();
+}
+
+String.prototype.format = function () {
+    var content = this;
+    for (var i = 0; i < arguments.length; i++) {
+        var replacement = '{' + i + '}';
+        content = content.replace(replacement, arguments[i]);
+    }
+    return content;
+};
+
+$("#confirm-search").click(function () {
+    $("#searchFilter").modal('hide');
+    var searchingProjectName = $("#projectListSelect").val()
+    if (searchingProjectName == null ||
+     searchingProjectName == "") {
+        showMessageBox("请先选择项目");
+    } else {
+        var selectorArray = new Array;
+        selectorArray.push($("#query-buildingSelect"));
+        selectorArray.push($("#query-unitSelect"));
+        selectorArray.push($("#query-floorSelect"));
+        selectorArray.push($("#query-numberSelect"));
+        selectorArray.push($("#query-positionSelect"));
+        selectorArray.push($("#query-typeSelect"));
+        var queryAdditionalCondition = {};
+        function searchConditionCheck () {
+            var emptyConditionCount = 0;
+            selectorArray.forEach(function(selector, index){
+                  var selection = selector.val();
+                  if(selection == null || selection == "") {
+                       ++emptyConditionCount;
+                   }
+                   else {
+                       queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
+                   }
+            });
+            return emptyConditionCount != FILTER_TYPE_COUNT;
+        }
+
+        if(searchConditionCheck ()) {
+            querySearchFilterData(queryAdditionalCondition)
+        }
+        else {
+            showMessageBox("搜索条件不能为空!");
+        }
+    }
+});
+
+$("#cancel-search").click(function () {
+    $("#searchFilter").modal('hide');
+});
+
+
+function querySearchFilterData(filterData) {
+    //换一种方式, 通过修改参数, 改变bootstrap-table的POST参数
+    var projectDetailsModel = projDetailsModelInstance;
+    projectDetailsModel.additionalQueryParams = filterData;
+    projectDetailsModel.table.pullData(projectDetailsModel.getOption(projectDetailsModel));
+}
+
+function getSearchFilterValue(element, projectName, filterType) {
+    $.ajax({
+        url: c_getFilterValueURL.format(projectName, filterType),
+        type: "GET",
+        dataType: 'json',
+        success: function (data) {
+            element.empty();
+            element.append($("<option></option>")
+                   .attr("value", "")
+                   .text(""))
+            data.filterData.forEach(function (value) {
+                element.append($("<option></option>")
+                    .attr("value", value[filterType])
+                    .text(value[filterType]))
+            element.find(":first").attr("selected", true);
+            });
+        },
+        error: function (data) {
+            console.log("fetch search filter error");
+        }
+    })
+}
+
+function onAccurateSearchClicked() {
+    var searchingProjectName = $("#projectListSelect").val();
+    if (searchingProjectName == null ||
+     searchingProjectName == "") {
+        showMessageBox("请先选择项目");
+    }
+    else {
+        $("#searchFilter").modal('show');
+        getSearchFilterValue($("#query-buildingSelect"), searchingProjectName, "building")
+        getSearchFilterValue($("#query-unitSelect"), searchingProjectName, "unit")
+        getSearchFilterValue($("#query-floorSelect"), searchingProjectName, "floor")
+        getSearchFilterValue($("#query-numberSelect"), searchingProjectName, "number")
+        getSearchFilterValue($("#query-positionSelect"), searchingProjectName, "position")
+    }
 }
