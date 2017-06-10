@@ -840,7 +840,7 @@ String.prototype.format = function () {
 
 $("#confirm-search").click(function () {
     $("#searchFilter").modal('hide');
-    var searchingProjectName = model.operatingProject;
+    var searchingProjectName = projDetailsModelInstance.operatingProject;
     if (searchingProjectName == null ||
         searchingProjectName == "") {
         showMessageBox("请先选择项目");
@@ -913,7 +913,7 @@ function getSearchFilterValue(element, projectName, filterType) {
 }
 
 function onAccurateSearchClicked() {
-    var searchingProjectName = model.operatingProject;
+    var searchingProjectName = projDetailsModelInstance.operatingProject;
     if (searchingProjectName == null ||
         searchingProjectName == "") {
         showMessageBox("请先选择项目");
