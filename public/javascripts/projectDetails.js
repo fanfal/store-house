@@ -5,6 +5,12 @@ const c_selOperable = "selOperatable";
 const c_selExhausted = "selExhausted";
 const c_selAll = "selAll";
 const FILTER_TYPE_COUNT = 6;
+const UNSTORED_ROW_COLOR ="#E2E2E2";
+const STORED_ROW_COLOR = "#DDFFDD";
+var colorArray = [];
+colorArray.push(UNSTORED_ROW_COLOR);
+colorArray.push(STORED_ROW_COLOR);
+
 
 var inputList = new Array;
 var selectionIds = [];
@@ -157,6 +163,7 @@ function projectDetailsModel() {
             url: model.getQueryURL(),
             method: "post",
             responseHandler: responseHandler,
+            rowStyle : rowStyleHandler,
             cache: false,
             pagination: true,
             queryParams: model.getQueryParams,
@@ -628,6 +635,10 @@ function responseHandler(res) {
         projDetailsModelInstance.projectDetailsStateMachine.isSelectedProjectEmpty = false;
     }
     return res;
+}
+
+function rowStyleHandler (row, index) {
+    return {css : {"background" : row.is_stored ? colorArray[1] : colorArray[0]}}
 }
 
 function onCancel() {
