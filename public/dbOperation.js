@@ -183,6 +183,9 @@ exports.updateProjectStatusByRequest = function (projectName, status) {
                 if (data.length > 0) {
                     updateProjectStatus(projectName, status);
                 }
+                else {
+                    updateProjectStatus(projectName, 2);
+                }
             })
             break;
         case "1":
