@@ -132,6 +132,7 @@ function projectDetailsModel() {
     this.table = new bootStrapTable($("#bootstrapTable"), this);
     this.insertBtn = $("#insertBtn");   //添加按钮
     this.operatingProject = "";        //现在正在操作的工程表
+    this.inputtingProject = "";        //正在输入的工程名
     this.selectors = {
         projectTypeSelect: $("#projectTypeSelect"),
     }
@@ -165,7 +166,7 @@ function projectDetailsModel() {
             url: model.getQueryURL(),
             method: "post",
             responseHandler: responseHandler,
-            rowStyle : rowStyleHandler,
+           // rowStyle : rowStyleHandler,
             cache: false,
             pagination: true,
             queryParams: model.getQueryParams,
@@ -195,6 +196,11 @@ function projectDetailsModel() {
         selected = [];
         model.projectDetailsStateMachine.enableExport(false);
         $myScope.update(selected)
+    }
+
+    this.operatingProjectChanged = function(projectName) {
+         model.resetProjectRelatedParams(projectName);
+         model.projectDetailsStateMachine.enableInsert(true);
     }
 
     this.projectTypeSelectChanged = function () {
@@ -268,6 +274,9 @@ function projectDetailsModel() {
                 else {
                     return "已出库";
                 }
+            },
+            cellStyle: function (value, row, index) {
+                 return {css : {"background" : value ? colorArray[1] : colorArray[0]}}
             }
         }];
         return columns;
@@ -302,17 +311,20 @@ function projectDetailsModel() {
                            projects.forEach(function (item) {
                                var itemJson = {label:item.project_name, value:item.project_name};
                                autoCompleteResult.push(itemJson);
+                               if (item.project_name == input) {
+                               }
                            })
                            response(autoCompleteResult);
                        }
                 })
+                modifyInsertBtnAndUploadBtnStatus(false);
             },
             select : function (event, ui) {
                 var selection = ui.item.label;
                 //选择改变, 拉取数据
-                model.resetProjectRelatedParams(selection);
+                model.operatingProjectChanged(selection);
                 model.table.pullData(model.getOption(model));
-                model.projectDetailsStateMachine.enableInsert(true);
+                modifyInsertBtnAndUploadBtnStatus(true);
             }
         });
 
@@ -397,9 +409,9 @@ function isProjectSelected() {
     return true;
 }
 
-function isProjectInfoSelected() {
+function isProjectInfoSelected(errHint) {
     if (selected.length == 0) {
-        showMessageBox("请勾选要导出的项.");
+        showMessageBox(errHint);
         return false;
     }
     return true;
@@ -414,7 +426,7 @@ function isOnlyOneProjectInfoSelect() {
 }
 
 function onDelete() {
-    if (isProjectInfoSelected() && isProjectSelected()) {
+    if (isProjectInfoSelected("请勾选要删除的项.") && isProjectSelected()) {
         $("#deletAlertDialog").modal('show');
     }
 }
@@ -629,7 +641,7 @@ function responseHandler(res) {
 }
 
 function rowStyleHandler (row, index) {
-    return {css : {"background" : row.is_stored ? colorArray[1] : colorArray[0]}}
+    //return {css : {"background" : row.is_stored ? colorArray[1] : colorArray[0]}}
 }
 
 function onCancel() {
@@ -746,10 +758,9 @@ String.prototype.format = function () {
 }
 
 function onPrint() {
-    if (!isProjectInfoSelected()) {
+    if (!isProjectInfoSelected("请勾选要打印的项.")) {
         return;
     }
-
     var bodyContent = document.getElementById('qr-content');
     var qrcodedraw = new qrcodelib.qrcodedraw()
     cleanOldQRCode(bodyContent);
@@ -840,7 +851,7 @@ String.prototype.format = function () {
 
 $("#confirm-search").click(function () {
     $("#searchFilter").modal('hide');
-    var searchingProjectName = projDetailsModelInstance.operatingProject;
+    var searchingProjectName = $("#autocompleteProjectNameInput").val();
     if (searchingProjectName == null ||
         searchingProjectName == "") {
         showMessageBox("请先选择项目");
@@ -852,28 +863,22 @@ $("#confirm-search").click(function () {
         selectorArray.push($("#query-numberSelect"));
         selectorArray.push($("#query-positionSelect"));
         selectorArray.push($("#query-typeSelect"));
-        var queryAdditionalCondition = {};
-
-        function searchConditionCheck() {
-            var emptyConditionCount = 0;
-            selectorArray.forEach(function (selector, index) {
-                var selection = selector.val();
-                if (selection == null || selection == "") {
-                    ++emptyConditionCount;
-                }
-                else {
-                    queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
-                }
+        //确认搜索, 视为操作的工程变了, 否则工程的编辑状态很难同步
+        projDetailsModelInstance.operatingProjectChanged(searchingProjectName)
+        modifyInsertBtnAndUploadBtnStatus(true);
+        function fillQueryParam () {
+            var queryAdditionalCondition = {};
+            selectorArray.forEach(function(selector, index){
+                  var selection = selector.val();
+                  if(selection == null || selection == "") {
+                   }
+                   else {
+                       queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
+                   }
             });
-            return emptyConditionCount != FILTER_TYPE_COUNT;
+            return queryAdditionalCondition;
         }
-
-        if (searchConditionCheck()) {
-            querySearchFilterData(queryAdditionalCondition)
-        }
-        else {
-            showMessageBox("搜索条件不能为空!");
-        }
+        querySearchFilterData(fillQueryParam())
     }
 });
 
@@ -912,13 +917,38 @@ function getSearchFilterValue(element, projectName, filterType) {
     })
 }
 
+function queryIfProjectExists(projectName) {
+    var res = false;
+    $.ajax({
+            url: c_getProject + "?name=" + projectName,
+            type: "GET",
+            dataType: 'json',
+            async : false,
+            success: function (data) {
+                if (data != null) {res = true;}
+            },
+            error: function (data) {
+                res = false;
+            }
+        })
+    return res;
+}
+
+
 function onAccurateSearchClicked() {
-    var searchingProjectName = projDetailsModelInstance.operatingProject;
+    var searchingProjectName = $("#autocompleteProjectNameInput").val();
     if (searchingProjectName == null ||
         searchingProjectName == "") {
         showMessageBox("请先选择项目");
     }
     else {
+        if (searchingProjectName != projDetailsModelInstance.operatingProject) {
+            if (!queryIfProjectExists(searchingProjectName)) {
+                var projectNotExistWarning = "项目 '{0}' 不存在 ";
+                showMessageBox(projectNotExistWarning.format(searchingProjectName));
+                return;
+            }
+        }
         $("#searchFilter").modal('show');
         getSearchFilterValue($("#query-buildingSelect"), searchingProjectName, "building")
         getSearchFilterValue($("#query-unitSelect"), searchingProjectName, "unit")
@@ -951,4 +981,14 @@ function emptyProjectInfoModel() {
             $(this).val("");
         }
     })
+}
+
+function modifyInsertBtnAndUploadBtnStatus(bEnable) {
+    if (document.getElementById("insertBtn") != null
+    && document.getElementById("uploadBtn")) {
+        var insertBtn = $("#insertBtn");
+        var uploadBtn = $("#uploadBtn");
+        insertBtn.attr("disabled", !bEnable);
+        uploadBtn.attr("disabled", !bEnable);
+    }
 }
