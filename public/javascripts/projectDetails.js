@@ -843,3 +843,14 @@ function onAccurateSearchClicked() {
         getSearchFilterValue($("#query-positionSelect"), searchingProjectName, "position")
     }
 }
+
+function onUpdate(){
+    if (selected.length == 0){
+        showMessageBox("请先选择要更新的数据");
+        return;
+    } else if (selected.length > 1) {
+        showMessageBox("每次只能修改一条数据");
+    } else {
+
+    }
+}
