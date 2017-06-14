@@ -514,11 +514,7 @@ function onConfirm() {
             dataType: 'json',
             async: false,
             success: function (data) {
-                $(".projInfoInput").each(function (index, element) {
-                    if ($(element).attr("id") != "typeSelect") {
-                        $(this).val("");
-                    }
-                })
+                emptyProjectInfoModel();
                 feedBack(true, "添加成功");
                 projDetailsModelInstance.onInsertSuc();
                 projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
@@ -548,6 +544,8 @@ function onConfirm() {
             async: false,
             success: function (data) {
                 selected = [];
+                selectionIds = [];
+                emptyProjectInfoModel();
                 projDetailsModelInstance.onInsertSuc();
                 projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
                 $("#projInfoModalDialog").modal('hide');
@@ -942,4 +940,13 @@ function onUpdate() {
         $("#projInfoModalDialog").find("#typeSelect").val(selected[0].type);
         $("#projInfoModalDialog").modal('show');
     }
+}
+
+
+function emptyProjectInfoModel() {
+    $(".projInfoInput").each(function (index, element) {
+        if ($(element).attr("id") != "typeSelect") {
+            $(this).val("");
+        }
+    })
 }
