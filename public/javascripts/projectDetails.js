@@ -11,6 +11,7 @@ var selectionIds = [];
 var selected = [];
 var app = angular.module("projectDetails", []);
 var $myScope = null;
+var isInsertProjectInfoModel = true;
 
 app.controller("exportController",
     function ($scope) {
@@ -383,6 +384,8 @@ $(document).ready(function () {
 
 function onInsert() {
     if (isProjectSelected()) {
+        isInsertProjectInfoModel = true;
+        $("#projInfoModalDialog").find("#myModalLabel").text("创建");
         $("#projInfoModalDialog").modal('show');
     }
 }
@@ -402,6 +405,15 @@ function isProjectInfoSelected() {
     }
     return true;
 }
+
+function isOnlyOneProjectInfoSelect() {
+    if (selected.length == 1) {
+        return true;
+    }
+    showMessageBox("请只勾选一条数据.");
+    return false;
+}
+
 function onDelete() {
     if (isProjectInfoSelected() && isProjectSelected()) {
         $("#deletAlertDialog").modal('show');
@@ -450,7 +462,7 @@ function onConfirm() {
                     return false
                 }
             }
-        })
+        });
         if (errInputIndex != -1) {
             inputList[errInputIndex].control.tooltip('show');
             var timer = setInterval(function () {
@@ -465,8 +477,27 @@ function onConfirm() {
         }
     }
 
-    function postToServer() {
-        function getData() {
+    function feedBack(bSuc, msg) {
+        if (bSuc) {
+            $(".alert").addClass("alert-success");
+        }
+        else {
+            $(".alert").addClass("alert-danger");
+        }
+        $(".alert").html(msg);
+        $(".alert").css("display", "block");
+        $(".alert").fadeIn();
+        var timer = setInterval(function () {
+            $(".alert").removeClass("alert-success");
+            $(".alert").removeClass("alert-danger");
+            $(".alert").css("display", "none");
+            clearInterval(timer);
+        }, 3000)
+
+    }
+
+    function insertProjectInfo() {
+        function getInsertData() {
             var res = {};
             res.project_name = projDetailsModelInstance.operatingProject;
             res.is_stored = true;
@@ -476,29 +507,10 @@ function onConfirm() {
             return res;
         }
 
-        function feedBack(bSuc, msg) {
-            if (bSuc) {
-                $(".alert").addClass("alert-success");
-            }
-            else {
-                $(".alert").addClass("alert-danger");
-            }
-            $(".alert").html(msg);
-            $(".alert").css("display", "block");
-            $(".alert").fadeIn();
-            var timer = setInterval(function () {
-                $(".alert").removeClass("alert-success");
-                $(".alert").removeClass("alert-danger");
-                $(".alert").css("display", "none");
-                clearInterval(timer);
-            }, 3000)
-
-        }
-
         $.ajax({
             url: c_insertProjectInfoURL,
             type: "POST",
-            data: getData(),
+            data: getInsertData(),
             dataType: 'json',
             async: false,
             success: function (data) {
@@ -526,9 +538,78 @@ function onConfirm() {
         })
     }
 
+    function updateProjectInfo(updateData) {
+        $.ajax({
+            url: c_updateProjectInfoUrl,
+            type: "POST",
+            data: JSON.stringify(updateData),
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            async: false,
+            success: function (data) {
+                selected = [];
+                projDetailsModelInstance.onInsertSuc();
+                projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
+                $("#projInfoModalDialog").modal('hide');
+
+            },
+            error: function (data) {
+                var msg = "更新失败";
+                if (data.responseJSON != null) {
+                    if (data.responseJSON.errorMessage == "Product was stored.") {
+                        msg += ", 该项目在库.";
+                    }
+                    else if (data.responseJSON.errorMessage == "Update product error.") {
+                        msg += ", 在插入项目时发生异常.";
+                    }
+                }
+                feedBack(false, msg);
+            }
+        })
+    }
+
+    function getUpdateData() {
+        var data = {};
+        data.new = {};
+        data.origin = {};
+
+        data.new.project_name = data.origin.project_name = $("#projectListSelect").val();
+
+        data.new.building = $("#projInfoModalDialog").find("#building").val();
+        data.origin.building = selected[0].building;
+
+        data.new.unit = $("#projInfoModalDialog").find("#unit").val();
+        data.origin.unit = selected[0].unit;
+
+        data.new.floor = $("#projInfoModalDialog").find("#floor").val();
+        data.origin.floor = selected[0].floor;
+
+        data.new.number = $("#projInfoModalDialog").find("#number").val();
+        data.origin.number = selected[0].number;
+
+        data.new.position = $("#projInfoModalDialog").find("#position").val();
+        data.origin.position = selected[0].position;
+
+        data.new.type = $("#projInfoModalDialog").find("#typeSelect").val();
+        data.origin.type = selected[0].type;
+
+        data.new.width = $("#projInfoModalDialog").find("#width").val();
+        data.origin.width = selected[0].width;
+
+        data.new.height = $("#projInfoModalDialog").find("#height").val();
+        data.origin.height = selected[0].height;
+
+        return data;
+    }
+
     if (checkValidity()) {
         //插入
-        postToServer();
+        if (isInsertProjectInfoModel) {
+            insertProjectInfo();
+        } else {
+            var data = getUpdateData();
+            updateProjectInfo(data);
+        }
     }
 }
 
@@ -634,6 +715,8 @@ function onSubmitBtnClick() {
         },
         error: function (xhr, desc, err) {
             showMessageBox(JSON.stringify(xhr.responseJSON.errorMessage));
+            $("#uploadModalDialog").modal('hide');
+
         }
     });
 
@@ -759,7 +842,7 @@ $("#confirm-search").click(function () {
     $("#searchFilter").modal('hide');
     var searchingProjectName = $("#projectListSelect").val()
     if (searchingProjectName == null ||
-     searchingProjectName == "") {
+        searchingProjectName == "") {
         showMessageBox("请先选择项目");
     } else {
         var selectorArray = new Array;
@@ -770,21 +853,22 @@ $("#confirm-search").click(function () {
         selectorArray.push($("#query-positionSelect"));
         selectorArray.push($("#query-typeSelect"));
         var queryAdditionalCondition = {};
-        function searchConditionCheck () {
+
+        function searchConditionCheck() {
             var emptyConditionCount = 0;
-            selectorArray.forEach(function(selector, index){
-                  var selection = selector.val();
-                  if(selection == null || selection == "") {
-                       ++emptyConditionCount;
-                   }
-                   else {
-                       queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
-                   }
+            selectorArray.forEach(function (selector, index) {
+                var selection = selector.val();
+                if (selection == null || selection == "") {
+                    ++emptyConditionCount;
+                }
+                else {
+                    queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
+                }
             });
             return emptyConditionCount != FILTER_TYPE_COUNT;
         }
 
-        if(searchConditionCheck ()) {
+        if (searchConditionCheck()) {
             querySearchFilterData(queryAdditionalCondition)
         }
         else {
@@ -813,13 +897,13 @@ function getSearchFilterValue(element, projectName, filterType) {
         success: function (data) {
             element.empty();
             element.append($("<option></option>")
-                   .attr("value", "")
-                   .text(""))
+                .attr("value", "")
+                .text(""))
             data.filterData.forEach(function (value) {
                 element.append($("<option></option>")
                     .attr("value", value[filterType])
                     .text(value[filterType]))
-            element.find(":first").attr("selected", true);
+                element.find(":first").attr("selected", true);
             });
         },
         error: function (data) {
@@ -831,7 +915,7 @@ function getSearchFilterValue(element, projectName, filterType) {
 function onAccurateSearchClicked() {
     var searchingProjectName = $("#projectListSelect").val();
     if (searchingProjectName == null ||
-     searchingProjectName == "") {
+        searchingProjectName == "") {
         showMessageBox("请先选择项目");
     }
     else {
@@ -844,13 +928,18 @@ function onAccurateSearchClicked() {
     }
 }
 
-function onUpdate(){
-    if (selected.length == 0){
-        showMessageBox("请先选择要更新的数据");
-        return;
-    } else if (selected.length > 1) {
-        showMessageBox("每次只能修改一条数据");
-    } else {
-
+function onUpdate() {
+    if (isProjectInfoSelected() && isOnlyOneProjectInfoSelect()) {
+        isInsertProjectInfoModel = false;
+        $("#projInfoModalDialog").find("#myModalLabel").text("更改");
+        $("#projInfoModalDialog").find("#building").val(selected[0].building);
+        $("#projInfoModalDialog").find("#unit").val(selected[0].unit);
+        $("#projInfoModalDialog").find("#floor").val(selected[0].floor);
+        $("#projInfoModalDialog").find("#number").val(selected[0].number);
+        $("#projInfoModalDialog").find("#position").val(selected[0].position);
+        $("#projInfoModalDialog").find("#width").val(selected[0].width);
+        $("#projInfoModalDialog").find("#height").val(selected[0].height);
+        $("#projInfoModalDialog").find("#typeSelect").val(selected[0].type);
+        $("#projInfoModalDialog").modal('show');
     }
 }

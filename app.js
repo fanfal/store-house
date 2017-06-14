@@ -12,6 +12,7 @@ var outGoing = require('./routes/outGoing');
 var upload = require('./routes/upload');
 var status = require('./routes/status');
 var deleteData = require('./routes/deleteData');
+var updateData = require('./routes/updateData');
 var app = express();
 
 // view engine setup
@@ -31,10 +32,11 @@ app.use(express.static(path.join(__dirname, 'node_modules')));
 app.use('/', index);
 app.use('/get-data', getData);
 app.use('/insert-data', insertData);
-app.use('/out-going',outGoing);
+app.use('/out-going', outGoing);
 app.use('/upload', upload);
 app.use('/status', status);
 app.use('/delete-data', deleteData);
+app.use('/update-data', updateData);
 // catch 404 and forward to error handler
 
 app.use(function (req, res, next) {

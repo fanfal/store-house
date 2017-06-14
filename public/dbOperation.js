@@ -200,6 +200,24 @@ exports.updateProjectStatusByRequest = function (projectName, status) {
     }
 }
 
+exports.updateProjectInfo = function (data, res) {
+    projectInfoModel.findAll({where: data.new})
+        .then(function (result) {
+            if (result.length != 0) {
+                res.status(400).send({errorMessage: "Product was stored."});
+            } else {
+                projectInfoModel.update(data.new, {where: data.origin})
+                    .then(function (result) {
+                        res.status(200).send({success: true});
+                    }).catch(function (error) {
+                    res.status(400).send({errorMessage: "Update Product info error"});
+                })
+            }
+        }).catch(function (error) {
+        res.status(400).send({errorMessage: "Update Product info error"});
+    })
+}
+
 
 function updateProjectStatusBaseOnProductNumber(projectName, callback) {
     projectInfoModel.findAll({
