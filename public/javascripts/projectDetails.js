@@ -213,6 +213,8 @@ function projectDetailsModel() {
     }
 
     this.operatingProjectChanged = function (projectName) {
+        $("#operatingTableLabel").html(projectName);
+        modifyInsertBtnAndUploadBtnStatus(true);
         model.resetProjectRelatedParams(projectName);
         model.projectDetailsStateMachine.enableInsert(true);
     }
@@ -331,14 +333,12 @@ function projectDetailsModel() {
                         response(autoCompleteResult);
                     }
                 })
-                modifyInsertBtnAndUploadBtnStatus(false);
             },
             select: function (event, ui) {
                 var selection = ui.item.label;
                 //选择改变, 拉取数据
                 model.operatingProjectChanged(selection);
                 model.table.pullData(model.getOption(model));
-                modifyInsertBtnAndUploadBtnStatus(true);
             }
         });
 
@@ -391,6 +391,7 @@ function projectDetailsModel() {
 
         //4. 获取工程列表
         this.pullProjectList();
+        modifyInsertBtnAndUploadBtnStatus(false);
     }
 
     this.onInsertSuc = function () {
@@ -868,7 +869,7 @@ $("#confirm-search").click(function () {
     var searchingProjectName = $("#autocompleteProjectNameInput").val();
     if (searchingProjectName == null ||
         searchingProjectName == "") {
-        showMessageBox("请先选择项目");
+        showMessageBox("请先填写项目名称");
     } else {
         var selectorArray = new Array;
         selectorArray.push($("#query-buildingSelect"));
@@ -956,7 +957,7 @@ function onAccurateSearchClicked() {
     var searchingProjectName = $("#autocompleteProjectNameInput").val();
     if (searchingProjectName == null ||
         searchingProjectName == "") {
-        showMessageBox("请先选择项目");
+        showMessageBox("请先填写项目名称");
     }
     else {
         if (searchingProjectName != projDetailsModelInstance.operatingProject) {
