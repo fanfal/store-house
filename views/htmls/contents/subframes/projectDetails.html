@@ -37,12 +37,18 @@
         <!--<table grid-manager="data-grid"></table>-->
         <table id="bootstrapTable" data-tableexport-display="always"></table>
     </div>
-    <div class="row" style="margin-top:5px">
-        <div class="col-sm-2"></div>
+    <div class="row" style="margin-top:5px;align-self: center">
+        <div class="col-sm-1"></div>
         <div class="col-sm-2" style="padding:0px;margin-left:2px;margin-right:5px">
             <button class="btn btn-primary btn-wide" id="insertBtn" onclick="onInsert()"
                     style="margin-left:2%;width:100%">
                 添加
+            </button>
+        </div>
+        <div class="col-sm-2" style="padding:0px;margin-left:2px;margin-right:5px">
+            <button class="btn btn-primary btn-wide" id="updateBtn" onclick="onUpdate()"
+                    style="margin-left:2%;width:100%">
+                修改
             </button>
         </div>
         <div class="col-sm-2" style="padding:0px;margin-left:2px;margin-right:5px">
@@ -74,7 +80,6 @@
                     &times;
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
-                    创建
                 </h4>
             </div>
             <div class="modal-body">
