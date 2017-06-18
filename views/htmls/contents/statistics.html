@@ -63,6 +63,7 @@
             <th>类型</th>
             <th>宽度(mm)</th>
             <th>高度(mm)</th>
+`            <th>状态</th>
         </tr>
         </thead>
         <tbody>
@@ -75,6 +76,7 @@
             <td>{{x.type}}</td>
             <td>{{x.width}}</td>
             <td>{{x.height}}</td>
+            <td>{{x.is_stored | exportTableFilter}}</td>
         </tr>
         </tbody>
 

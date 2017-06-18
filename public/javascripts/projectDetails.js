@@ -7,6 +7,8 @@ const c_selAll = "selAll";
 const FILTER_TYPE_COUNT = 6;
 const UNSTORED_ROW_COLOR = "#E2E2E2";
 const STORED_ROW_COLOR = "#DDFFDD";
+const OUT_OF_STORE_STATE = "已出库";
+const IN_STORE_STATE = "在库";
 var colorArray = [];
 colorArray.push(UNSTORED_ROW_COLOR);
 colorArray.push(STORED_ROW_COLOR);
@@ -18,6 +20,16 @@ var selected = [];
 var app = angular.module("projectDetails", []);
 var $myScope = null;
 var isInsertProjectInfoModel = true;
+
+app.filter('exportTableFilter', function () {
+    return function (x) {
+        if (x == true) {
+            return IN_STORE_STATE;
+        } else {
+            return OUT_OF_STORE_STATE;
+        }
+    };
+});
 
 app.controller("exportController",
     function ($scope) {
