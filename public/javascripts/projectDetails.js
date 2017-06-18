@@ -5,7 +5,7 @@ const c_selOperable = "selOperable";
 const c_selExhausted = "selExhausted";
 const c_selAll = "selAll";
 const FILTER_TYPE_COUNT = 6;
-const UNSTORED_ROW_COLOR ="#E2E2E2";
+const UNSTORED_ROW_COLOR = "#E2E2E2";
 const STORED_ROW_COLOR = "#DDFFDD";
 var colorArray = [];
 colorArray.push(UNSTORED_ROW_COLOR);
@@ -95,17 +95,19 @@ function initInputList() {
     inputList.push(height);
     inputList.push(height);
     inputList.forEach(function (item) {
-       item.control.poshytip({
+        item.control.poshytip({
             className: 'tip-yellowsimple',
-            content : function (updateCallback) {return $("#toolTipInvisible").html();},
-       	    showOn: 'none',
-       	    alignTo: 'target',
-       	    alignX: 'right',
-       	    alignY: 'center',
-       	    offsetX : 10,
-       	    slide : false,
-       	    elemAppendTo : $("#projInfoModalDialog")
-       });
+            content: function (updateCallback) {
+                return $("#toolTipInvisible").html();
+            },
+            showOn: 'none',
+            alignTo: 'target',
+            alignX: 'right',
+            alignY: 'center',
+            offsetX: 10,
+            slide: false,
+            elemAppendTo: $("#projInfoModalDialog")
+        });
     });
 
 }
@@ -166,7 +168,7 @@ function projectDetailsModel() {
             url: model.getQueryURL(),
             method: "post",
             responseHandler: responseHandler,
-           // rowStyle : rowStyleHandler,
+            // rowStyle : rowStyleHandler,
             cache: false,
             pagination: true,
             queryParams: model.getQueryParams,
@@ -198,9 +200,9 @@ function projectDetailsModel() {
         $myScope.update(selected)
     }
 
-    this.operatingProjectChanged = function(projectName) {
-         model.resetProjectRelatedParams(projectName);
-         model.projectDetailsStateMachine.enableInsert(true);
+    this.operatingProjectChanged = function (projectName) {
+        model.resetProjectRelatedParams(projectName);
+        model.projectDetailsStateMachine.enableInsert(true);
     }
 
     this.projectTypeSelectChanged = function () {
@@ -276,7 +278,7 @@ function projectDetailsModel() {
                 }
             },
             cellStyle: function (value, row, index) {
-                 return {css : {"background" : value ? colorArray[1] : colorArray[0]}}
+                return {css: {"background": value ? colorArray[1] : colorArray[0]}}
             }
         }];
         return columns;
@@ -293,7 +295,7 @@ function projectDetailsModel() {
     this.Init = function () {
         //1. 项目名称自动填充
         $("#autocompleteProjectNameInput").autocomplete({
-            source : function (request, response) {
+            source: function (request, response) {
                 var input = request.term;
                 var url = c_getProjectsURL;
                 var bNeedStatus = model.selectedProjectType != projectType.ALL;
@@ -302,24 +304,24 @@ function projectDetailsModel() {
                     url += "&status=" + model.selectedProjectType;
                 }
                 $.ajax({
-                       url: url,
-                       type: "GET",
-                       async: true,
-                       success: function (data) {
-                           var projects = data.project_list;
-                           var autoCompleteResult = new Array;
-                           projects.forEach(function (item) {
-                               var itemJson = {label:item.project_name, value:item.project_name};
-                               autoCompleteResult.push(itemJson);
-                               if (item.project_name == input) {
-                               }
-                           })
-                           response(autoCompleteResult);
-                       }
+                    url: url,
+                    type: "GET",
+                    async: true,
+                    success: function (data) {
+                        var projects = data.project_list;
+                        var autoCompleteResult = new Array;
+                        projects.forEach(function (item) {
+                            var itemJson = {label: item.project_name, value: item.project_name};
+                            autoCompleteResult.push(itemJson);
+                            if (item.project_name == input) {
+                            }
+                        })
+                        response(autoCompleteResult);
+                    }
                 })
                 modifyInsertBtnAndUploadBtnStatus(false);
             },
-            select : function (event, ui) {
+            select: function (event, ui) {
                 var selection = ui.item.label;
                 //选择改变, 拉取数据
                 model.operatingProjectChanged(selection);
@@ -640,7 +642,7 @@ function responseHandler(res) {
     return res;
 }
 
-function rowStyleHandler (row, index) {
+function rowStyleHandler(row, index) {
     //return {css : {"background" : row.is_stored ? colorArray[1] : colorArray[0]}}
 }
 
@@ -866,18 +868,19 @@ $("#confirm-search").click(function () {
         //确认搜索, 视为操作的工程变了, 否则工程的编辑状态很难同步
         projDetailsModelInstance.operatingProjectChanged(searchingProjectName)
         modifyInsertBtnAndUploadBtnStatus(true);
-        function fillQueryParam () {
+        function fillQueryParam() {
             var queryAdditionalCondition = {};
-            selectorArray.forEach(function(selector, index){
-                  var selection = selector.val();
-                  if(selection == null || selection == "") {
-                   }
-                   else {
-                       queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
-                   }
+            selectorArray.forEach(function (selector, index) {
+                var selection = selector.val();
+                if (selection == null || selection == "") {
+                }
+                else {
+                    queryAdditionalCondition[selector.attr("queryKey")] = selector.val();
+                }
             });
             return queryAdditionalCondition;
         }
+
         querySearchFilterData(fillQueryParam())
     }
 });
@@ -920,17 +923,19 @@ function getSearchFilterValue(element, projectName, filterType) {
 function queryIfProjectExists(projectName) {
     var res = false;
     $.ajax({
-            url: c_getProject + "?name=" + projectName,
-            type: "GET",
-            dataType: 'json',
-            async : false,
-            success: function (data) {
-                if (data != null) {res = true;}
-            },
-            error: function (data) {
-                res = false;
+        url: c_getProject + "?name=" + projectName,
+        type: "GET",
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            if (data != null) {
+                res = true;
             }
-        })
+        },
+        error: function (data) {
+            res = false;
+        }
+    })
     return res;
 }
 
@@ -959,7 +964,9 @@ function onAccurateSearchClicked() {
 }
 
 function onUpdate() {
-    if (isProjectInfoSelected() && isOnlyOneProjectInfoSelect()) {
+    if (isProjectSelected()
+        && isProjectInfoSelected("请勾选要修改的项目")
+        && isOnlyOneProjectInfoSelect() && isProjectInfoStored(selected[0])) {
         isInsertProjectInfoModel = false;
         $("#projInfoModalDialog").find("#myModalLabel").text("更改");
         $("#projInfoModalDialog").find("#building").val(selected[0].building);
@@ -974,6 +981,15 @@ function onUpdate() {
     }
 }
 
+function isProjectInfoStored(projectInfo) {
+    if (projectInfo.is_stored == false) {
+        showMessageBox("无法修改已出库数据,请选择在库数据.");
+        selected = [];
+        selectionIds = [];
+        return false;
+    }
+    return true;
+}
 
 function emptyProjectInfoModel() {
     $(".projInfoInput").each(function (index, element) {
@@ -985,7 +1001,7 @@ function emptyProjectInfoModel() {
 
 function modifyInsertBtnAndUploadBtnStatus(bEnable) {
     if (document.getElementById("insertBtn") != null
-    && document.getElementById("uploadBtn")) {
+        && document.getElementById("uploadBtn")) {
         var insertBtn = $("#insertBtn");
         var uploadBtn = $("#uploadBtn");
         insertBtn.attr("disabled", !bEnable);
