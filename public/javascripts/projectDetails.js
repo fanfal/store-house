@@ -187,7 +187,7 @@ function projectDetailsModel() {
             sidePagination: "server",
             pageNumber: model.pageNumber,
             pageSize: 10,
-            pageList: [10, 20, 30],
+            pageList: [10, 15, 20],
             uniqueId: "id",
             cardView: false,
             detailView: false,
