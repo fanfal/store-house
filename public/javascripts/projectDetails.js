@@ -663,6 +663,10 @@ function onCancel() {
     $("#projInfoModalDialog").modal('hide');
 }
 
+$("#projInfoModalDialog").on("hidden.bs.modal", function () {
+    emptyProjectInfoModel();
+})
+
 function onConfirmProjReciver() {
     $("#widthTolerance").val(toleranceHandler.widthTolerance);
     $("#heightTolerance").val(toleranceHandler.heightTolerance);
