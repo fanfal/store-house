@@ -910,6 +910,7 @@ $("#cancel-search").click(function () {
 function querySearchFilterData(filterData) {
     //换一种方式, 通过修改参数, 改变bootstrap-table的POST参数
     var projectDetailsModel = projDetailsModelInstance;
+    projectDetailsModel.pageNumber = 1;
     projectDetailsModel.additionalQueryParams = filterData;
     projectDetailsModel.table.pullData(projectDetailsModel.getOption(projectDetailsModel));
 }
