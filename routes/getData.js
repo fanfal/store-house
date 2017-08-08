@@ -11,9 +11,9 @@ router.get('/project', function (req, res, next) {
 router.get('/projects', function (req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     if (req.query.status == null) {
-        dbOperation.getProjects(res);
+        dbOperation.getProjects(req.query.projectFilter, res);
     } else {
-        dbOperation.getProjectsWithStatus(req.query.status, res);
+        dbOperation.getProjectsWithStatus(req.query.projectFilter, req.query.status, res);
     }
 })
 
@@ -37,12 +37,6 @@ router.post('/project-info', function (req, res, next) {
         //TODO send error back
     }
 })
-
-router.get('/projects-name', function (req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
-    dbOperation.getProjectsName(res);
-})
-
 
 router.get('/project-info', function (req, res, next) {
     res.setHeader('Content-Type', 'application/json');
