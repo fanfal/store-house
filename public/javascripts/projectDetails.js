@@ -596,7 +596,7 @@ function onConfirm() {
         data.new = {};
         data.origin = {};
 
-        data.new.project_name = data.origin.project_name = $("#projectListSelect").val();
+        data.new.project_name = data.origin.project_name = projDetailsModelInstance.operatingProject;
 
         data.new.building = $("#projInfoModalDialog").find("#building").val();
         data.origin.building = selected[0].building;
