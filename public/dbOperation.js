@@ -198,6 +198,7 @@ exports.updateProjectStatusByRequest = function (projectName, status) {
 
 exports.updateProjectInfo = function (data, res) {
     data.new.is_stored = true;
+    data.new.product_id = dbUtil.createProductId(data.new.project_name, data.new);
     data.origin.is_stored = true;
     projectInfoModel.findAll({where: data.new})
         .then(function (result) {
