@@ -210,10 +210,10 @@ function projectDetailsModel() {
         selected = [];
         model.projectDetailsStateMachine.enableExport(false);
         $myScope.update(selected)
+        $("#operatingTableLabel").html(projectName);
     }
 
     this.operatingProjectChanged = function (projectName) {
-        $("#operatingTableLabel").html(projectName);
         modifyInsertBtnAndUploadBtnStatus(true);
         model.resetProjectRelatedParams(projectName);
         model.projectDetailsStateMachine.enableInsert(true);
