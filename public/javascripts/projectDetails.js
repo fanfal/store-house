@@ -12,7 +12,7 @@ const IN_STORE_STATE = "在库";
 var colorArray = [];
 colorArray.push(UNSTORED_ROW_COLOR);
 colorArray.push(STORED_ROW_COLOR);
-
+var projDetailsModelInstance = null;
 
 var inputList = new Array;
 var selectionIds = [];
@@ -385,7 +385,7 @@ function projectDetailsModel() {
             $myScope.update(selected);
         });
         //切换页
-        $("#bootstrapTable").on('page-change.bs.table', function (number, size) {
+        $("#bootstrapTable").on('page-change.bs.table', function (e, number, size) {
             projDetailsModelInstance.pageNumber = number;
         })
 
@@ -399,7 +399,6 @@ function projectDetailsModel() {
     }
 }
 
-var projDetailsModelInstance = null;
 $(document).ready(function () {
     projDetailsModelInstance = new projectDetailsModel();   //数据模型
     //初始化模型
@@ -580,7 +579,7 @@ function onConfirm() {
                 var msg = "更新失败";
                 if (data.responseJSON != null) {
                     if (data.responseJSON.errorMessage == "Product was stored.") {
-                        msg += ", 该项目在库.";
+                        msg += ", 该项目已存在.";
                     }
                     else if (data.responseJSON.errorMessage == "Update product error.") {
                         msg += ", 在插入项目时发生异常.";
@@ -591,47 +590,73 @@ function onConfirm() {
         })
     }
 
+    function removeUselessZerosOfFloatingNumber (floatingNumber) {
+        var res = floatingNumber;
+        var pattenForZero = /0+?$/;
+        res = res.replace(pattenForZero, "");
+        var pattenForPoint = /[.]$/;
+        res = res.replace(pattenForPoint, "");
+        return res;
+    };
+
     function getUpdateData() {
         var data = {};
         data.new = {};
         data.origin = {};
-
         data.new.project_name = data.origin.project_name = projDetailsModelInstance.operatingProject;
-
         data.new.building = $("#projInfoModalDialog").find("#building").val();
         data.origin.building = selected[0].building;
-
         data.new.unit = $("#projInfoModalDialog").find("#unit").val();
         data.origin.unit = selected[0].unit;
-
         data.new.floor = $("#projInfoModalDialog").find("#floor").val();
         data.origin.floor = selected[0].floor;
-
         data.new.number = $("#projInfoModalDialog").find("#number").val();
         data.origin.number = selected[0].number;
-
         data.new.position = $("#projInfoModalDialog").find("#position").val();
         data.origin.position = selected[0].position;
-
         data.new.type = $("#projInfoModalDialog").find("#typeSelect").val();
         data.origin.type = selected[0].type;
-
-        data.new.width = $("#projInfoModalDialog").find("#width").val();
+        data.new.width = parseFloat($("#projInfoModalDialog").find("#width").val());
         data.origin.width = selected[0].width;
-
-        data.new.height = $("#projInfoModalDialog").find("#height").val();
+        data.new.height = parseFloat($("#projInfoModalDialog").find("#height").val());
         data.origin.height = selected[0].height;
-
         return data;
     }
 
+    function dataChanged(data) {
+        var res = false;
+        for (var item in data.origin) {
+            if (data.new[item] != data.origin[item]) {
+                //前面的全是String后面两个是Number
+                res = true;
+                break;
+            }
+        }
+        return res;
+    }
+
+    function fixWidthAndHeight(data) {
+        var width = String(data.new.width);
+        var height = String(data.new.height);
+        width = removeUselessZerosOfFloatingNumber(width);
+        height = removeUselessZerosOfFloatingNumber(height);
+        data.new.width = width;
+        data.new.height = height;
+    }
     if (checkValidity()) {
         //插入
         if (isInsertProjectInfoModel) {
             insertProjectInfo();
         } else {
             var data = getUpdateData();
-            updateProjectInfo(data);
+            if (dataChanged(data)) {
+                fixWidthAndHeight(data);
+                updateProjectInfo(data);
+            }
+            else {
+                //没有修改等同于直接取消
+                $("#projInfoModalDialog").modal('hide');
+            }
         }
     }
 }
