@@ -30,8 +30,8 @@ exports.createProductId = function (projectName, data) {
     }
 
     productId += data.type;
-    productId += data.width + CM;
-    productId += PLUS + data.height + CM;
+    productId += data.width.toString() + CM;
+    productId += PLUS + data.height.toString() + CM;
 
     return productId;
 }

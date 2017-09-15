@@ -89,14 +89,14 @@ function tolerance() {
 }
 var toleranceHandler = new tolerance();
 function initInputList() {
-    var building = {name: "building", control: $("#building")};
-    var unit = {name: "unit", control: $("#unit")};
-    var floor = {name: "floor", control: $("#floor")};
-    var number = {name: "number", control: $("#number")};
-    var position = {name: "position", control: $("#position")};
-    var type = {name: "type", control: $("#typeSelect")};
-    var width = {name: "width", control: $("#width")};
-    var height = {name: "height", control: $("#height")};
+    var building = {name: "building", control: $("#building"), mode : 0};
+    var unit = {name: "unit", control: $("#unit"), mode : 0};
+    var floor = {name: "floor", control: $("#floor"), mode : 0};
+    var number = {name: "number", control: $("#number"), mode : 0};
+    var position = {name: "position", control: $("#position"), mode : 0};
+    var type = {name: "type", control: $("#typeSelect"), mode : 0};
+    var width = {name: "width", control: $("#width"), mode : 0};
+    var height = {name: "height", control: $("#height"), mode : 0};
     inputList.push(building);
     inputList.push(unit);
     inputList.push(floor);
@@ -110,7 +110,10 @@ function initInputList() {
         item.control.poshytip({
             className: 'tip-yellowsimple',
             content: function (updateCallback) {
-                return $("#toolTipInvisible").html();
+                if (item.mode == 0)
+                    return $("#nullExprInvalidToolTip").html();
+                else
+                    return $("#invalidNumberToolTip").html();
             },
             showOn: 'none',
             alignTo: 'target',
@@ -484,6 +487,7 @@ function onConfirm() {
                 var pattern = /^(-)?\d+(\.\d+)?$/;
                 if (pattern.exec(value) == null) {
                     errInputIndex = index;
+                    inputList[errInputIndex].mode = 1;
                     return false
                 }
             }
@@ -494,6 +498,7 @@ function onConfirm() {
                 inputList[errInputIndex].control.poshytip('hide')
                 clearInterval(timer);
             }, 3000);
+            inputList[errInputIndex].mode = 0;
             return false;
         }
         else {
@@ -573,7 +578,6 @@ function onConfirm() {
                 projDetailsModelInstance.onInsertSuc();
                 projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
                 $("#projInfoModalDialog").modal('hide');
-
             },
             error: function (data) {
                 var msg = "更新失败";
@@ -590,19 +594,11 @@ function onConfirm() {
         })
     }
 
-    function removeUselessZerosOfFloatingNumber (floatingNumber) {
-        var res = floatingNumber;
-        var pattenForZero = /0+?$/;
-        res = res.replace(pattenForZero, "");
-        var pattenForPoint = /[.]$/;
-        res = res.replace(pattenForPoint, "");
-        return res;
-    };
-
     function getUpdateData() {
         var data = {};
         data.new = {};
         data.origin = {};
+        data.origin.id = selected[0].id;
         data.new.project_name = data.origin.project_name = projDetailsModelInstance.operatingProject;
         data.new.building = $("#projInfoModalDialog").find("#building").val();
         data.origin.building = selected[0].building;
@@ -617,9 +613,9 @@ function onConfirm() {
         data.new.type = $("#projInfoModalDialog").find("#typeSelect").val();
         data.origin.type = selected[0].type;
         data.new.width = parseFloat($("#projInfoModalDialog").find("#width").val());
-        data.origin.width = selected[0].width;
         data.new.height = parseFloat($("#projInfoModalDialog").find("#height").val());
-        data.origin.height = selected[0].height;
+        data.origin.width = parseFloat(selected[0].width);
+        data.origin.height = parseFloat(selected[0].height);
         return data;
     }
 
@@ -635,14 +631,6 @@ function onConfirm() {
         return res;
     }
 
-    function fixWidthAndHeight(data) {
-        var width = String(data.new.width);
-        var height = String(data.new.height);
-        width = removeUselessZerosOfFloatingNumber(width);
-        height = removeUselessZerosOfFloatingNumber(height);
-        data.new.width = width;
-        data.new.height = height;
-    }
     if (checkValidity()) {
         //插入
         if (isInsertProjectInfoModel) {
@@ -650,7 +638,8 @@ function onConfirm() {
         } else {
             var data = getUpdateData();
             if (dataChanged(data)) {
-                fixWidthAndHeight(data);
+                data.origin = {};
+                data.origin.id = selected[0].id;    //only index field
                 updateProjectInfo(data);
             }
             else {
