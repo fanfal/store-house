@@ -240,6 +240,8 @@ function projectDetailsModel() {
         $("#bootstrapTable").bootstrapTable('removeAll');
         $("#autocompleteProjectNameInput").val("");
         model.resetProjectRelatedParams("");
+        modifyInsertBtnAndUploadBtnStatus(false);
+
     }
 
     /////////////////////////////////////////bootstrapTable用/////////////////////////////////////////
@@ -754,7 +756,6 @@ function onSubmitBtnClick() {
         contentType: false,
         processData: false,
         success: function (data, status) {
-            showMessageBox("上传数据成功.");
             $("#uploadModalDialog").modal('hide');
             projDetailsModelInstance.table.pullData(projDetailsModelInstance.getOption(projDetailsModelInstance));
         },
