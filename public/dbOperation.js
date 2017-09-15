@@ -269,7 +269,7 @@ function insertProject(projectName, res) {
 
 
 function insertProjectInfo(data, res) {
-    if (data.project_name != null) {
+    if (data.project_name != null && data.project_name != "") {
         projectInfoModel.findAll({
                 where: {
                     project_name: data.project_name,

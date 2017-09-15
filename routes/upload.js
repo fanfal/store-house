@@ -67,7 +67,7 @@ function uploadExcel(req, res, projectName) {
 router.post('/excel', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     var projectName = req.query.name;
-    if (projectName != null) {
+    if (projectName != null && projectName != "") {
         uploadExcel(req, res, projectName);
     } else {
         res.status(400).send({errorMessage: "Need project name."});

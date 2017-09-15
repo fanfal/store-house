@@ -237,6 +237,8 @@ function projectDetailsModel() {
         $("#bootstrapTable").bootstrapTable('removeAll');
         $("#autocompleteProjectNameInput").val("");
         model.resetProjectRelatedParams("");
+        modifyInsertBtnAndUploadBtnStatus(false);
+
     }
 
     /////////////////////////////////////////bootstrapTable用/////////////////////////////////////////
