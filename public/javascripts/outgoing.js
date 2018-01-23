@@ -115,6 +115,11 @@ app.controller('myCtrl', function ($scope, $http) {
         $scope.productCount.otherNum = 0;
     }
     $scope.operatingProjectName = "";
+    $("#autocompleteProjectNameInput").on("change", function() {
+        if ($("#autocompleteProjectNameInput").val().trim() == "") {
+            $scope.operatingProjectName = "";
+        }
+    })
     $("#autocompleteProjectNameInput").autocomplete({
             source : function (request, response) {
                 var input = request.term;
