@@ -36,13 +36,12 @@ app.controller("exportController",
         $myScope = $scope;
         $scope.update = function (data) {
             $scope.selected = data;
+            $.each($scope.selected, function(i, row) {
+                row.area = (row.width * row.height).toFixed(1);
+            })
             $scope.$apply();
         }
     });
-
-function calcArea(width, height) {
-    return width * height;
-}
 
 function tolerance() {
     this.widthTolerance = 0.0;

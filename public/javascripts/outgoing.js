@@ -118,6 +118,10 @@ app.controller('myCtrl', function ($scope, $http) {
     $("#autocompleteProjectNameInput").autocomplete({
             source : function (request, response) {
                 var input = request.term;
+                if (input == '') {
+                    $scope.operatingProjectName = "";
+                    return
+                }
                 var url = c_getProjectsURL;
                 url += "?projectFilter=" + input;
                 url += "&status=" ;
@@ -182,6 +186,7 @@ app.controller('myCtrl', function ($scope, $http) {
             showProductNotExistOrOutOfStoreAlert();
         } else {
             countProductType(data);
+            data[0].area = (data[0].width * data[0].height).toFixed(1)
             projectInfo = data.concat(projectInfo);
             $scope.items = projectInfo;
         }
@@ -199,8 +204,10 @@ app.controller('myCtrl', function ($scope, $http) {
             $scope.scan_text = "";
             return;
         }
-        $(this).addClass("disabled");
-        $("#btn_stop_scan").removeClass("disabled");
+        disableBtn($(this), true)
+        disableBtn($("#btn_stop_scan"), false)
+        disableBtn($("#btn_generate_list"), false)
+
         $("#scan_input").focus();
         $("#scan_input").blur(function () {
             $(this).focus();
@@ -212,10 +219,10 @@ app.controller('myCtrl', function ($scope, $http) {
     $("#btn_generate_list").click(function (e) {
         e.preventDefault()
         updateProjectStatus($scope.operatingProjectName, projectType.OPERABLE);
-        if ($("#btn_start_scan").hasClass("disabled")) {
-            $("#btn_start_scan").removeClass("disabled");
-            $("#btn_stop_scan").addClass("disabled");
-        }
+        // if ($("#btn_start_scan").hasClass("disabled")) {
+        //     $("#btn_start_scan").removeClass("disabled");
+        //     $("#btn_stop_scan").addClass("disabled");
+        // }
         $("#scan_input").off("blur");
         $("#scan_input").blur();
         $('#myModal').modal('show');
@@ -224,8 +231,10 @@ app.controller('myCtrl', function ($scope, $http) {
     $("#btn_stop_scan").click(function (e) {
         e.preventDefault();
         updateProjectStatus($scope.operatingProjectName, projectType.OPERABLE);
-        $("#btn_start_scan").removeClass("disabled");
-        $(this).addClass("disabled");
+
+        disableBtn($("#btn_start_scan"), false)
+        disableBtn($("#btn_stop_scan"), true)
+        disableBtn($("#btn_generate_list"), true)
         $("#scan_input").off("blur");
         $("#scan_input").blur();
         endOutGoing();
@@ -282,6 +291,10 @@ app.controller('myCtrl', function ($scope, $http) {
         }
         enableSelector(true);
         $scope.$apply();
+    }
+
+    function disableBtn(btn, disabled) {
+        btn.attr("disabled", disabled)
     }
 });
 

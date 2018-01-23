@@ -44,6 +44,7 @@
                         <th id="type" class="text-center">类型&nbsp;</th>
                         <th id="width" class="text-center">宽(mm)&nbsp;</th>
                         <th id="height" class="text-center">高(mm)&nbsp;</th>
+                        <th id="area" class="text-center">面积(mm²)&nbsp;</th>
                         <th id="created_at" class="text-center">创建时间&nbsp;</th>
                         <th id="operation_status" class="text-center">状态&nbsp;</th>
                     </tr>
@@ -60,6 +61,7 @@
                         <td class="text-center">{{item.type}}</td>
                         <td class="text-center">{{item.width}}</td>
                         <td class="text-center">{{item.height}}</td>
+                        <td class="text-center">{{item.area}}</td>
                         <td class="text-center">{{item.created_at}}</td>
                         <td class="text-center">出库成功</td>
                     </tr>
@@ -83,6 +85,7 @@
                         </div>
                         <div style="text-align: center" class="print-title">
                             <h4 class="modal-title" >出库清单</h4>
+                            <h3 ng-init="" ng-model="operatingProjectName">{{operatingProjectName}}</h3>
                             </br>
                             </br>
                         </div>
@@ -97,6 +100,7 @@
                                 <td class="text-center">{{item.type}}&nbsp;类型</td>
                                 <td class="text-center">{{item.width}}&nbsp;宽(mm)</td>
                                 <td class="text-center">{{item.height}}&nbsp;高(mm)</td>
+                                <td class="text-center">{{item.area}}&nbsp;面积(mm²)</td>
                             </tr>
                             </tbody>
                         </table>
@@ -124,11 +128,11 @@
         </div>
         <div style="text-align:center">
             <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始出库</button>
-            <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止出库</button>
-            <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" data-toggle="modal">打印表单</button>
+            <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg" disabled = true>停止出库</button>
+            <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" disabled = true data-toggle="modal">打印表单</button>
         </div>
         <div>
-            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:1; width: 100px; height:50px; margin-left:0px">
+            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 0px; height:0px; margin-left:1000px">
         </div>
     </div>
     </div>
