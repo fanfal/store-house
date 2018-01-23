@@ -40,6 +40,9 @@ app.controller("exportController",
         }
     });
 
+function calcArea(width, height) {
+    return width * height;
+}
 
 function tolerance() {
     this.widthTolerance = 0.0;
@@ -285,6 +288,9 @@ function projectDetailsModel() {
         }, {
             field: 'height',
             title: '高度(mm)'
+        }, {
+            field: 'area',
+            title: '面积(mm²)'
         }, {
             field: 'is_stored',
             title: '是否出库',
@@ -663,6 +669,8 @@ function responseHandler(res) {
         height += toleranceHandler.heightTolerance;
         row.width = width.toFixed(1);
         row.height = height.toFixed(1);
+        var area = row.width * row.height
+        row.area = area.toFixed(1);
     });
     if (count > 0) {
         //不是一个空工程

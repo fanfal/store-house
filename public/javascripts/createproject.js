@@ -59,6 +59,7 @@ function onClick(){
             showToolTip("创建成功", true);
        },
        error : function (data){
+           alert(JSON.stringify(data))
             var errMsg = JSON.stringify(data.responseJSON.errorMessage);
             if (errMsg == '"project name has exist."'){
                showToolTip("已有同名工程存在.");
