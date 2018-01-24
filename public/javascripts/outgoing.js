@@ -108,18 +108,16 @@ function OutgoingDuplicateRemoval() {
 
 app.controller('myCtrl', function ($scope, $http) {
     $scope.init = function () {
-        $scope.productCount = {};
-        $scope.productCount.frameNum = 0;
-        $scope.productCount.fanNum = 0;
-        $scope.productCount.glassNum = 0;
-        $scope.productCount.otherNum = 0;
+        resetOutgoingData($scope);
+        $scope.operatingProjectName = "";
     }
-    $scope.operatingProjectName = "";
+
     $("#autocompleteProjectNameInput").on("change", function() {
         if ($("#autocompleteProjectNameInput").val().trim() == "") {
             $scope.operatingProjectName = "";
         }
     })
+
     $("#autocompleteProjectNameInput").autocomplete({
             source : function (request, response) {
                 var input = request.term;
@@ -149,7 +147,11 @@ app.controller('myCtrl', function ($scope, $http) {
             select : function (event, ui) {
                 var selection = ui.item.label;
                 //选择改变, 拉取数据
-                $scope.operatingProjectName = selection;
+                if (selection != $scope.operatingProjectName) {
+                    $scope.operatingProjectName = selection;
+                }
+                resetOutgoingData()
+                $scope.$apply();
             }
     });
 
@@ -163,6 +165,15 @@ app.controller('myCtrl', function ($scope, $http) {
             $("#autocompleteProjectNameInput").attr("disabled", true);
         }
 
+    }
+
+    function resetOutgoingData() {
+        $scope.productCount = {};
+        $scope.productCount.frameNum = 0;
+        $scope.productCount.fanNum = 0;
+        $scope.productCount.glassNum = 0;
+        $scope.productCount.otherNum = 0;
+        $scope.items = [];
     }
 
     var projectTypeArray = [STR_OPERATING, STR_OPERABLE];
