@@ -62,29 +62,29 @@ function OutgoingDuplicateRemoval() {
     this.operatingProduct = [];
 
     this.beginOutGoing = function (projectName, productID, removal) {
-        this.operatingProduct.push({pn:projectName, pi:productID});
+        this.operatingProduct.push({pn: projectName, pi: productID});
         setTimeout(function () {
             removal.endOutGoing(projectName, productID);
         }, 50);
     }
 
     this.endOutGoing = function (projectName, productID) {
-        for(var i = 0; i < this.operatingProduct.length; ++i) {
-           var productSchema = this.operatingProduct[i];
-           if(productSchema.pn == projectName
-           && productSchema.pi == productID) {
-               this.operatingProduct.splice(i, 1);
-               break;
-           }
+        for (var i = 0; i < this.operatingProduct.length; ++i) {
+            var productSchema = this.operatingProduct[i];
+            if (productSchema.pn == projectName
+                && productSchema.pi == productID) {
+                this.operatingProduct.splice(i, 1);
+                break;
+            }
         }
     }
 
     this.hasDuplicatedProduct = function (projectName, productID) {
         var hasDuplicatedProjectName = false;
-        for(var i = 0; i < this.operatingProduct.length; ++i) {
+        for (var i = 0; i < this.operatingProduct.length; ++i) {
             var productSchema = this.operatingProduct[i];
-            if(productSchema.pn == projectName
-            && productSchema.pi == productID) {
+            if (productSchema.pn == projectName
+                && productSchema.pi == productID) {
                 return true;
             }
         }
@@ -92,11 +92,11 @@ function OutgoingDuplicateRemoval() {
         return false;
     }
 
-    this.canDoOutGoing = function (projectName, productID){
-        if(projectName == "" || productID == ""){
+    this.canDoOutGoing = function (projectName, productID) {
+        if (projectName == "" || productID == "") {
             return false;
         }
-        if(this.hasDuplicatedProduct(projectName, productID)) {
+        if (this.hasDuplicatedProduct(projectName, productID)) {
             return false;
         }
         else {
@@ -112,55 +112,55 @@ app.controller('myCtrl', function ($scope, $http) {
         $scope.operatingProjectName = "";
     }
 
-    $("#autocompleteProjectNameInput").on("change", function() {
+    $("#autocompleteProjectNameInput").on("change", function () {
         if ($("#autocompleteProjectNameInput").val().trim() == "") {
             $scope.operatingProjectName = "";
         }
     })
 
     $("#autocompleteProjectNameInput").autocomplete({
-            source : function (request, response) {
-                var input = request.term;
-                if (input == '') {
-                    $scope.operatingProjectName = "";
-                    return
-                }
-                var url = c_getProjectsURL;
-                url += "?projectFilter=" + input;
-                url += "&status=" ;
-                url += $scope.select_type == STR_OPERATING ? projectType.OPERATING : projectType.OPERABLE;
-                $.ajax({
-                       url: url,
-                       type: "GET",
-                       async: true,
-                       success: function (data) {
-                           var projects = data.project_list;
-                           var autoCompleteResult = new Array;
-                           projects.forEach(function (item) {
-                               var itemJson = {label:item.project_name, value:item.project_name};
-                               autoCompleteResult.push(itemJson);
-                           })
-                           response(autoCompleteResult);
-                       }
-                })
-            },
-            select : function (event, ui) {
-                var selection = ui.item.label;
-                //选择改变, 拉取数据
-                if (selection != $scope.operatingProjectName) {
-                    $scope.operatingProjectName = selection;
-                }
-                resetOutgoingData()
-                $scope.$apply();
+        source: function (request, response) {
+            var input = request.term;
+            if (input == '') {
+                $scope.operatingProjectName = "";
+                return
             }
+            var url = c_getProjectsURL;
+            url += "?projectFilter=" + input;
+            url += "&status=";
+            url += $scope.select_type == STR_OPERATING ? projectType.OPERATING : projectType.OPERABLE;
+            $.ajax({
+                url: url,
+                type: "GET",
+                async: true,
+                success: function (data) {
+                    var projects = data.project_list;
+                    var autoCompleteResult = new Array;
+                    projects.forEach(function (item) {
+                        var itemJson = {label: item.project_name, value: item.project_name};
+                        autoCompleteResult.push(itemJson);
+                    })
+                    response(autoCompleteResult);
+                }
+            })
+        },
+        select: function (event, ui) {
+            var selection = ui.item.label;
+            //选择改变, 拉取数据
+            if (selection != $scope.operatingProjectName) {
+                $scope.operatingProjectName = selection;
+            }
+            resetOutgoingData()
+            $scope.$apply();
+        }
     });
 
     function enableSelector(bEnable) {
-        if(bEnable){
+        if (bEnable) {
             $("#project_type_select").attr("disabled", false);
             $("#autocompleteProjectNameInput").attr("disabled", false);
         }
-        else{
+        else {
             $("#project_type_select").attr("disabled", true);
             $("#autocompleteProjectNameInput").attr("disabled", true);
         }
@@ -176,9 +176,8 @@ app.controller('myCtrl', function ($scope, $http) {
         $scope.items = [];
     }
 
-    var projectTypeArray = [STR_OPERATING, STR_OPERABLE];
-    $scope.projectType = projectTypeArray;  //工程类型列表
-    $scope.select_type = projectTypeArray[0];
+    $scope.projectType = [STR_OPERABLE, STR_OPERATING];
+    $scope.select_type = STR_OPERABLE;
     //偷鸡取巧的解决方法, 最好还是把XXX楼XXX栋这些汉字换成英文
     //10ms内禁止再发同样的内容发送第二次
     //扫码枪在识别到汉字的时候，会发送一次回车按键消息，此时会向服务器提交一次出库请求
@@ -186,12 +185,12 @@ app.controller('myCtrl', function ($scope, $http) {
     var duplicateRemoval = new OutgoingDuplicateRemoval();
     $scope.ScanKeyDown = function (e) {
         var projectName = $scope.operatingProjectName;
-        if (e.key == "Enter"){
+        if (e.key == "Enter") {
             var projectId = $scope.scan_text;
-            if(duplicateRemoval.canDoOutGoing(projectName, projectId)){
-                 duplicateRemoval.beginOutGoing(projectName, projectId, duplicateRemoval);
-                 $http.get( c_outgoingURL + projectName + "&productId=" + projectId)
-                     .then(scanSuccessCallback, scanErrorCallBack);
+            if (duplicateRemoval.canDoOutGoing(projectName, projectId)) {
+                duplicateRemoval.beginOutGoing(projectName, projectId, duplicateRemoval);
+                $http.get(c_outgoingURL + projectName + "&productId=" + projectId)
+                    .then(scanSuccessCallback, scanErrorCallBack);
             }
         }
     }
@@ -280,7 +279,7 @@ app.controller('myCtrl', function ($scope, $http) {
             url: c_statusURL,
             data: {"project_name": projectName, status: status},
             dataType: 'json',
-            async:false,
+            async: false,
             success: function (data) {
             },
             error: function (e) {
@@ -289,6 +288,7 @@ app.controller('myCtrl', function ($scope, $http) {
     }
 
     var projectStateBeforeOutGoing = -1;
+
     function startOutGoing() {
         projectStateBeforeOutGoing = ($scope.select_type == STR_OPERABLE) ? projectType.OPERABLE : projectType.OPERATING;
         if (projectStateBeforeOutGoing == projectType.OPERABLE) {
@@ -301,7 +301,7 @@ app.controller('myCtrl', function ($scope, $http) {
     function endOutGoing() {
         var projectStateAfterOutGoing = getProjectState($scope.operatingProjectName);
         $scope.select_type = projectStateAfterOutGoing == projectType.OPERATING ?
-                             STR_OPERATING : STR_OPERABLE;
+            STR_OPERATING : STR_OPERABLE;
         if (projectStateAfterOutGoing == projectType.EXHAUSTED) {
             $("#autocompleteProjectNameInput").val("")
         }
