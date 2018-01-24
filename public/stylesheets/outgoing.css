@@ -9,11 +9,11 @@
     }
 
     .section-to-print {
-        position: absolute;
+        margin: 0 auto;
         top: 0;
-        left: 10%;
-        right: 10%;
-        width: 7.5in;
+        left: 2%;
+        right: 2%;
+        width: 210mm;
     }
 
     .print-body {
