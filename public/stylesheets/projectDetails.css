@@ -53,5 +53,15 @@ th{
     margin-left : 10px;
 }
 
+.ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/*for IE6*/
+* html .ui-autocomplete {
+    height: 100px;
+}
+
 #fileInput{left:0;top:0; width:0px;height:0px;font-size:1px;opacity:0;filter:alpha(opacity=0);}
 #inputMask{width : 100px; height : 36px; padding:0px; margin:0px}

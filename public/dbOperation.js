@@ -148,7 +148,7 @@ exports.getProjectInfoByNameForPagingRender = function (curPage, sizePerPage, qu
         var count = data.length;
         projectInfoModel.findAll({
             where: queryCondition,
-            order: 'created_at DESC',
+            order: 'is_stored DESC, created_at DESC',
             'limit': sizePerPage,
             'offset': curPage
         }).then(function (data, total) {

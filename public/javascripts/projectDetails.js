@@ -318,7 +318,10 @@ function projectDetailsModel() {
     //初始化
     this.Init = function () {
         //1. 项目名称自动填充
+        $("#autocompleteProjectNameInput")
         $("#autocompleteProjectNameInput").autocomplete({
+            minLength: 0,
+            scrollHeight: 5,
             source: function (request, response) {
                 var input = request.term;
                 var url = c_getProjectsURL;
@@ -350,6 +353,8 @@ function projectDetailsModel() {
                 model.operatingProjectChanged(selection);
                 model.table.pullData(model.getOption(model));
             }
+        }).focus(function () {
+            $(this).autocomplete("search");
         });
 
         //2. 绑定下拉列表变化事件
