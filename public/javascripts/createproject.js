@@ -5,9 +5,11 @@ function showToolTip(msg, bSuc){
     if(timer != null) clearInterval(timer);
 
     if(bSuc){
+         $("#topAlert").removeClass("alert-danger");
          $("#topAlert").addClass("alert-success");
     }
     else{
+        $("#topAlert").removeClass("alert-success");
         $("#topAlert").addClass("alert-danger");
     }
     $("#topAlert").text(msg);
@@ -47,7 +49,7 @@ $.fn.serializeObject = function() {
     return o;
 };
 
-
+var existProjects = null;
 function onClick(){
     if(!validity()) return;
     $.ajax({
@@ -56,7 +58,8 @@ function onClick(){
        data : {"project_name": $("#project-name").val()},
        dataType : 'json',
        success : function (data) {
-            showToolTip("创建成功", true);
+           showToolTip("创建成功", true);
+           refreshExistTable();
        },
        error : function (data){
             var errMsg = JSON.stringify(data.responseJSON.errorMessage);
@@ -117,8 +120,20 @@ function projectsTable(tableElement) {
             }
         })
     }
+    this.destroy = function (projectTable) {
+        projectTable.tableInstance.bootstrapTable('destroy');
+    }
+}
+
+function createExistTable() {
+    existProjects = new projectsTable($("#createdProjectTable"));
+    existProjects.create(existProjects);
+}
+
+function refreshExistTable() {
+    existProjects.destroy(existProjects);
+    existProjects.create(existProjects);
 }
 $(document).ready(function () {
-   projTables = new projectsTable($("#createdProjectTable"));
-   projTables.create(projTables);
+    createExistTable()
 })
