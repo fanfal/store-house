@@ -1,5 +1,6 @@
 /*global $*/
 const c_hostIP = "http://localhost:8080";
+const c_getProject =  c_hostIP + "/get-data/project";
 const c_getProjectsURL = c_hostIP + "/get-data/projects";
 const c_getProjectInfoURL = c_hostIP + "/get-data/project-info";
 const c_insertProjectInfoURL = c_hostIP + "/insert-data/project-info";

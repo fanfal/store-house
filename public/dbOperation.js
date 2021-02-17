@@ -4,6 +4,7 @@ var path = require('path');
 var projectStatus = require("./model/projectStatus");
 var dbUtil = require("./utils/dbUtils");
 var Sequelize = require('sequelize');
+var filter = require('fuzzaldrin');
 
 var projectModel = project.projectModel;
 var projectInfoModel = projectInfo.projectInfoModel;
@@ -78,10 +79,11 @@ exports.getProject = function (projectName, res) {
         });
 }
 
-exports.getProjects = function (res) {
+exports.getProjects = function (projectFilter, res) {
     projectModel.findAll({order: 'operation_status, created_at ASC'})
         .then(function (data) {
-            res.send(JSON.stringify({project_list: data}));
+            var filterData = filter.filter(data, projectFilter, {key: 'project_name'});
+            res.send(JSON.stringify({project_list: filterData}));
         })
         .catch(function (error) {
             console.log('Error occur get projects: ', error);
@@ -89,21 +91,12 @@ exports.getProjects = function (res) {
         });
 }
 
-exports.getProjectsName = function (res) {
-    projectModel.findAll({attributes: ['project_name'], order: 'created_at ASC'})
-        .then(function (data) {
-            res.send(JSON.stringify({project_list: data}));
-        })
-        .catch(function (error) {
-            console.log('Error occur get projects: ', error);
-            res.status(400).send({errorMessage: "Get projects name data has database error."});
-        });
-}
 
-exports.getProjectsWithStatus = function (operationStatus, res) {
+exports.getProjectsWithStatus = function (projectFilter, operationStatus, res) {
     projectModel.findAll({where: {operation_status: operationStatus}, order: 'created_at ASC'})
         .then(function (data) {
-            res.send(JSON.stringify({project_list: data}));
+            var filterData = filter.filter(data, projectFilter, {key: 'project_name'});
+            res.send(JSON.stringify({project_list: filterData}));
         })
         .catch(function (error) {
             console.log('Error occur get projects with status: ', error);
@@ -155,7 +148,7 @@ exports.getProjectInfoByNameForPagingRender = function (curPage, sizePerPage, qu
         var count = data.length;
         projectInfoModel.findAll({
             where: queryCondition,
-            order: 'created_at DESC',
+            order: 'is_stored DESC, created_at DESC',
             'limit': sizePerPage,
             'offset': curPage
         }).then(function (data, total) {
@@ -190,6 +183,9 @@ exports.updateProjectStatusByRequest = function (projectName, status) {
                 if (data.length > 0) {
                     updateProjectStatus(projectName, status);
                 }
+                else {
+                    updateProjectStatus(projectName, 2);
+                }
             })
             break;
         case "1":
@@ -201,6 +197,9 @@ exports.updateProjectStatusByRequest = function (projectName, status) {
 }
 
 exports.updateProjectInfo = function (data, res) {
+    data.new.is_stored = true;
+    data.new.product_id = dbUtil.createProductId(data.new.project_name, data.new);
+    data.origin.is_stored = true;
     projectInfoModel.findAll({where: data.new})
         .then(function (result) {
             if (result.length != 0) {
@@ -270,7 +269,7 @@ function insertProject(projectName, res) {
 
 
 function insertProjectInfo(data, res) {
-    if (data.project_name != null) {
+    if (data.project_name != null && data.project_name != "") {
         projectInfoModel.findAll({
                 where: {
                     project_name: data.project_name,

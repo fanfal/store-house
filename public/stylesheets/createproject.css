@@ -7,33 +7,44 @@
   background-color:#ffffff;
   -webkit-font-smoothing: antialiased;
   padding: 0px;
-  margin: 10px;
 }
 
 #create-project-form{
-    margin: 0px; padding: 0px;
+    margin: 10px; padding: 0px;
 }
 
 #project-info{
     border-bottom: 1px #dddddd solid;
+    margin:10px;
 }
 
 #building-info{
     border-bottom: 1px #dddddd solid;
+    margin:10px;
 }
 
 #glass-info{
     border-bottom: 1px #dddddd solid;
+    margin:10px;
 }
 
-#content{
+.bootstrap-table{
+    margin: 10px;
+}
+
+.fixed-table-container{
+    margin: 10px;
+}
+
+.borderFrame{
     border: 1px #dddddd solid;
     border-radius: 3px;
+    margin:10px;
 }
 
-#title {
+.title {
     border-bottom: 1px #dddddd solid;
-    margin: 0px;
+    margin: 10px;
 }
 
 p{
@@ -48,7 +59,14 @@ h4{
     font-weight:lighter;
     font-size : 18px;
 }
-
+th{
+    font-weight: lighter;
+    text-align: left;
+    font-size : 15px;
+}
+thead tr th{
+    height:30px;
+}
 
 #submit-btn{
     border: 1px #dddddd solid;
@@ -95,11 +113,18 @@ h4{
     transition: all .5s
 }
 
-
 table{
     margin: 0px;
 }
-table input{
-    width: 60px
+input{
+    width: 60px;
 }
-
+.bootstrap-table {
+    margin-left:0px;
+}
+.search{
+    margin-right:10px;
+}
+.fixed-table-pagination{
+    margin:10px;
+}

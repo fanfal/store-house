@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" , href="/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" , href="/stylesheets/outgoing.css" media="print">
+    <link rel="stylesheet" , href="/stylesheets/jquery-ui.min.css">
 </head>
 <body>
     <div ng-app="myApp" ng-controller="myCtrl">
@@ -19,18 +20,16 @@
             <div class ="col-sm-2"><label style="width:100%;height:80%;margin-top:5%;text-align:right">请选择项目类型</label></div>
             <div class = "col-sm-3">
                 <select id="project_type_select"class="input-sm" style="width:150px;margin-right:10px"
-                        ng-change="projectTypeChanged()" ng-model="select_type" ng-options="type for type in projectType">
+                        ng-model="select_type" ng-options="type for type in projectType">
                 </select>
             </div>
-            <div class ="col-sm-2"><label style="width:100%;height:80%;margin-top:5%;text-align:right">请选择项目</label></div>
+            <div class ="col-sm-2"><label style="width:100%;height:80%;margin-top:5%;text-align:right">项目名称</label></div>
             <div class="col-sm-3">
-                <select id="select_project"class="input-sm" style="width:150px;margin-right:10px"  ng-model="select_name" ng-options="x for x in names">
-                </select>
+                <input id = "autocompleteProjectNameInput" type = "text" class = "form-control" style = "width:100%;height:80%">
             </div>
         </div>
-
         <div class = "row">
-            <div style="overflow: auto; max-height:700px;">
+            <div style="overflow: auto; max-height:700px; margin-top : 10px">
                 <table class="table table-striped table-responsive table-hover table-bordered" ng-init="items = []"
                        ng-model="items">
                     <thead style="font-weight:lighter;">
@@ -45,6 +44,7 @@
                         <th id="type" class="text-center">类型&nbsp;</th>
                         <th id="width" class="text-center">宽(mm)&nbsp;</th>
                         <th id="height" class="text-center">高(mm)&nbsp;</th>
+                        <th id="area" class="text-center">面积(mm²)&nbsp;</th>
                         <th id="created_at" class="text-center">创建时间&nbsp;</th>
                         <th id="operation_status" class="text-center">状态&nbsp;</th>
                     </tr>
@@ -61,6 +61,7 @@
                         <td class="text-center">{{item.type}}</td>
                         <td class="text-center">{{item.width}}</td>
                         <td class="text-center">{{item.height}}</td>
+                        <td class="text-center">{{item.area}}</td>
                         <td class="text-center">{{item.created_at}}</td>
                         <td class="text-center">出库成功</td>
                     </tr>
@@ -83,8 +84,7 @@
                             </div>
                         </div>
                         <div style="text-align: center" class="print-title">
-                            <h4 class="modal-title" >出库清单</h4>
-                            </br>
+                            <h4 ng-init="" ng-model="operatingProjectName" class="modal-title" >{{operatingProjectName}}項目出库清单</h4>
                             </br>
                         </div>
                         <table class="table table-striped table-hover print-body" ng-init="items = []" ng-model="items">
@@ -98,6 +98,7 @@
                                 <td class="text-center">{{item.type}}&nbsp;类型</td>
                                 <td class="text-center">{{item.width}}&nbsp;宽(mm)</td>
                                 <td class="text-center">{{item.height}}&nbsp;高(mm)</td>
+                                <td class="text-center">{{item.area}}&nbsp;面积(mm²)</td>
                             </tr>
                             </tbody>
                         </table>
@@ -123,14 +124,13 @@
                 </div>
             </div>
         </div>
-
         <div style="text-align:center">
             <button id="btn_start_scan" type="button" class="btn btn-primary btn-lg">开始出库</button>
-            <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg disabled">停止出库</button>
-            <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" data-toggle="modal">打印表单</button>
+            <button id="btn_stop_scan" type="button" class="btn btn-primary btn-lg" disabled = true>停止出库</button>
+            <button id="btn_generate_list" type="button" class="btn btn-success btn-lg" disabled = true data-toggle="modal">打印表单</button>
         </div>
         <div>
-            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 0px; height:0px; margin-left: 250px">
+            <input id="scan_input"  ng-keypress="ScanKeyDown($event)" ng-model="scan_text" style="opacity:0; width: 0px; height:0px; margin-left:1000px">
         </div>
     </div>
     </div>
@@ -139,6 +139,7 @@
     <script type="text/javascript" , src="/model/productType.js"></script>
     <script type="text/javascript" , src="/model/projectStatus.js"></script>
     <script type="text/javascript" , src="/javascripts/serverHostURL.js"></script>
+    <script type="text/javascript" , src="/javascripts/jquery-ui.min.js"></script>
     <script type="text/javascript" , src="/javascripts/outgoing.js"></script>
     <script type="text/javascript" , src="/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>

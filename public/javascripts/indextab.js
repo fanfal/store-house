@@ -16,7 +16,7 @@ $(document).ready(function () {
     var pageArray = new Array("homePage.html",
                               "projectManagement.html",
                               "homePage.html",
-                              "outGoing.html",
+                              "outgoing.html",
                               "statistics.html");
 
     tabItems.click(function () {

@@ -5,9 +5,11 @@ function showToolTip(msg, bSuc){
     if(timer != null) clearInterval(timer);
 
     if(bSuc){
+         $("#topAlert").removeClass("alert-danger");
          $("#topAlert").addClass("alert-success");
     }
     else{
+        $("#topAlert").removeClass("alert-success");
         $("#topAlert").addClass("alert-danger");
     }
     $("#topAlert").text(msg);
@@ -47,7 +49,7 @@ $.fn.serializeObject = function() {
     return o;
 };
 
-
+var existProjects = null;
 function onClick(){
     if(!validity()) return;
     $.ajax({
@@ -56,7 +58,8 @@ function onClick(){
        data : {"project_name": $("#project-name").val()},
        dataType : 'json',
        success : function (data) {
-            showToolTip("创建成功", true);
+           showToolTip("创建成功", true);
+           refreshExistTable();
        },
        error : function (data){
             var errMsg = JSON.stringify(data.responseJSON.errorMessage);
@@ -69,3 +72,68 @@ function onClick(){
        }
     })
 }
+
+function projectsTable(tableElement) {
+    this.tableInstance = tableElement;
+    this.queryUrl = c_getProjectsURL;
+    this.pageNumber = 1;
+    this.getColumns = function () {
+        var columns = [{
+            field : "project_name",
+            title : "工程名称",
+        }, {
+            field: 'created_at',
+            title: '创建时间',
+            formatter: function (value) {
+                var time = value.replace("T", " ");
+                return time.replace(".000Z", "");
+            }
+        }];
+        return columns;
+    }
+    this.getOption = function (rows, columns) {
+        var option = {
+            data : rows,
+            cache: false,
+            pagination: true,
+            sidePagination: 'client',
+            pageNumber: projectsTable.pageNumber,
+            pageSize: 5,
+            pageList: [5, 10, 15],
+            cardView: false,
+            detailView: false,
+            search: true,
+            columns: columns,
+            dataType: 'json'
+        };
+        return option;
+    };
+    this.create = function (projectsTable) {
+        $.ajax({
+            url: projectsTable.queryUrl,
+            type: "GET",
+            async: true,
+            success: function (data) {
+                var projects = data.project_list;
+                projectsTable.tableInstance.bootstrapTable(projectsTable.getOption(projects,
+                    projectsTable.getColumns()));
+            }
+        })
+    }
+    this.destroy = function (projectTable) {
+        projectTable.tableInstance.bootstrapTable('destroy');
+    }
+}
+
+function createExistTable() {
+    existProjects = new projectsTable($("#createdProjectTable"));
+    existProjects.create(existProjects);
+}
+
+function refreshExistTable() {
+    existProjects.destroy(existProjects);
+    existProjects.create(existProjects);
+}
+$(document).ready(function () {
+    createExistTable()
+})

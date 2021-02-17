@@ -20,6 +20,7 @@
     "debug": "~2.6.0",
     "express": "~4.14.1",
     "flat-ui": "^2.1.1",
+    "fuzzaldrin": "^2.1.0",
     "jade": "~1.11.0",
     "jquery": "^3.1.1",
     "morgan": "~1.7.0",
@@ -28,6 +29,6 @@
     "sequelize": "^3.30.2",
     "serve-favicon": "~2.3.2",
     "xls-to-json-lc": "^0.3.3",
-    "xlsx-to-json-lc": "^0.2.5"
+    "xlsx-to-json-lc": "^0.4.1"
   }
 }

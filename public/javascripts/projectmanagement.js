@@ -3,7 +3,7 @@ $(document).ready(function () {
     "use strict";
     var navLis = $(".nav-li");
     var curIndex = -1;
-    var pages = new Array("createProject.html", "projectDetails.html");
+    var pages = new Array("createproject.html", "projectDetails.html");
     navLis.mouseleave(function () {
         $(this).removeClass("hovered-li");
         $(this).css("cursor", "default");
